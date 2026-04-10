@@ -9,6 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
 import services.PersonService;
 
 import java.io.IOException;
@@ -22,9 +23,12 @@ public class AfficherPersonne implements Initializable {
 
     private final PersonService ps = new PersonService();
     private ObservableList<Person> observableList;
-    private ObservableList<Person> allPersonsList; // Store all persons for search
+    private ObservableList<Person> allPersonsList;
     private Person selectedPerson;
+    private boolean isDarkMode = false; // Track current theme
 
+    @FXML
+    private VBox mainContainer;
     @FXML
     private TableView<Person> tableView;
     @FXML
@@ -64,10 +68,33 @@ public class AfficherPersonne implements Initializable {
                 }
         );
 
-        // Real-time search as you type (bonus feature)
+        // Real-time search as you type
         searchField.textProperty().addListener((obs, oldText, newText) -> {
             searchPersons();
         });
+    }
+
+    @FXML
+    void toggleTheme() {
+        Button themeButton = (Button) mainContainer.lookup(".theme-toggle-btn");
+
+        if (isDarkMode) {
+            // Switch to Light Mode
+            mainContainer.getStyleClass().remove("dark-theme");
+            mainContainer.getStyleClass().add("light-theme");
+            if (themeButton != null) {
+                themeButton.setText("🌙 Dark Mode");
+            }
+            isDarkMode = false;
+        } else {
+            // Switch to Dark Mode
+            mainContainer.getStyleClass().remove("light-theme");
+            mainContainer.getStyleClass().add("dark-theme");
+            if (themeButton != null) {
+                themeButton.setText("☀️ Light Mode");
+            }
+            isDarkMode = true;
+        }
     }
 
     @FXML
@@ -87,10 +114,8 @@ public class AfficherPersonne implements Initializable {
         String searchText = searchField.getText().toLowerCase().trim();
 
         if (searchText.isEmpty()) {
-            // If search is empty, show all persons
             tableView.setItems(allPersonsList);
         } else {
-            // Filter the list
             ObservableList<Person> filteredList = FXCollections.observableArrayList(
                     allPersonsList.stream()
                             .filter(person ->
@@ -101,7 +126,6 @@ public class AfficherPersonne implements Initializable {
             );
             tableView.setItems(filteredList);
 
-            // Show message if no results
             if (filteredList.isEmpty()) {
                 showAlert("Information", "Aucune personne trouvée avec: " + searchText, Alert.AlertType.INFORMATION);
             }
@@ -133,7 +157,7 @@ public class AfficherPersonne implements Initializable {
 
             ps.update(selectedPerson);
             refreshTable();
-            resetSearch(); // Reset search after update
+            resetSearch();
             clearSelection();
             showAlert("Succès", "Personne modifiée avec succès!", Alert.AlertType.INFORMATION);
 
@@ -160,7 +184,7 @@ public class AfficherPersonne implements Initializable {
             try {
                 ps.delete(selectedPerson);
                 refreshTable();
-                resetSearch(); // Reset search after delete
+                resetSearch();
                 clearSelection();
                 showAlert("Succès", "Personne supprimée avec succès!", Alert.AlertType.INFORMATION);
 

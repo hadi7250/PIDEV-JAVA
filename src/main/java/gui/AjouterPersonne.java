@@ -6,7 +6,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import services.PersonService;
 
 import java.io.IOException;
@@ -15,44 +17,60 @@ import java.sql.SQLException;
 public class AjouterPersonne {
 
     private final PersonService personService = new PersonService();
-
-    // Add this flag to prevent double submission
     private boolean isProcessing = false;
+    private boolean isDarkMode = false;
 
+    @FXML
+    private VBox mainContainer;
     @FXML
     private TextField TFAge;
-
     @FXML
     private TextField TFNom;
-
     @FXML
     private TextField TFPrenom;
 
     @FXML
+    void toggleTheme() {
+        Button themeButton = (Button) mainContainer.lookup(".theme-toggle-btn");
+
+        if (isDarkMode) {
+            mainContainer.getStyleClass().remove("dark-theme");
+            mainContainer.getStyleClass().add("light-theme");
+            if (themeButton != null) {
+                themeButton.setText("🌙 Dark Mode");
+            }
+            isDarkMode = false;
+        } else {
+            mainContainer.getStyleClass().remove("light-theme");
+            mainContainer.getStyleClass().add("dark-theme");
+            if (themeButton != null) {
+                themeButton.setText("☀️ Light Mode");
+            }
+            isDarkMode = true;
+        }
+    }
+
+    @FXML
     void ajouter(ActionEvent event) {
-        // Prevent double submission
         if (isProcessing) {
-            return; // Don't do anything if already processing
+            return;
         }
 
-        // Validate inputs
         if (TFAge.getText().isEmpty() || TFNom.getText().isEmpty() || TFPrenom.getText().isEmpty()) {
             showAlert("Erreur", "Veuillez remplir tous les champs", Alert.AlertType.ERROR);
             return;
         }
 
         try {
-            isProcessing = true; // Lock the button
+            isProcessing = true;
 
             int age = Integer.parseInt(TFAge.getText());
             String Nom = TFNom.getText();
             String Prenom = TFPrenom.getText();
 
             Person p = new Person(age, Prenom, Nom);
-
             personService.create(p);
 
-            // Clear fields after successful creation
             TFAge.clear();
             TFNom.clear();
             TFPrenom.clear();
@@ -64,7 +82,7 @@ public class AjouterPersonne {
         } catch (SQLException e) {
             showAlert("Erreur", e.getMessage(), Alert.AlertType.ERROR);
         } finally {
-            isProcessing = false; // Unlock the button
+            isProcessing = false;
         }
     }
 

@@ -3,15 +3,17 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
 
-<VBox spacing="15" styleClass="main-container" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AfficherPersonne">
+<VBox fx:id="mainContainer" spacing="15" styleClass="light-theme" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AfficherPersonne">
     <padding>
         <Insets bottom="25" left="25" right="25" top="25"/>
     </padding>
 
-    <!-- Title -->
-    <Label styleClass="title-label" text="📋 Gestion des Personnes" />
+    <!-- Header with Title and Theme Toggle -->
+    <HBox alignment="CENTER_RIGHT" spacing="10">
+        <Label styleClass="title-label" text="📋 Gestion des Personnes" HBox.hgrow="ALWAYS" />
+        <Button onAction="#toggleTheme" text="🌙 Dark Mode" styleClass="theme-toggle-btn" />
+    </HBox>
 
     <!-- Search Section -->
     <VBox spacing="10">
@@ -38,7 +40,7 @@
     <!-- Edit Section -->
     <VBox spacing="10" styleClass="input-card">
         <Label styleClass="subtitle-label" text="✏️ Modifier une personne" />
-        <Label text="Sélectionnez une personne dans le tableau pour la modifier" style="-fx-font-size: 11px; -fx-text-fill: #888;" />
+        <Label text="Sélectionnez une personne dans le tableau pour la modifier" style="-fx-font-size: 11px;" />
         <HBox spacing="15">
             <TextField fx:id="editNomField" promptText="Nom" prefWidth="160" />
             <TextField fx:id="editPrenomField" promptText="Prénom" prefWidth="160" />
