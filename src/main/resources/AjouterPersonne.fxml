@@ -1,20 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
+<VBox spacing="20" styleClass="main-container" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AjouterPersonne">
+    <padding>
+        <Insets bottom="30" left="30" right="30" top="30"/>
+    </padding>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AjouterPersonne">
-   <children>
-      <TextField fx:id="TFAge" layoutX="76.0" layoutY="92.0" promptText="Age" />
-      <TextField fx:id="TFPrenom" layoutX="76.0" layoutY="164.0" promptText="Prenom" />
-      <TextField fx:id="TFNom" layoutX="76.0" layoutY="233.0" promptText="Nom" />
-      <Label layoutX="76.0" layoutY="67.0" text="Age" />
-      <Label layoutX="76.0" layoutY="139.0" text="Prenom" />
-      <Label layoutX="76.0" layoutY="209.0" text="Nom" />
-      <Button layoutX="421.0" layoutY="321.0" mnemonicParsing="false" onAction="#ajouter" text="Ajouter" />
-      <Button layoutX="486.0" layoutY="321.0" mnemonicParsing="false" onAction="#afficher" text="Afficher" />
-   </children>
-</AnchorPane>
+    <!-- Title -->
+    <Label styleClass="title-label" text="➕ Ajouter une personne" />
+
+    <!-- Input Card -->
+    <VBox spacing="15" styleClass="input-card">
+        <Label styleClass="subtitle-label" text="Informations de la personne" />
+
+        <!-- Nom Field -->
+        <VBox spacing="5">
+            <Label text="Nom" styleClass="label-bold" />
+            <TextField fx:id="TFNom" promptText="Entrez le nom" />
+        </VBox>
+
+        <!-- Prénom Field -->
+        <VBox spacing="5">
+            <Label text="Prénom" styleClass="label-bold" />
+            <TextField fx:id="TFPrenom" promptText="Entrez le prénom" />
+        </VBox>
+
+        <!-- Age Field -->
+        <VBox spacing="5">
+            <Label text="Âge" styleClass="label-bold" />
+            <TextField fx:id="TFAge" promptText="Entrez l'âge" />
+        </VBox>
+    </VBox>
+
+    <!-- Action Buttons -->
+    <HBox spacing="20" alignment="CENTER">
+        <Button onAction="#ajouter" text="✅ Ajouter" styleClass="btn-primary" />
+        <Button onAction="#afficher" text="📋 Gérer les personnes" styleClass="btn-info" />
+    </HBox>
+</VBox>
