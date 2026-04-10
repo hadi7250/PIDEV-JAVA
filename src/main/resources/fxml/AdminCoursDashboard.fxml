@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.SplitPane?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.AdminCoursController"
+            prefHeight="720.0"
+            prefWidth="1180.0"
+            styleClass="course-module-root"
+            stylesheets="@../css/courses-module.css">
+
+    <padding>
+        <Insets bottom="18.0" left="18.0" right="18.0" top="18.0" />
+    </padding>
+
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="module-toolbar">
+            <VBox spacing="4.0">
+                <Label styleClass="module-title" text="Manage courses and chapters" />
+                <Label styleClass="module-subtitle" text="Admin cards with direct access to course materials and chapter actions." />
+            </VBox>
+            <Region HBox.hgrow="ALWAYS" />
+            <Button onAction="#refreshAll" styleClass="secondary-btn" text="Refresh" />
+        </HBox>
+    </top>
+
+    <center>
+        <TabPane fx:id="adminTabPane" tabClosingPolicy="UNAVAILABLE">
+            <tabs>
+                <Tab fx:id="coursesTab" text="Courses">
+                    <content>
+                        <SplitPane dividerPositions="0.52">
+                            <items>
+                                <VBox spacing="14.0" styleClass="module-card">
+                                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                        <TextField fx:id="coursSearchField" promptText="Search courses..." HBox.hgrow="ALWAYS" />
+                                        <Button onAction="#addCours" styleClass="primary-btn" text="Add course" />
+                                        <Label fx:id="coursCountLabel" styleClass="meta-label" text="0 course cards" />
+                                    </HBox>
+
+                                    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="cards-scroll" VBox.vgrow="ALWAYS">
+                                        <content>
+                                            <VBox fx:id="coursCardsBox" spacing="14.0" styleClass="cards-list" />
+                                        </content>
+                                    </ScrollPane>
+                                </VBox>
+
+                                <VBox spacing="14.0" styleClass="module-card detail-panel">
+                                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                        <VBox spacing="4.0">
+                                            <Label fx:id="detailCourseTitle" styleClass="detail-title" text="Select a course" />
+                                            <Label fx:id="detailCourseMeta" styleClass="meta-label" text="Use a course card's Details button to inspect materials." />
+                                        </VBox>
+                                        <Region HBox.hgrow="ALWAYS" />
+                                        <Button fx:id="detailAddChapterBtn" disable="true" onAction="#addChapterForSelectedCourse" styleClass="primary-btn" text="Add chapter" />
+                                        <Button fx:id="detailEditBtn" disable="true" onAction="#editSelectedCours" styleClass="secondary-btn" text="Edit" />
+                                        <Button fx:id="detailDeleteBtn" disable="true" onAction="#deleteSelectedCours" styleClass="danger-btn" text="Delete" />
+                                    </HBox>
+
+                                    <Label fx:id="detailCourseDescription" styleClass="course-description" text="" wrapText="true" />
+                                    <Separator />
+                                    <Label styleClass="section-title" text="Course materials" />
+                                    <Label fx:id="detailEmptyLabel" styleClass="empty-note" text="No course selected." wrapText="true" />
+                                    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="cards-scroll" VBox.vgrow="ALWAYS">
+                                        <content>
+                                            <VBox fx:id="detailMaterialsBox" spacing="12.0" styleClass="cards-list" />
+                                        </content>
+                                    </ScrollPane>
+                                </VBox>
+                            </items>
+                        </SplitPane>
+                    </content>
+                </Tab>
+
+                <Tab fx:id="chaptersTab" text="Chapters">
+                    <content>
+                        <VBox spacing="14.0" styleClass="module-card">
+                            <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                <TextField fx:id="chapitreSearchField" promptText="Search chapters..." HBox.hgrow="ALWAYS" />
+                                <ComboBox fx:id="chapitreCoursFilter" prefWidth="220.0" />
+                                <Button onAction="#addChapitre" styleClass="primary-btn" text="Add chapter" />
+                                <Label fx:id="chapitreCountLabel" styleClass="meta-label" text="0 chapter cards" />
+                            </HBox>
+
+                            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="cards-scroll" VBox.vgrow="ALWAYS">
+                                <content>
+                                    <VBox fx:id="chapitreCardsBox" spacing="14.0" styleClass="cards-list" />
+                                </content>
+                            </ScrollPane>
+                        </VBox>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER_LEFT" styleClass="status-bar">
+            <Label fx:id="statusLabel" styleClass="meta-label" text="" />
+        </HBox>
+    </bottom>
+</BorderPane>

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane xmlns="http://javafx.com/javafx/17"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="controllers.CoursController"
+           prefHeight="720.0"
+           prefWidth="1100.0"
+           styleClass="course-module-root"
+           stylesheets="@../css/courses-module.css">
+
+    <children>
+        <BorderPane prefHeight="720.0" prefWidth="1100.0" styleClass="client-dashboard-shell">
+            <padding>
+                <Insets bottom="18.0" left="18.0" right="18.0" top="18.0" />
+            </padding>
+
+            <top>
+                <HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="module-toolbar client-toolbar">
+                    <VBox spacing="4.0">
+                        <Label styleClass="module-title client-page-title" text="Courses Studio" />
+                        <Label styleClass="module-subtitle" text="Browse stylized course cards, open chapters, and preview websites without leaving the app." />
+                    </VBox>
+                    <Region HBox.hgrow="ALWAYS" />
+                    <TextField fx:id="searchField" prefWidth="280.0" promptText="Search courses..." />
+                    <Button onAction="#onRefresh" styleClass="secondary-btn" text="Refresh" />
+                </HBox>
+            </top>
+
+            <center>
+                <SplitPane dividerPositions="0.31">
+                    <items>
+                        <VBox spacing="16.0" styleClass="module-card client-sidebar-card">
+                            <VBox spacing="6.0" styleClass="client-spotlight-card">
+                                <Label styleClass="client-spotlight-eyebrow" text="Quick Start" />
+                                <Label styleClass="client-spotlight-title" text="Open a course and launch its website resources in the built-in viewer." wrapText="true" />
+                                <Label styleClass="client-spotlight-copy" text="Your favorites stay pinned here so you can jump back into learning sessions fast." wrapText="true" />
+                            </VBox>
+
+                            <Label styleClass="section-title" text="Favorites" />
+                            <FlowPane fx:id="favoritesPane" hgap="8.0" prefWrapLength="320.0" vgap="8.0" />
+                            <Separator />
+                            <HBox alignment="CENTER_LEFT">
+                                <Label styleClass="section-title" text="All courses" />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Label fx:id="totalLabel" styleClass="meta-label" text="Showing 0 courses" />
+                            </HBox>
+                            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="cards-scroll" VBox.vgrow="ALWAYS">
+                                <content>
+                                    <VBox fx:id="coursCardsBox" spacing="14.0" styleClass="cards-list" />
+                                </content>
+                            </ScrollPane>
+                        </VBox>
+
+                        <VBox spacing="16.0" styleClass="client-workspace">
+                            <VBox spacing="14.0" styleClass="module-card client-detail-hero">
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <VBox spacing="4.0">
+                                        <Label fx:id="selectedTitle" styleClass="detail-title" text="Select a course" />
+                                        <Label fx:id="selectedMeta" styleClass="meta-label" text="Open a course card to load its chapters." />
+                                    </VBox>
+                                    <Region HBox.hgrow="ALWAYS" />
+                                    <Button fx:id="favoriteToggleBtn" disable="true" onAction="#toggleFavorite" styleClass="secondary-btn" text="Save course" />
+                                </HBox>
+                                <Label fx:id="selectedDescription" styleClass="course-description" text="" wrapText="true" />
+                            </VBox>
+
+                            <SplitPane dividerPositions="0.56" orientation="VERTICAL">
+                                <items>
+                                    <VBox spacing="14.0" styleClass="module-card client-chapters-card">
+                                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                            <Label styleClass="section-title" text="Chapters and resources" />
+                                            <Region HBox.hgrow="ALWAYS" />
+                                            <Label styleClass="meta-label" text="Open any chapter website in the viewer below" />
+                                        </HBox>
+                                        <Label fx:id="emptyStateLabel" managed="false" styleClass="empty-note" text="" visible="false" wrapText="true" />
+                                        <Accordion fx:id="chaptersAccordion" styleClass="chapter-accordion" VBox.vgrow="ALWAYS" />
+                                    </VBox>
+
+                                    <VBox spacing="14.0" styleClass="module-card client-browser-card">
+                                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                            <VBox spacing="4.0">
+                                                <Label styleClass="section-title" text="Website viewer" />
+                                                <Label fx:id="browserStatusLabel" styleClass="meta-label" text="Open a chapter website to start learning inside the app." wrapText="true" />
+                                            </VBox>
+                                            <Region HBox.hgrow="ALWAYS" />
+                                            <Button fx:id="openExternalBtn" disable="true" onAction="#openCurrentUrlExternally" styleClass="secondary-btn" text="Open outside" />
+                                            <Button fx:id="expandBrowserBtn" disable="true" onAction="#expandBrowserOverlay" styleClass="primary-btn" text="Expand" />
+                                            <Button fx:id="closeBrowserBtn" disable="true" onAction="#closeBrowserViewer" styleClass="danger-btn" text="Close" />
+                                        </HBox>
+
+                                        <StackPane fx:id="browserHost" styleClass="browser-host" VBox.vgrow="ALWAYS">
+                                            <Label fx:id="browserPlaceholderLabel" styleClass="browser-placeholder" text="Pick a chapter resource to preview the website here." wrapText="true" />
+                                        </StackPane>
+                                    </VBox>
+                                </items>
+                            </SplitPane>
+                        </VBox>
+                    </items>
+                </SplitPane>
+            </center>
+        </BorderPane>
+
+        <StackPane fx:id="browserOverlay" managed="false" visible="false" styleClass="browser-overlay">
+            <VBox maxWidth="1.7976931348623157E308" spacing="14.0" styleClass="browser-overlay-panel">
+                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                    <VBox spacing="4.0">
+                        <Label fx:id="overlayTitleLabel" styleClass="detail-title" text="Website viewer" />
+                        <Label fx:id="overlayMetaLabel" styleClass="meta-label" text="Expanded overlay mode" wrapText="true" />
+                    </VBox>
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Button fx:id="overlayOpenExternalBtn" disable="true" onAction="#openCurrentUrlExternally" styleClass="secondary-btn" text="Open outside" />
+                    <Button onAction="#collapseBrowserOverlay" styleClass="secondary-btn" text="Collapse" />
+                    <Button onAction="#closeBrowserViewer" styleClass="danger-btn" text="Close" />
+                </HBox>
+
+                <StackPane fx:id="overlayBrowserHost" styleClass="browser-overlay-host" VBox.vgrow="ALWAYS">
+                    <Label fx:id="overlayPlaceholderLabel" styleClass="browser-placeholder" text="Expanded website view will appear here." wrapText="true" />
+                </StackPane>
+            </VBox>
+        </StackPane>
+    </children>
+</StackPane>
