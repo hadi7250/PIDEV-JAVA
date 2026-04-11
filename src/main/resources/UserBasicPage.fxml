@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="15" styleClass="main-container" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.UserBasicPageController">
+    <padding>
+        <Insets bottom="25" left="25" right="25" top="25"/>
+    </padding>
+
+    <!-- Header -->
+    <HBox alignment="CENTER_RIGHT" spacing="10">
+        <Label styleClass="title-label" text="👤 My Profile" HBox.hgrow="ALWAYS" />
+        <Button onAction="#toggleTheme" text="🌙 Dark Mode" styleClass="theme-toggle-btn" />
+    </HBox>
+
+    <Label text="Welcome to your dashboard!" style="-fx-font-size: 14px; -fx-text-fill: #666;" />
+
+    <!-- Profile Card -->
+    <VBox spacing="15" styleClass="input-card">
+        <Label styleClass="subtitle-label" text="📋 My Information" />
+
+        <HBox spacing="15">
+            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                <Label text="First Name" styleClass="label-bold" />
+                <TextField fx:id="firstNameField" />
+            </VBox>
+            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                <Label text="Last Name" styleClass="label-bold" />
+                <TextField fx:id="lastNameField" />
+            </VBox>
+        </HBox>
+
+        <VBox spacing="5">
+            <Label text="Age" styleClass="label-bold" />
+            <TextField fx:id="ageField" />
+        </VBox>
+
+        <VBox spacing="5">
+            <Label text="Email" styleClass="label-bold" />
+            <TextField fx:id="emailField" />
+        </VBox>
+
+        <VBox spacing="5">
+            <Label text="Role" styleClass="label-bold" />
+            <TextField fx:id="roleField" editable="false" />
+        </VBox>
+
+        <Separator />
+
+        <VBox spacing="5">
+            <Label text="Change Password" styleClass="label-bold" />
+            <PasswordField fx:id="newPasswordField" promptText="New password (leave empty to keep current)" />
+            <PasswordField fx:id="confirmPasswordField" promptText="Confirm new password" />
+        </VBox>
+    </VBox>
+
+    <!-- Action Buttons -->
+    <HBox spacing="20" alignment="CENTER">
+        <Button onAction="#updateProfile" text="💾 Save Changes" styleClass="btn-primary" />
+        <Button onAction="#logout" text="🚪 Logout" styleClass="btn-danger" />
+    </HBox>
+</VBox>

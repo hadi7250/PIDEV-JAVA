@@ -1,6 +1,6 @@
 package gui;
 
-import entities.Person;
+import entities.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -8,15 +8,15 @@ import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.control.PasswordField;  // ← ADD THIS LINE!
 import javafx.scene.layout.VBox;
-import services.PersonService;
+import services.UserService;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 public class AjouterPersonne {
 
-    private final PersonService personService = new PersonService();
+    private final UserService userService = new UserService();
     private boolean isProcessing = false;
     private boolean isDarkMode = false;
 
@@ -28,6 +28,10 @@ public class AjouterPersonne {
     private TextField TFNom;
     @FXML
     private TextField TFPrenom;
+    @FXML
+    private TextField TFEmail;
+    @FXML
+    private PasswordField TFPassword;
 
     @FXML
     void toggleTheme() {
@@ -56,7 +60,9 @@ public class AjouterPersonne {
             return;
         }
 
-        if (TFAge.getText().isEmpty() || TFNom.getText().isEmpty() || TFPrenom.getText().isEmpty()) {
+        if (TFAge.getText().isEmpty() || TFNom.getText().isEmpty() ||
+                TFPrenom.getText().isEmpty() || TFEmail.getText().isEmpty() ||
+                TFPassword.getText().isEmpty()) {
             showAlert("Erreur", "Veuillez remplir tous les champs", Alert.AlertType.ERROR);
             return;
         }
@@ -65,21 +71,43 @@ public class AjouterPersonne {
             isProcessing = true;
 
             int age = Integer.parseInt(TFAge.getText());
-            String Nom = TFNom.getText();
-            String Prenom = TFPrenom.getText();
+            String nom = TFNom.getText();
+            String prenom = TFPrenom.getText();
+            String email = TFEmail.getText();
+            String password = TFPassword.getText();
 
-            Person p = new Person(age, Prenom, Nom);
-            personService.create(p);
+            // Validate email
+            if (!email.contains("@") || !email.contains(".")) {
+                showAlert("Erreur", "Email invalide", Alert.AlertType.ERROR);
+                return;
+            }
+
+            // Validate password length
+            if (password.length() < 4) {
+                showAlert("Erreur", "Le mot de passe doit contenir au moins 4 caractères", Alert.AlertType.ERROR);
+                return;
+            }
+
+            // Check if email already exists
+            if (userService.emailExists(email)) {
+                showAlert("Erreur", "Cet email existe déjà", Alert.AlertType.ERROR);
+                return;
+            }
+
+            User newUser = new User(nom, prenom, age, email, password, "USER");
+            userService.register(newUser);
 
             TFAge.clear();
             TFNom.clear();
             TFPrenom.clear();
+            TFEmail.clear();
+            TFPassword.clear();
 
-            showAlert("Succès", "Personne ajoutée avec succès!", Alert.AlertType.INFORMATION);
+            showAlert("Succès", "Utilisateur ajouté avec succès!", Alert.AlertType.INFORMATION);
 
         } catch (NumberFormatException e) {
             showAlert("Erreur", "L'âge doit être un nombre valide", Alert.AlertType.ERROR);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             showAlert("Erreur", e.getMessage(), Alert.AlertType.ERROR);
         } finally {
             isProcessing = false;
@@ -89,7 +117,8 @@ public class AjouterPersonne {
     @FXML
     void afficher(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/AfficherPersonne.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherPersonne.fxml"));
+            Parent root = loader.load();
             TFAge.getScene().setRoot(root);
         } catch (IOException e) {
             System.out.println(e.getMessage());
