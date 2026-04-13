@@ -51,7 +51,7 @@ public class AjouterEvaluationController {
         String description = descriptionArea.getText();
         String type = typeComboBox.getValue();
         java.time.LocalDate date = datePicker.getValue();
-        String weightStr = weightField.getText();
+        String scoreStr = weightField.getText();
         Competence selectedCompetence = competenceComboBox.getValue();
 
         if (title.isEmpty() || date == null || weightStr.isEmpty() || selectedCompetence == null) {
@@ -60,8 +60,8 @@ public class AjouterEvaluationController {
         }
 
         try {
-            Float weight = Float.parseFloat(weightStr);
-            Evaluation evaluation = new Evaluation(title, description, type, date.atStartOfDay(), weight, selectedCompetence);
+            Float score = Float.parseFloat(scoreStr);
+            Evaluation evaluation = new Evaluation(title, description, type, date.atStartOfDay(), score, "pending", "", selectedCompetence);
             evaluationService.create(evaluation);
             showAlert(Alert.AlertType.INFORMATION, "Success!", "Evaluation created successfully!");
             clearForm();
@@ -100,12 +100,12 @@ public class AjouterEvaluationController {
         if (isDarkMode) {
             mainContainer.getStyleClass().remove("dark-theme");
             mainContainer.getStyleClass().add("light-theme");
-            if (themeButton != null) themeButton.setText("🌙 Dark Mode");
+            if (themeButton != null) themeButton.setText("ðŸŒ™ Dark Mode");
             isDarkMode = false;
         } else {
             mainContainer.getStyleClass().remove("light-theme");
             mainContainer.getStyleClass().add("dark-theme");
-            if (themeButton != null) themeButton.setText("☀� Light Mode");
+            if (themeButton != null) themeButton.setText("â˜€ï¸ Light Mode");
             isDarkMode = true;
         }
     }
