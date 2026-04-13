@@ -14,8 +14,30 @@ public class AjouterCompetenceController {
     @FXML private TextArea descriptionArea;
     @FXML private ComboBox<String> categoryComboBox;
     @FXML private Slider levelSlider;
+    @FXML private Label fileNameLabel;
+    private User loggedInUser;
+    private String certificatePath;
+
+    public void setLoggedInUser(User user) {
+        this.loggedInUser = user;
+    }
 
     private CompetenceService competenceService = new CompetenceService();
+
+    
+    @FXML
+    private void handleUpload() {
+        javafx.stage.FileChooser fileChooser = new javafx.stage.FileChooser();
+        fileChooser.setTitle("Select Certificate PDF");
+        fileChooser.getExtensionFilters().addAll(
+                new javafx.stage.FileChooser.ExtensionFilter("PDF Files", "*.pdf")
+        );
+        java.io.File selectedFile = fileChooser.showOpenDialog(nameField.getScene().getWindow());
+        if (selectedFile != null) {
+            certificatePath = selectedFile.getAbsolutePath();
+            fileNameLabel.setText(selectedFile.getName());
+        }
+    }
 
     @FXML
     public void initialize() {
