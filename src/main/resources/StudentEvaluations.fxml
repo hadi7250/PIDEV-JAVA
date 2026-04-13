@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?><?import javafx.scene.layout.*?><?import java.net.URL?>
+
+<VBox fx:id="mainContainer" spacing="20" styleClass="light-theme" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.StudentEvaluationsController" prefWidth="900" prefHeight="700" >
+    <padding>
+        <Insets bottom="20" left="20" right="20" top="20"/>
+    </padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <Button onAction="#goBack" text="Back" styleClass="btn-secondary" />
+        <Label styleClass="title-label" text="My Evaluations" HBox.hgrow="ALWAYS" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Button onAction="#toggleTheme" text="Dark Mode" styleClass="theme-toggle-btn" />
+    </HBox>
+
+    <VBox spacing="10" VBox.vgrow="ALWAYS">
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <TextField fx:id="searchField" promptText="Search by competence or title..." styleClass="search-field" HBox.hgrow="ALWAYS" />
+            <ComboBox fx:id="statusFilter" promptText="Filter by Status" />
+        </HBox>
+        <TableView fx:id="tableView" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="compCol" text="Competence" prefWidth="180" />
+                <TableColumn fx:id="titleCol" text="Title" prefWidth="180" />
+                <TableColumn fx:id="scoreCol" text="Score" prefWidth="100" />
+                <TableColumn fx:id="dateCol" text="Date" prefWidth="150" />
+                <TableColumn fx:id="statusCol" text="Status" prefWidth="120" />
+            </columns>
+        </TableView>
+    </VBox>
+
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button onAction="#handleExport" text="Export CSV" styleClass="btn-info" />
+    </HBox>
+</VBox>
