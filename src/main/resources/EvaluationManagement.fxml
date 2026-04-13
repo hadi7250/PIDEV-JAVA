@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?><?import javafx.scene.layout.*?><?import java.net.URL?>
+
+<VBox fx:id="mainContainer" spacing="20" styleClass="light-theme" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.EvaluationManagementController" prefWidth="1000" prefHeight="750" >
+    <padding>
+        <Insets bottom="20" left="20" right="20" top="20"/>
+    </padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <Button onAction="#goBack" text="Back" styleClass="btn-secondary" />
+        <Label styleClass="title-label" text="Evaluation Management (Teacher)" HBox.hgrow="ALWAYS" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Button onAction="#toggleTheme" text="Dark Mode" styleClass="theme-toggle-btn" />
+    </HBox>
+
+    <HBox spacing="20" VBox.vgrow="ALWAYS">
+        <VBox spacing="10" HBox.hgrow="ALWAYS">
+            <TextField fx:id="searchField" promptText="Search evaluations..." styleClass="search-field" />
+            <TableView fx:id="tableView" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="compCol" text="Competence" prefWidth="150" />
+                    <TableColumn fx:id="titleCol" text="Title" prefWidth="150" />
+                    <TableColumn fx:id="scoreCol" text="Score" prefWidth="80" />
+                    <TableColumn fx:id="statusCol" text="Status" prefWidth="100" />
+                    <TableColumn fx:id="dateCol" text="Date" prefWidth="120" />
+                </columns>
+            </TableView>
+        </VBox>
+
+        <VBox spacing="15" styleClass="input-card" prefWidth="320">
+            <Label styleClass="subtitle-label" text="Grade Evaluation" />
+            <VBox spacing="5">
+                <Label text="Score (0-100)" styleClass="label-bold" />
+                <TextField fx:id="scoreField" />
+            </VBox>
+            <VBox spacing="5">
+                <Label text="Status" styleClass="label-bold" />
+                <ComboBox fx:id="statusCombo" maxWidth="Infinity" />
+            </VBox>
+            <VBox spacing="5">
+                <Label text="Teacher Comment" styleClass="label-bold" />
+                <TextArea fx:id="commentArea" prefHeight="100" />
+            </VBox>
+            <HBox spacing="10" alignment="CENTER">
+                <Button onAction="#handleGrade" text="Submit Grade" styleClass="btn-primary" />
+                <Button onAction="#handleDelete" text="Delete" styleClass="btn-danger" />
+            </HBox>
+            <Button onAction="#goToAdd" text="Create New Evaluation" maxWidth="Infinity" styleClass="btn-info" />
+        </VBox>
+    </HBox>
+</VBox>
