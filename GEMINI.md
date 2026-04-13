@@ -38,3 +38,10 @@ ame: String (Unique, Not Null)
 - [x] Updated pom.xml with Hibernate, Validation, and CSV dependencies.
 - [x] Created Competence and Evaluation entities.
 - [x] Implemented full CRUD in CompetenceService and EvaluationService.
+## Module Implementation History
+- **Entities**: Synchronized Competence and Evaluation with documentation (field renaming, added status, comment, score, certificate, 	imestamps).
+- **UI Design**: Implemented consistent theme (Dark/Light mode) across all views using style.css.
+- **Competence Module**: Implemented card-based student view with CRUD operations and PDF file upload support.
+- **Evaluation Module**: Implemented teacher-side evaluation management (grading, commenting, status updates) and student-side viewing.
+- **Authentication**: Updated role-based redirection to support TEACHER and STUDENT workflows. 
+- **Documentation**: Synchronized all developments with the JAVA_FX_DOCUMENTATION.md architecture.
