@@ -10,6 +10,8 @@ import java.sql.SQLException;
 import java.util.Arrays;
 
 public class AjouterCompetenceController {
+    @FXML private VBox mainContainer;
+    private boolean isDarkMode = false;
     @FXML private TextField nameField;
     @FXML private TextArea descriptionArea;
     @FXML private ComboBox<String> categoryComboBox;
@@ -86,5 +88,21 @@ public class AjouterCompetenceController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    @FXML
+    private void toggleTheme() {
+        Button themeButton = (Button) mainContainer.lookup(".theme-toggle-btn");
+        if (isDarkMode) {
+            mainContainer.getStyleClass().remove("dark-theme");
+            mainContainer.getStyleClass().add("light-theme");
+            if (themeButton != null) themeButton.setText("🌙 Dark Mode");
+            isDarkMode = false;
+        } else {
+            mainContainer.getStyleClass().remove("light-theme");
+            mainContainer.getStyleClass().add("dark-theme");
+            if (themeButton != null) themeButton.setText("☀� Light Mode");
+            isDarkMode = true;
+        }
     }
 }
