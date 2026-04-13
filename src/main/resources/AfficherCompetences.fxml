@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?><?import javafx.scene.layout.*?><?import java.net.URL?>
+
+<VBox fx:id="mainContainer" spacing="20" styleClass="light-theme" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AfficherCompetencesController" prefWidth="900" prefHeight="700" >
+    <padding>
+        <Insets bottom="20" left="20" right="20" top="20"/>
+    </padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <Button onAction="#goBack" text="Back" styleClass="btn-secondary" />
+        <Label styleClass="title-label" text="My Competences" HBox.hgrow="ALWAYS" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Button onAction="#toggleTheme" text="Dark Mode" styleClass="theme-toggle-btn" />
+    </HBox>
+
+    <HBox spacing="20" VBox.vgrow="ALWAYS">
+        <VBox spacing="10" HBox.hgrow="ALWAYS">
+            <TextField fx:id="searchField" promptText="Search competences..." styleClass="search-field" />
+            <TableView fx:id="tableView" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="nameCol" text="Name" prefWidth="150" />
+                    <TableColumn fx:id="categoryCol" text="Category" prefWidth="120" />
+                    <TableColumn fx:id="levelCol" text="Level" prefWidth="80" />
+                    <TableColumn fx:id="descCol" text="Description" prefWidth="250" />
+                </columns>
+            </TableView>
+        </VBox>
+
+        <VBox spacing="15" styleClass="input-card" prefWidth="300">
+            <Label styleClass="subtitle-label" text="Edit Competence" />
+            <VBox spacing="5">
+                <Label text="Name" styleClass="label-bold" />
+                <TextField fx:id="editNameField" />
+            </VBox>
+            <VBox spacing="5">
+                <Label text="Description" styleClass="label-bold" />
+                <TextArea fx:id="editDescriptionArea" prefHeight="80" />
+            </VBox>
+            <VBox spacing="5">
+                <Label text="Category" styleClass="label-bold" />
+                <ComboBox fx:id="editCategoryCombo" maxWidth="Infinity" />
+            </VBox>
+            <VBox spacing="5">
+                <Label text="Level (1-10)" styleClass="label-bold" />
+                <Slider fx:id="editLevelSlider" min="1" max="10" showTickLabels="true" />
+            </VBox>
+            <HBox spacing="10" alignment="CENTER">
+                <Button onAction="#handleUpdate" text="Update" styleClass="btn-primary" />
+                <Button onAction="#handleDelete" text="Delete" styleClass="btn-danger" />
+            </HBox>
+            <Button onAction="#goToAdd" text="Add New" maxWidth="Infinity" styleClass="btn-info" />
+        </VBox>
+    </HBox>
+</VBox>
