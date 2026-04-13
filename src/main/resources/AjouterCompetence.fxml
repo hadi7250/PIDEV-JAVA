@@ -22,6 +22,12 @@
                 
                 <Label text="Max Level (1-10):" GridPane.columnIndex="0" GridPane.rowIndex="3" />
                 <Slider fx:id="levelSlider" min="1" max="10" value="5" showTickLabels="true" showTickMarks="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            
+                <Label text="Certificate (PDF):" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                <HBox spacing="10" alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="4" >
+                    <Button text="Upload PDF" fx:id="uploadButton" onAction="#handleUpload" />
+                    <Label fx:id="fileNameLabel" text="No file selected" />
+                </HBox>
             </children>
         </GridPane>
         <HBox spacing="10" alignment="CENTER">
