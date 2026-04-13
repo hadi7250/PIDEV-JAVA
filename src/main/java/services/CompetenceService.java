@@ -43,8 +43,25 @@ public class CompetenceService implements IService<Competence> {
         // Placeholder for now
     }
 
+    
     @Override
     public List<Competence> readAll() throws SQLException {
-        return new ArrayList<>();
+        List<Competence> list = new ArrayList<>();
+        String sql = "SELECT * FROM competence";
+        try (Statement st = connection.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+            while (rs.next()) {
+                Competence c = new Competence();
+                c.setId(rs.getLong("id"));
+                c.setName(rs.getString("name"));
+                c.setDescription(rs.getString("description"));
+                c.setCategory(rs.getString("category"));
+                c.setMaxLevel(rs.getInt("maxLevel"));
+                c.setCreatedAt(rs.getTimestamp("createdAt").toLocalDateTime());
+                c.setUpdatedAt(rs.getTimestamp("updatedAt").toLocalDateTime());
+                list.add(c);
+            }
+        }
+        return list;
     }
 }
