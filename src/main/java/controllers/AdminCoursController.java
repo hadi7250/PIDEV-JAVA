@@ -45,6 +45,7 @@ public class AdminCoursController {
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     @FXML private TextField coursSearchField;
+    @FXML private ComboBox<String> coursSortComboBox;
     @FXML private VBox coursCardsBox;
     @FXML private Label coursCountLabel;
     @FXML private TabPane adminTabPane;
@@ -78,6 +79,14 @@ public class AdminCoursController {
 
     @FXML
     public void initialize() {
+        if (coursSortComboBox != null) {
+            coursSortComboBox.setItems(FXCollections.observableArrayList(
+                    "Newest First", "Oldest First", "Title (A-Z)", "Title (Z-A)"
+            ));
+            coursSortComboBox.getSelectionModel().select("Newest First");
+            coursSortComboBox.valueProperty().addListener((obs, oldVal, newVal) -> applyCoursFilter());
+        }
+
         coursSearchField.textProperty().addListener((obs, oldValue, newValue) -> applyCoursFilter());
         chapitreSearchField.textProperty().addListener((obs, oldValue, newValue) -> applyChapitreFilter());
         chapitreCoursFilter.valueProperty().addListener((obs, oldValue, newValue) -> applyChapitreFilter());
@@ -181,12 +190,20 @@ public class AdminCoursController {
     private void applyCoursFilter() {
         String query = safe(coursSearchField.getText()).trim().toLowerCase();
 
+        Comparator<Cours> comparator = Comparator.comparing(Cours::getCreatedAt, Comparator.nullsLast(Comparator.reverseOrder()));
+        if (coursSortComboBox != null && coursSortComboBox.getValue() != null) {
+            switch (coursSortComboBox.getValue()) {
+                case "Oldest First" -> comparator = Comparator.comparing(Cours::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder()));
+                case "Title (A-Z)" -> comparator = Comparator.comparing(Cours::getTitre, String.CASE_INSENSITIVE_ORDER);
+                case "Title (Z-A)" -> comparator = Comparator.comparing(Cours::getTitre, String.CASE_INSENSITIVE_ORDER).reversed();
+            }
+        }
+
         List<Cours> out = allCours.stream()
                 .filter(cours -> query.isBlank()
                         || safe(cours.getTitre()).toLowerCase().contains(query)
                         || safe(cours.getDescription()).toLowerCase().contains(query))
-                .sorted(Comparator.comparing(Cours::getCreatedAt,
-                        Comparator.nullsLast(Comparator.reverseOrder())))
+                .sorted(comparator)
                 .collect(Collectors.toList());
 
         filteredCours.setAll(out);

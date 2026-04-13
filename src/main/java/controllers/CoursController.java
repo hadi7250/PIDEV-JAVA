@@ -9,6 +9,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -51,6 +52,7 @@ public class CoursController {
             "Pick a chapter resource to preview the website here.";
 
     @FXML private TextField searchField;
+    @FXML private ComboBox<String> sortComboBox;
     @FXML private Label totalLabel;
     @FXML private FlowPane favoritesPane;
     @FXML private VBox coursCardsBox;
@@ -91,6 +93,18 @@ public class CoursController {
     public void initialize() {
         configureBrowserViewer();
         loadFavorites();
+
+        if (sortComboBox != null) {
+            sortComboBox.setItems(FXCollections.observableArrayList(
+                    "Newest First", "Oldest First", "Title (A-Z)", "Title (Z-A)"
+            ));
+            sortComboBox.getSelectionModel().select("Newest First");
+            sortComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
+                int selectedId = getSelectedCourseId();
+                applyFilter();
+                restoreSelection(selectedId);
+            });
+        }
 
         if (searchField != null) {
             searchField.textProperty().addListener((obs, oldValue, newValue) -> {
@@ -208,12 +222,20 @@ public class CoursController {
     private void applyFilter() {
         String query = safe(searchField == null ? null : searchField.getText()).trim().toLowerCase();
 
+        Comparator<Cours> comparator = Comparator.comparing(Cours::getCreatedAt, Comparator.nullsLast(Comparator.reverseOrder()));
+        if (sortComboBox != null && sortComboBox.getValue() != null) {
+            switch (sortComboBox.getValue()) {
+                case "Oldest First" -> comparator = Comparator.comparing(Cours::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder()));
+                case "Title (A-Z)" -> comparator = Comparator.comparing(Cours::getTitre, String.CASE_INSENSITIVE_ORDER);
+                case "Title (Z-A)" -> comparator = Comparator.comparing(Cours::getTitre, String.CASE_INSENSITIVE_ORDER).reversed();
+            }
+        }
+
         List<Cours> out = masterCours.stream()
                 .filter(cours -> query.isBlank()
                         || safe(cours.getTitre()).toLowerCase().contains(query)
                         || safe(cours.getDescription()).toLowerCase().contains(query))
-                .sorted(Comparator.comparing(Cours::getCreatedAt,
-                        Comparator.nullsLast(Comparator.reverseOrder())))
+                .sorted(comparator)
                 .collect(Collectors.toList());
 
         filteredCours.setAll(out);

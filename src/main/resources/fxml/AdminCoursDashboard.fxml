@@ -49,6 +49,7 @@
                                 <VBox spacing="14.0" styleClass="module-card">
                                     <HBox alignment="CENTER_LEFT" spacing="10.0">
                                         <TextField fx:id="coursSearchField" promptText="Search courses..." HBox.hgrow="ALWAYS" />
+                                        <ComboBox fx:id="coursSortComboBox" prefWidth="140.0" promptText="Sort by" />
                                         <Button onAction="#addCours" styleClass="primary-btn" text="Add course" />
                                         <Label fx:id="coursCountLabel" styleClass="meta-label" text="0 course cards" />
                                     </HBox>
