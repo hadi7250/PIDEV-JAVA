@@ -48,9 +48,14 @@ public class CompetenceService implements IService<Competence> {
         }
     }
 
+    
     @Override
     public void delete(Competence competence) throws SQLException {
-        // Placeholder for now
+        String sql = "DELETE FROM competence WHERE id = ?";
+        try (PreparedStatement pst = connection.prepareStatement(sql)) {
+            pst.setLong(1, competence.getId());
+            pst.executeUpdate();
+        }
     }
 
     
