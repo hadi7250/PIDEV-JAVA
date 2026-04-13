@@ -33,9 +33,19 @@ public class CompetenceService implements IService<Competence> {
         }
     }
 
+    
     @Override
     public void update(Competence competence) throws SQLException {
-        // Placeholder for now
+        String sql = "UPDATE competence SET name = ?, description = ?, category = ?, maxLevel = ?, updatedAt = ? WHERE id = ?";
+        try (PreparedStatement pst = connection.prepareStatement(sql)) {
+            pst.setString(1, competence.getName());
+            pst.setString(2, competence.getDescription());
+            pst.setString(3, competence.getCategory());
+            pst.setInt(4, competence.getMaxLevel());
+            pst.setTimestamp(5, Timestamp.valueOf(LocalDateTime.now()));
+            pst.setLong(6, competence.getId());
+            pst.executeUpdate();
+        }
     }
 
     @Override
