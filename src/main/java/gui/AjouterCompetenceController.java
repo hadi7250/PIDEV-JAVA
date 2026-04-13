@@ -50,14 +50,15 @@ public class AjouterCompetenceController {
         String name = nameField.getText();
         String description = descriptionArea.getText();
         String category = categoryComboBox.getValue();
-        int maxLevel = (int) levelSlider.getValue();
+                int maxLevel = (int) levelSlider.getValue();
 
         if (name.isEmpty()) {
             showAlert(Alert.AlertType.ERROR, "Form Error!", "Please enter a name.");
             return;
         }
 
-        Competence competence = new Competence(name, description, category, maxLevel);
+        Competence competence = new Competence(name, description, category, maxLevel, certificatePath);
+        // Note: For full student profile integration, we would set the user_id in the service
         try {
             competenceService.create(competence);
             showAlert(Alert.AlertType.INFORMATION, "Success!", "Competence added successfully!");
