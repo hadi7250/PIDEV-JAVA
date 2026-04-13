@@ -75,4 +75,25 @@ public class CompetenceService implements IService<Competence> {
         }
         return list;
     }
+
+    public List<Competence> readAllByUser(int userId) throws SQLException {
+        List<Competence> list = new ArrayList<>();
+        String sql = "SELECT * FROM competence WHERE user_id = ?";
+        try (PreparedStatement pst = connection.prepareStatement(sql)) {
+            pst.setInt(1, userId);
+            try (ResultSet rs = pst.executeQuery()) {
+                while (rs.next()) {
+                    Competence c = new Competence();
+                    c.setId(rs.getInt("id"));
+                    c.setName(rs.getString("name"));
+                    c.setDescription(rs.getString("description"));
+                    c.setCategory(rs.getString("category"));
+                    c.setMaxLevel(rs.getInt("maxLevel"));
+                    c.setCertificate(rs.getString("certificate"));
+                    list.add(c);
+                }
+            }
+        }
+        return list;
+    }
 }
