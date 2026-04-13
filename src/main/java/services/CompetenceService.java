@@ -14,20 +14,24 @@ public class CompetenceService implements IService<Competence> {
         connection = MyConnection.getInstance().getConnection();
     }
 
+    
     @Override
     public void create(Competence competence) throws SQLException {
-        String sql = "INSERT INTO competence (name, description, category, maxLevel) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO competence (name, description, category, maxLevel, certificate) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement pst = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pst.setString(1, competence.getName());
             pst.setString(2, competence.getDescription());
             pst.setString(3, competence.getCategory());
             pst.setInt(4, competence.getMaxLevel());
+            pst.setString(5, competence.getCertificate());
             pst.executeUpdate();
 
             ResultSet rs = pst.getGeneratedKeys();
             if (rs.next()) {
                 competence.setId(rs.getInt(1));
             }
+        }
+    }
         }
     }
 
