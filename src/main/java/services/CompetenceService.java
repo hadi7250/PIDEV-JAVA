@@ -4,6 +4,7 @@ import entities.Competence;
 import utils.MyConnection;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,16 +15,17 @@ public class CompetenceService implements IService<Competence> {
         connection = MyConnection.getInstance().getConnection();
     }
 
-    
     @Override
     public void create(Competence competence) throws SQLException {
-        String sql = "INSERT INTO competence (name, description, category, maxLevel, certificate) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO competence (title, description, category, maxLevel, certificate, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pst = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            pst.setString(1, competence.getName());
+            pst.setString(1, competence.getTitle());
             pst.setString(2, competence.getDescription());
             pst.setString(3, competence.getCategory());
             pst.setInt(4, competence.getMaxLevel());
             pst.setString(5, competence.getCertificate());
+            pst.setTimestamp(6, Timestamp.valueOf(competence.getCreatedAt()));
+            pst.setTimestamp(7, Timestamp.valueOf(competence.getUpdatedAt()));
             pst.executeUpdate();
 
             ResultSet rs = pst.getGeneratedKeys();
@@ -32,18 +34,18 @@ public class CompetenceService implements IService<Competence> {
             }
         }
     }
-        }
-    }
 
     @Override
     public void update(Competence competence) throws SQLException {
-        String sql = "UPDATE competence SET name = ?, description = ?, category = ?, maxLevel = ? WHERE id = ?";
+        String sql = "UPDATE competence SET title = ?, description = ?, category = ?, maxLevel = ?, certificate = ?, updatedAt = ? WHERE id = ?";
         try (PreparedStatement pst = connection.prepareStatement(sql)) {
-            pst.setString(1, competence.getName());
+            pst.setString(1, competence.getTitle());
             pst.setString(2, competence.getDescription());
             pst.setString(3, competence.getCategory());
             pst.setInt(4, competence.getMaxLevel());
-            pst.setInt(5, competence.getId());
+            pst.setString(5, competence.getCertificate());
+            pst.setTimestamp(6, Timestamp.valueOf(LocalDateTime.now()));
+            pst.setInt(7, competence.getId());
             pst.executeUpdate();
         }
     }
@@ -66,10 +68,13 @@ public class CompetenceService implements IService<Competence> {
             while (rs.next()) {
                 Competence c = new Competence();
                 c.setId(rs.getInt("id"));
-                c.setName(rs.getString("name"));
+                c.setTitle(rs.getString("title"));
                 c.setDescription(rs.getString("description"));
                 c.setCategory(rs.getString("category"));
                 c.setMaxLevel(rs.getInt("maxLevel"));
+                c.setCertificate(rs.getString("certificate"));
+                c.setCreatedAt(rs.getTimestamp("createdAt").toLocalDateTime());
+                c.setUpdatedAt(rs.getTimestamp("updatedAt").toLocalDateTime());
                 list.add(c);
             }
         }
@@ -85,11 +90,13 @@ public class CompetenceService implements IService<Competence> {
                 while (rs.next()) {
                     Competence c = new Competence();
                     c.setId(rs.getInt("id"));
-                    c.setName(rs.getString("name"));
+                    c.setTitle(rs.getString("title"));
                     c.setDescription(rs.getString("description"));
                     c.setCategory(rs.getString("category"));
                     c.setMaxLevel(rs.getInt("maxLevel"));
                     c.setCertificate(rs.getString("certificate"));
+                    c.setCreatedAt(rs.getTimestamp("createdAt").toLocalDateTime());
+                    c.setUpdatedAt(rs.getTimestamp("updatedAt").toLocalDateTime());
                     list.add(c);
                 }
             }
