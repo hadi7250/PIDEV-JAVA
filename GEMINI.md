@@ -45,3 +45,4 @@ ame: String (Unique, Not Null)
 - **Evaluation Module**: Implemented teacher-side evaluation management (grading, commenting, status updates) and student-side viewing.
 - **Authentication**: Updated role-based redirection to support TEACHER and STUDENT workflows. 
 - **Documentation**: Synchronized all developments with the JAVA_FX_DOCUMENTATION.md architecture.
+- **Database**: Added database/3a62.sql to repository and synchronized schema with documented entities.
