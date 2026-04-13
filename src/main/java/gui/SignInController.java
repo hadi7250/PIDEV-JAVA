@@ -41,15 +41,25 @@ public class SignInController {
             // Redirect based on role
             try {
                 Parent root;
+                
                 if (loggedInUser.isAdmin()) {
                     // Admin goes to the full CRUD page
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherPersonne.fxml"));
                     root = loader.load();
-
-                    // Pass the user to the controller
                     AfficherPersonne controller = loader.getController();
                     controller.setLoggedInUser(loggedInUser);
-
+                } else if ("TEACHER".equalsIgnoreCase(loggedInUser.getRole())) {
+                    // Teachers go to the evaluation page
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterEvaluation.fxml"));
+                    root = loader.load();
+                    AjouterEvaluationController controller = loader.getController();
+                    controller.setLoggedInUser(loggedInUser);
+                } else {
+                    // Students and others go to basic page
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserBasicPage.fxml"));
+                    root = loader.load();
+                    UserBasicPageController controller = loader.getController();
+                    controller.setLoggedInUser(loggedInUser);
                 } else {
                     // Regular user goes to basic page
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserBasicPage.fxml"));
