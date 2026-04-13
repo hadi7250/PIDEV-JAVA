@@ -6,15 +6,17 @@ public class Competence {
     private String description;
     private String category;
     private int maxLevel = 5;
+    private String certificate; // Path to PDF file
 
     public Competence() {
     }
 
-    public Competence(String name, String description, String category, int maxLevel) {
+    public Competence(String name, String description, String category, int maxLevel, String certificate) {
         this.name = name;
         this.description = description;
         this.category = category;
         this.maxLevel = maxLevel;
+        this.certificate = certificate;
     }
 
     // Getters and Setters
@@ -32,6 +34,9 @@ public class Competence {
 
     public int getMaxLevel() { return maxLevel; }
     public void setMaxLevel(int maxLevel) { this.maxLevel = maxLevel; }
+
+    public String getCertificate() { return certificate; }
+    public void setCertificate(String certificate) { this.certificate = certificate; }
 
     @Override
     public String toString() {
