@@ -49,17 +49,17 @@ public class AjouterCompetenceController {
 
     @FXML
     private void handleAdd() {
-        String name = nameField.getText();
+        String title = nameField.getText();
         String description = descriptionArea.getText();
         String category = categoryComboBox.getValue();
                 int maxLevel = (int) levelSlider.getValue();
 
-        if (name.isEmpty()) {
+        if (title.isEmpty()) {
             showAlert(Alert.AlertType.ERROR, "Form Error!", "Please enter a name.");
             return;
         }
 
-        Competence competence = new Competence(name, description, category, maxLevel, certificatePath);
+        Competence competence = new Competence(title, description, category, maxLevel, certificatePath);
         // Note: For full student profile integration, we would set the user_id in the service
         try {
             competenceService.create(competence);
@@ -96,12 +96,12 @@ public class AjouterCompetenceController {
         if (isDarkMode) {
             mainContainer.getStyleClass().remove("dark-theme");
             mainContainer.getStyleClass().add("light-theme");
-            if (themeButton != null) themeButton.setText("🌙 Dark Mode");
+            if (themeButton != null) themeButton.setText("ðŸŒ™ Dark Mode");
             isDarkMode = false;
         } else {
             mainContainer.getStyleClass().remove("light-theme");
             mainContainer.getStyleClass().add("dark-theme");
-            if (themeButton != null) themeButton.setText("☀� Light Mode");
+            if (themeButton != null) themeButton.setText("â˜€ï¸ Light Mode");
             isDarkMode = true;
         }
     }
