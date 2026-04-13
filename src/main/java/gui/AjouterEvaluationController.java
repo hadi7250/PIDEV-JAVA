@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class AjouterEvaluationController {
+    @FXML private VBox mainContainer;
+    private boolean isDarkMode = false;
     @FXML private TextField titleField;
     @FXML private TextArea descriptionArea;
     @FXML private ComboBox<String> typeComboBox;
@@ -90,5 +92,21 @@ public class AjouterEvaluationController {
         datePicker.setValue(null);
         weightField.clear();
         competenceComboBox.setValue(null);
+    }
+
+    @FXML
+    private void toggleTheme() {
+        Button themeButton = (Button) mainContainer.lookup(".theme-toggle-btn");
+        if (isDarkMode) {
+            mainContainer.getStyleClass().remove("dark-theme");
+            mainContainer.getStyleClass().add("light-theme");
+            if (themeButton != null) themeButton.setText("🌙 Dark Mode");
+            isDarkMode = false;
+        } else {
+            mainContainer.getStyleClass().remove("light-theme");
+            mainContainer.getStyleClass().add("dark-theme");
+            if (themeButton != null) themeButton.setText("☀� Light Mode");
+            isDarkMode = true;
+        }
     }
 }
