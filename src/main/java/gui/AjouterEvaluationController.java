@@ -42,9 +42,40 @@ public class AjouterEvaluationController {
         }
     }
 
+    
     @FXML
     private void handleCreate() {
-        // Implement creation logic here
+        String title = titleField.getText();
+        String description = descriptionArea.getText();
+        String type = typeComboBox.getValue();
+        java.time.LocalDate date = datePicker.getValue();
+        String weightStr = weightField.getText();
+        Competence selectedCompetence = competenceComboBox.getValue();
+
+        if (title.isEmpty() || date == null || weightStr.isEmpty() || selectedCompetence == null) {
+            showAlert(Alert.AlertType.ERROR, "Form Error!", "Please fill in all required fields.");
+            return;
+        }
+
+        try {
+            Float weight = Float.parseFloat(weightStr);
+            Evaluation evaluation = new Evaluation(title, description, type, date.atStartOfDay(), weight, selectedCompetence);
+            evaluationService.create(evaluation);
+            showAlert(Alert.AlertType.INFORMATION, "Success!", "Evaluation created successfully!");
+            clearForm();
+        } catch (NumberFormatException e) {
+            showAlert(Alert.AlertType.ERROR, "Form Error!", "Weight must be a valid number.");
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Database Error!", e.getMessage());
+        }
+    }
+
+    private void showAlert(Alert.AlertType alertType, String title, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     @FXML
