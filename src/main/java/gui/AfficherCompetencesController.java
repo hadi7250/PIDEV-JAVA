@@ -79,26 +79,93 @@ public class AfficherCompetencesController implements Initializable {
 
     @FXML
     private void toggleTheme() {
-        // (Logic similar to other controllers)
+        Button themeButton = (Button) mainContainer.lookup(".theme-toggle-btn");
+        if (isDarkMode) {
+            mainContainer.getStyleClass().remove("dark-theme");
+            mainContainer.getStyleClass().add("light-theme");
+            if (themeButton != null) themeButton.setText("🌙 Dark Mode");
+            isDarkMode = false;
+        } else {
+            mainContainer.getStyleClass().remove("light-theme");
+            mainContainer.getStyleClass().add("dark-theme");
+            if (themeButton != null) themeButton.setText("☀️ Light Mode");
+            isDarkMode = true;
+        }
     }
 
     @FXML
     private void goBack() {
-        // Navigation logic
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/SignIn.fxml"));
+            Stage stage = (Stage) tableView.getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
     private void goToAdd() {
-        // Navigation logic
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterCompetence.fxml"));
+            Parent root = loader.load();
+            AjouterCompetenceController controller = loader.getController();
+            controller.setLoggedInUser(loggedInUser);
+            Stage stage = (Stage) tableView.getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void goToEvaluations() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/StudentEvaluations.fxml"));
+            Parent root = loader.load();
+            StudentEvaluationsController controller = loader.getController();
+            controller.setLoggedInUser(loggedInUser);
+            Stage stage = (Stage) tableView.getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "Could not load evaluations page: " + e.getMessage());
+        }
     }
 
     @FXML
     private void handleUpdate() throws SQLException {
-        // Update logic
+        if (selectedCompetence == null) return;
+
+        selectedCompetence.setName(editNameField.getText());
+        selectedCompetence.setDescription(editDescriptionArea.getText());
+        selectedCompetence.setCategory(editCategoryCombo.getValue());
+        selectedCompetence.setMaxLevel((int) editLevelSlider.getValue());
+
+        service.update(selectedCompetence);
+        refreshTable();
+        showAlert(Alert.AlertType.INFORMATION, "Success", "Competence updated!");
     }
 
     @FXML
     private void handleDelete() throws SQLException {
-        // Delete logic
+        if (selectedCompetence == null) return;
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirm Delete");
+        alert.setHeaderText("Are you sure you want to delete this competence?");
+
+        if (alert.showAndWait().get() == ButtonType.OK) {
+            service.delete(selectedCompetence);
+            refreshTable();
+            showAlert(Alert.AlertType.INFORMATION, "Success", "Competence deleted!");
+        }
     }
-}
+
+    private void showAlert(Alert.AlertType type, String title, String msg) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setContentText(msg);
+        alert.showAndWait();
+    }
+    }

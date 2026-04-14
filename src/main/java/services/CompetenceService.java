@@ -17,15 +17,16 @@ public class CompetenceService implements IService<Competence> {
 
     @Override
     public void create(Competence competence) throws SQLException {
-        String sql = "INSERT INTO competence (title, description, category, maxLevel, certificate, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO competence (user_id, title, description, category, maxLevel, certificate, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pst = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            pst.setString(1, competence.getTitle());
-            pst.setString(2, competence.getDescription());
-            pst.setString(3, competence.getCategory());
-            pst.setInt(4, competence.getMaxLevel());
-            pst.setString(5, competence.getCertificate());
-            pst.setTimestamp(6, Timestamp.valueOf(competence.getCreatedAt()));
-            pst.setTimestamp(7, Timestamp.valueOf(competence.getUpdatedAt()));
+            pst.setInt(1, competence.getUserId());
+            pst.setString(2, competence.getTitle());
+            pst.setString(3, competence.getDescription());
+            pst.setString(4, competence.getCategory());
+            pst.setInt(5, competence.getMaxLevel());
+            pst.setString(6, competence.getCertificate());
+            pst.setTimestamp(7, Timestamp.valueOf(competence.getCreatedAt()));
+            pst.setTimestamp(8, Timestamp.valueOf(competence.getUpdatedAt()));
             pst.executeUpdate();
 
             ResultSet rs = pst.getGeneratedKeys();
@@ -37,7 +38,7 @@ public class CompetenceService implements IService<Competence> {
 
     @Override
     public void update(Competence competence) throws SQLException {
-        String sql = "UPDATE competence SET title = ?, description = ?, category = ?, maxLevel = ?, certificate = ?, updatedAt = ? WHERE id = ?";
+        String sql = "UPDATE competence SET title = ?, description = ?, category = ?, maxLevel = ?, certificate = ?, updatedAt = ?, user_id = ? WHERE id = ?";
         try (PreparedStatement pst = connection.prepareStatement(sql)) {
             pst.setString(1, competence.getTitle());
             pst.setString(2, competence.getDescription());
@@ -45,7 +46,8 @@ public class CompetenceService implements IService<Competence> {
             pst.setInt(4, competence.getMaxLevel());
             pst.setString(5, competence.getCertificate());
             pst.setTimestamp(6, Timestamp.valueOf(LocalDateTime.now()));
-            pst.setInt(7, competence.getId());
+            pst.setInt(7, competence.getUserId());
+            pst.setInt(8, competence.getId());
             pst.executeUpdate();
         }
     }
@@ -68,6 +70,7 @@ public class CompetenceService implements IService<Competence> {
             while (rs.next()) {
                 Competence c = new Competence();
                 c.setId(rs.getInt("id"));
+                c.setUserId(rs.getInt("user_id"));
                 c.setTitle(rs.getString("title"));
                 c.setDescription(rs.getString("description"));
                 c.setCategory(rs.getString("category"));
@@ -90,6 +93,7 @@ public class CompetenceService implements IService<Competence> {
                 while (rs.next()) {
                     Competence c = new Competence();
                     c.setId(rs.getInt("id"));
+                    c.setUserId(rs.getInt("user_id"));
                     c.setTitle(rs.getString("title"));
                     c.setDescription(rs.getString("description"));
                     c.setCategory(rs.getString("category"));

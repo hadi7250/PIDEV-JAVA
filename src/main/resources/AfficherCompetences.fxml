@@ -12,6 +12,7 @@
         <Button onAction="#goBack" text="Back" styleClass="btn-secondary" />
         <Label styleClass="title-label" text="My Competences" HBox.hgrow="ALWAYS" />
         <Region HBox.hgrow="ALWAYS" />
+        <Button onAction="#goToEvaluations" text="📋 View My Evaluations" styleClass="btn-info" />
         <Button onAction="#toggleTheme" text="Dark Mode" styleClass="theme-toggle-btn" />
     </HBox>
 

@@ -6,11 +6,11 @@ import entities.User;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import services.CompetenceService;
 import services.EvaluationService;
 
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class AjouterEvaluationController {
@@ -44,7 +44,6 @@ public class AjouterEvaluationController {
         }
     }
 
-    
     @FXML
     private void handleCreate() {
         String title = titleField.getText();
@@ -54,7 +53,7 @@ public class AjouterEvaluationController {
         String scoreStr = weightField.getText();
         Competence selectedCompetence = competenceComboBox.getValue();
 
-        if (title.isEmpty() || date == null || weightStr.isEmpty() || selectedCompetence == null) {
+        if (title.isEmpty() || date == null || scoreStr.isEmpty() || selectedCompetence == null) {
             showAlert(Alert.AlertType.ERROR, "Form Error!", "Please fill in all required fields.");
             return;
         }

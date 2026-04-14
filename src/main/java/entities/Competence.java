@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 public class Competence {
     private int id;
+    private int userId;
     private String title; // Renamed from name
     private String description;
     private String category;
@@ -27,12 +28,30 @@ public class Competence {
         this.updatedAt = LocalDateTime.now();
     }
 
+    public Competence(int userId, String title, String description, String category, int maxLevel, String certificate) {
+        this.userId = userId;
+        this.title = title;
+        this.description = description;
+        this.category = category;
+        this.maxLevel = maxLevel;
+        this.certificate = certificate;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
     // Getters and Setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
+    public int getUserId() { return userId; }
+    public void setUserId(int userId) { this.userId = userId; }
+
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
+
+    // GUI Aliases
+    public String getName() { return title; }
+    public void setName(String name) { this.title = name; }
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }

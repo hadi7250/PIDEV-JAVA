@@ -94,7 +94,14 @@ public class AjouterPersonne {
                 return;
             }
 
-            User newUser = new User(nom, prenom, age, email, password, "USER");
+            User newUser = new User();
+            newUser.setNom(nom);
+            newUser.setPrenom(prenom);
+            newUser.setEmail(email);
+            newUser.setPassword(password);
+            newUser.setRoles("[\"ROLE_USER\"]");
+            newUser.setDateNaissance(java.time.LocalDate.now().minusYears(age));
+            
             userService.register(newUser);
 
             TFAge.clear();

@@ -38,6 +38,11 @@
         </VBox>
 
         <VBox spacing="5">
+            <Label text="Role" styleClass="label-bold" />
+            <ComboBox fx:id="roleComboBox" maxWidth="Infinity" promptText="Choose your role" />
+        </VBox>
+
+        <VBox spacing="5">
             <Label text="Password" styleClass="label-bold" />
             <PasswordField fx:id="passwordField" promptText="Choose a password" />
         </VBox>

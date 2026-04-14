@@ -41,6 +41,7 @@ public class SignInController {
             // Redirect based on role
             try {
                 Parent root;
+                String role = loggedInUser.getRole().toUpperCase();
                 
                 if (loggedInUser.isAdmin()) {
                     // Admin goes to the full CRUD page
@@ -48,31 +49,29 @@ public class SignInController {
                     root = loader.load();
                     AfficherPersonne controller = loader.getController();
                     controller.setLoggedInUser(loggedInUser);
-                } else if ("TEACHER".equalsIgnoreCase(loggedInUser.getRole())) {
-                    // Teachers go to the evaluation page
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterEvaluation.fxml"));
+                } else if ("TEACHER".equals(role)) {
+                    // Teachers go to the evaluation management page
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/EvaluationManagement.fxml"));
                     root = loader.load();
-                    AjouterEvaluationController controller = loader.getController();
+                    EvaluationManagementController controller = loader.getController();
+                    controller.setLoggedInUser(loggedInUser);
+                } else if ("STUDENT".equals(role)) {
+                    // Students go to their competence view
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherCompetences.fxml"));
+                    root = loader.load();
+                    AfficherCompetencesController controller = loader.getController();
                     controller.setLoggedInUser(loggedInUser);
                 } else {
-                    // Students and others go to basic page
+                    // Fallback for other users
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserBasicPage.fxml"));
                     root = loader.load();
-                    UserBasicPageController controller = loader.getController();
-                    controller.setLoggedInUser(loggedInUser);
-                } else {
-                    // Regular user goes to basic page
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserBasicPage.fxml"));
-                    root = loader.load();
-
-                    // Pass the user to the controller
                     UserBasicPageController controller = loader.getController();
                     controller.setLoggedInUser(loggedInUser);
                 }
 
                 Stage stage = (Stage) emailField.getScene().getWindow();
                 stage.setScene(new Scene(root));
-                stage.setTitle("User Management System");
+                stage.setTitle("EduConnect - " + role + " Portal");
                 stage.show();
 
             } catch (Exception e) {

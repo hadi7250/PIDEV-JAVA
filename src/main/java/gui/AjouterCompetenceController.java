@@ -1,13 +1,18 @@
 package gui;
 
 import entities.Competence;
+import entities.User;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import services.CompetenceService;
 
 import java.sql.SQLException;
-import java.util.Arrays;
 
 public class AjouterCompetenceController {
     @FXML private VBox mainContainer;
@@ -52,15 +57,19 @@ public class AjouterCompetenceController {
         String title = nameField.getText();
         String description = descriptionArea.getText();
         String category = categoryComboBox.getValue();
-                int maxLevel = (int) levelSlider.getValue();
+        int maxLevel = (int) levelSlider.getValue();
 
         if (title.isEmpty()) {
             showAlert(Alert.AlertType.ERROR, "Form Error!", "Please enter a name.");
             return;
         }
 
-        Competence competence = new Competence(title, description, category, maxLevel, certificatePath);
-        // Note: For full student profile integration, we would set the user_id in the service
+        if (loggedInUser == null) {
+            showAlert(Alert.AlertType.ERROR, "Auth Error!", "No logged in user found.");
+            return;
+        }
+
+        Competence competence = new Competence(loggedInUser.getId(), title, description, category, maxLevel, certificatePath);
         try {
             competenceService.create(competence);
             showAlert(Alert.AlertType.INFORMATION, "Success!", "Competence added successfully!");
@@ -72,7 +81,16 @@ public class AjouterCompetenceController {
 
     @FXML
     private void handleCancel() {
-        clearForm();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherCompetences.fxml"));
+            javafx.scene.Parent root = loader.load();
+            AfficherCompetencesController controller = loader.getController();
+            controller.setLoggedInUser(loggedInUser);
+            javafx.stage.Stage stage = (javafx.stage.Stage) mainContainer.getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void clearForm() {
@@ -80,6 +98,8 @@ public class AjouterCompetenceController {
         descriptionArea.clear();
         categoryComboBox.setValue("technique");
         levelSlider.setValue(5);
+        fileNameLabel.setText("No file selected");
+        certificatePath = null;
     }
 
     private void showAlert(Alert.AlertType alertType, String title, String message) {
@@ -96,12 +116,12 @@ public class AjouterCompetenceController {
         if (isDarkMode) {
             mainContainer.getStyleClass().remove("dark-theme");
             mainContainer.getStyleClass().add("light-theme");
-            if (themeButton != null) themeButton.setText("ðŸŒ™ Dark Mode");
+            if (themeButton != null) themeButton.setText("🌙 Dark Mode");
             isDarkMode = false;
         } else {
             mainContainer.getStyleClass().remove("light-theme");
             mainContainer.getStyleClass().add("dark-theme");
-            if (themeButton != null) themeButton.setText("â˜€ï¸ Light Mode");
+            if (themeButton != null) themeButton.setText("☀️ Light Mode");
             isDarkMode = true;
         }
     }

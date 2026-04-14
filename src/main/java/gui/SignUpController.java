@@ -1,11 +1,13 @@
 package gui;
 
 import entities.User;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -26,6 +28,9 @@ public class SignUpController {
     private TextField emailField;
 
     @FXML
+    private ComboBox<String> roleComboBox;
+
+    @FXML
     private PasswordField passwordField;
 
     @FXML
@@ -34,18 +39,25 @@ public class SignUpController {
     private UserService userService = new UserService();
 
     @FXML
+    public void initialize() {
+        roleComboBox.setItems(FXCollections.observableArrayList("STUDENT", "TEACHER"));
+        roleComboBox.setValue("STUDENT");
+    }
+
+    @FXML
     void handleSignUp() {
         // Get values
         String firstName = firstNameField.getText().trim();
         String lastName = lastNameField.getText().trim();
         String ageText = ageField.getText().trim();
         String email = emailField.getText().trim();
+        String selectedRole = roleComboBox.getValue();
         String password = passwordField.getText();
         String confirmPassword = confirmPasswordField.getText();
 
         // Validate all fields
         if (firstName.isEmpty() || lastName.isEmpty() || ageText.isEmpty() ||
-                email.isEmpty() || password.isEmpty()) {
+                email.isEmpty() || password.isEmpty() || selectedRole == null) {
             showAlert("Error", "Please fill in all fields", Alert.AlertType.ERROR);
             return;
         }
@@ -75,8 +87,16 @@ public class SignUpController {
             return;
         }
 
-        // Create new user (role is always 'USER' for new registrations)
-        User newUser = new User(firstName, lastName, age, email, password, "USER");
+        // Create new user
+        User newUser = new User();
+        newUser.setPrenom(firstName);
+        newUser.setNom(lastName);
+        newUser.setEmail(email);
+        newUser.setPassword(password);
+        newUser.setRole(selectedRole); // Uses our new setRole helper
+        
+        // Approximate birth date since the UI only asks for age
+        newUser.setDateNaissance(java.time.LocalDate.now().minusYears(age));
 
         // Save to database
         boolean success = userService.register(newUser);

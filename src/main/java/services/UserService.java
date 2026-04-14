@@ -16,16 +16,17 @@ public class UserService {
 
     // CREATE - Register a new user
     public boolean register(User user) {
-        String query = "INSERT INTO user (firstName, lastName, age, email, password, role) VALUES (?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO user (email, password, roles, nom, prenom, dateNaissance, isActive, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = cnx.prepareStatement(query)) {
-            pstmt.setString(1, user.getFirstName());
-            pstmt.setString(2, user.getLastName());
-            pstmt.setInt(3, user.getAge());
-            pstmt.setString(4, user.getEmail());
-            pstmt.setString(5, user.getPassword());
-            pstmt.setString(6, user.getRole());
+            pstmt.setString(1, user.getEmail());
+            pstmt.setString(2, user.getPassword());
+            pstmt.setString(3, user.getRoles() != null ? user.getRoles() : "[\"ROLE_USER\"]");
+            pstmt.setString(4, user.getNom());
+            pstmt.setString(5, user.getPrenom());
+            pstmt.setDate(6, Date.valueOf(user.getDateNaissance()));
+            pstmt.setBoolean(7, user.isActive());
+            pstmt.setTimestamp(8, Timestamp.valueOf(user.getCreatedAt()));
             pstmt.executeUpdate();
-            System.out.println("✅ User registered successfully!");
             return true;
         } catch (SQLException e) {
             System.err.println("❌ Registration failed: " + e.getMessage());
@@ -42,25 +43,22 @@ public class UserService {
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                User user = new User(
-                        rs.getInt("id"),
-                        rs.getString("firstName"),
-                        rs.getString("lastName"),
-                        rs.getInt("age"),
-                        rs.getString("email"),
-                        rs.getString("password"),
-                        rs.getString("role")
-                );
-                System.out.println("✅ Login successful! Welcome " + user.getFirstName());
+                User user = new User();
+                user.setId(rs.getInt("id"));
+                user.setEmail(rs.getString("email"));
+                user.setPassword(rs.getString("password"));
+                user.setRoles(rs.getString("roles"));
+                user.setNom(rs.getString("nom"));
+                user.setPrenom(rs.getString("prenom"));
+                user.setDateNaissance(rs.getDate("dateNaissance").toLocalDate());
+                user.setActive(rs.getBoolean("isActive"));
+                user.setCreatedAt(rs.getTimestamp("createdAt").toLocalDateTime());
                 return user;
-            } else {
-                System.out.println("❌ Invalid email or password");
-                return null;
             }
         } catch (SQLException e) {
             System.err.println("❌ Login error: " + e.getMessage());
-            return null;
         }
+        return null;
     }
 
     // READ - Get all users (for admin)
@@ -71,15 +69,16 @@ public class UserService {
              ResultSet rs = stmt.executeQuery(query)) {
 
             while (rs.next()) {
-                User user = new User(
-                        rs.getInt("id"),
-                        rs.getString("firstName"),
-                        rs.getString("lastName"),
-                        rs.getInt("age"),
-                        rs.getString("email"),
-                        rs.getString("password"),
-                        rs.getString("role")
-                );
+                User user = new User();
+                user.setId(rs.getInt("id"));
+                user.setEmail(rs.getString("email"));
+                user.setPassword(rs.getString("password"));
+                user.setRoles(rs.getString("roles"));
+                user.setNom(rs.getString("nom"));
+                user.setPrenom(rs.getString("prenom"));
+                user.setDateNaissance(rs.getDate("dateNaissance") != null ? rs.getDate("dateNaissance").toLocalDate() : null);
+                user.setActive(rs.getBoolean("isActive"));
+                user.setCreatedAt(rs.getTimestamp("createdAt").toLocalDateTime());
                 users.add(user);
             }
         } catch (SQLException e) {
@@ -88,47 +87,23 @@ public class UserService {
         return users;
     }
 
-    // UPDATE - Edit own profile
+    // UPDATE - Edit user profile (including role)
     public boolean updateProfile(User user) {
-        String query = "UPDATE user SET firstName = ?, lastName = ?, age = ?, email = ?, password = ? WHERE id = ?";
+        String query = "UPDATE user SET email = ?, password = ?, roles = ?, nom = ?, prenom = ?, dateNaissance = ? WHERE id = ?";
         try (PreparedStatement pstmt = cnx.prepareStatement(query)) {
-            pstmt.setString(1, user.getFirstName());
-            pstmt.setString(2, user.getLastName());
-            pstmt.setInt(3, user.getAge());
-            pstmt.setString(4, user.getEmail());
-            pstmt.setString(5, user.getPassword());
-            pstmt.setInt(6, user.getId());
+            pstmt.setString(1, user.getEmail());
+            pstmt.setString(2, user.getPassword());
+            pstmt.setString(3, user.getRoles());
+            pstmt.setString(4, user.getNom());
+            pstmt.setString(5, user.getPrenom());
+            pstmt.setDate(6, Date.valueOf(user.getDateNaissance()));
+            pstmt.setInt(7, user.getId());
             pstmt.executeUpdate();
-            System.out.println("✅ Profile updated successfully!");
             return true;
         } catch (SQLException e) {
             System.err.println("❌ Update failed: " + e.getMessage());
             return false;
         }
-    }
-
-    // READ - Get user by ID
-    public User getUserById(int id) {
-        String query = "SELECT * FROM user WHERE id = ?";
-        try (PreparedStatement pstmt = cnx.prepareStatement(query)) {
-            pstmt.setInt(1, id);
-            ResultSet rs = pstmt.executeQuery();
-
-            if (rs.next()) {
-                return new User(
-                        rs.getInt("id"),
-                        rs.getString("firstName"),
-                        rs.getString("lastName"),
-                        rs.getInt("age"),
-                        rs.getString("email"),
-                        rs.getString("password"),
-                        rs.getString("role")
-                );
-            }
-        } catch (SQLException e) {
-            System.err.println("❌ Error: " + e.getMessage());
-        }
-        return null;
     }
 
     // DELETE - Remove user (admin only)
@@ -137,7 +112,6 @@ public class UserService {
         try (PreparedStatement pstmt = cnx.prepareStatement(query)) {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
-            System.out.println("✅ User deleted successfully!");
             return true;
         } catch (SQLException e) {
             System.err.println("❌ Delete failed: " + e.getMessage());

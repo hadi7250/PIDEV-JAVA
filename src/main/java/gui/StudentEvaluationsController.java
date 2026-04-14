@@ -60,9 +60,11 @@ public class StudentEvaluationsController implements Initializable {
 
     private void refreshTable() {
         try {
-            List<Evaluation> list = service.readAll(); // In a real scenario, this would be readByStudent(loggedInUser.getId())
-            allEvaluations = FXCollections.observableArrayList(list);
-            tableView.setItems(allEvaluations);
+            if (loggedInUser != null) {
+                List<Evaluation> list = service.readByStudent(loggedInUser.getId());
+                allEvaluations = FXCollections.observableArrayList(list);
+                tableView.setItems(allEvaluations);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -73,7 +75,7 @@ public class StudentEvaluationsController implements Initializable {
         String status = statusFilter.getValue();
 
         List<Evaluation> filtered = allEvaluations.stream()
-            .filter(e -> e.getTitle().toLowerCase().contains(search) || e.getCompetence().getTitle().toLowerCase().contains(search))
+            .filter(e -> e.getTitle().toLowerCase().contains(search) || (e.getCompetence() != null && e.getCompetence().getTitle().toLowerCase().contains(search)))
             .filter(e -> status == null || e.getStatus().equalsIgnoreCase(status))
             .collect(Collectors.toList());
 
@@ -91,12 +93,12 @@ public class StudentEvaluationsController implements Initializable {
         if (isDarkMode) {
             mainContainer.getStyleClass().remove("dark-theme");
             mainContainer.getStyleClass().add("light-theme");
-            if (themeButton != null) themeButton.setText("Dark Mode Vera");
+            if (themeButton != null) themeButton.setText("🌙 Dark Mode");
             isDarkMode = false;
         } else {
             mainContainer.getStyleClass().remove("light-theme");
             mainContainer.getStyleClass().add("dark-theme");
-            if (themeButton != null) themeButton.setText("Light Mode Vera");
+            if (themeButton != null) themeButton.setText("☀️ Light Mode");
             isDarkMode = true;
         }
     }
@@ -104,9 +106,9 @@ public class StudentEvaluationsController implements Initializable {
     @FXML
     private void goBack() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserBasicPage.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherCompetences.fxml"));
             Parent root = loader.load();
-            UserBasicPageController controller = loader.getController();
+            AfficherCompetencesController controller = loader.getController();
             controller.setLoggedInUser(loggedInUser);
             Stage stage = (Stage) mainContainer.getScene().getWindow();
             stage.setScene(new Scene(root));
