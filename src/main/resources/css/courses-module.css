@@ -79,7 +79,7 @@
 }
 
 .module-subtitle {
-    -fx-font-size: 12px;
+    -fx-font-size: 14px;
     -fx-text-fill: #6a8d86;
 }
 
@@ -92,9 +92,22 @@
     -fx-border-color: #d7e9e3;
     -fx-border-radius: 14;
     -fx-padding: 10 12;
-    -fx-text-fill: #244a43;
+    -fx-text-fill: #2a544d;
     -fx-highlight-fill: #d9f0e8;
     -fx-highlight-text-fill: #163f39;
+    -fx-font-size: 15px;
+}
+
+/* Fix prompt text colors */
+.text-field:prompt-text,
+.text-area:prompt-text {
+    -fx-text-fill: #8ba89f;
+}
+
+/* Ensure typed text is visible */
+.text-field:focused,
+.text-area:focused {
+    -fx-text-fill: #1a3d36;
 }
 
 .text-field:focused,
@@ -174,13 +187,13 @@
 }
 
 .section-title {
-    -fx-font-size: 15px;
+    -fx-font-size: 17px;
     -fx-font-weight: 700;
     -fx-text-fill: #28574f;
 }
 
 .meta-label {
-    -fx-font-size: 12px;
+    -fx-font-size: 14px;
     -fx-text-fill: #6f8f88;
 }
 
@@ -191,9 +204,9 @@
 }
 
 .course-description {
-    -fx-font-size: 13px;
+    -fx-font-size: 17px;
     -fx-text-fill: #365d57;
-    -fx-line-spacing: 3px;
+    -fx-line-spacing: 4px;
 }
 
 .course-list {
@@ -221,18 +234,18 @@
 }
 
 .course-cell-title {
-    -fx-font-size: 14px;
+    -fx-font-size: 15px;
     -fx-font-weight: 700;
     -fx-text-fill: #214842;
 }
 
 .course-cell-desc {
-    -fx-font-size: 12px;
+    -fx-font-size: 14px;
     -fx-text-fill: #5f8078;
 }
 
 .course-cell-meta {
-    -fx-font-size: 11px;
+    -fx-font-size: 12px;
     -fx-text-fill: #7f9d96;
 }
 
@@ -406,9 +419,9 @@
 
 .course-card-desc,
 .admin-card-desc {
-    -fx-font-size: 12px;
+    -fx-font-size: 16px;
     -fx-text-fill: #5f8078;
-    -fx-line-spacing: 2px;
+    -fx-line-spacing: 3px;
 }
 
 .chip-row {
@@ -438,7 +451,7 @@
 }
 
 .admin-card-meta {
-    -fx-font-size: 12px;
+    -fx-font-size: 13px;
     -fx-font-weight: 700;
     -fx-text-fill: #6c9088;
 }
@@ -683,6 +696,23 @@
     -fx-text-fill: #eef9f6;
 }
 
+/* Increase dark mode font sizes for better readability */
+.dark-mode .course-description,
+.dark-mode .admin-card-desc {
+    -fx-font-size: 17px;
+}
+
+.dark-mode .meta-label,
+.dark-mode .admin-card-meta {
+    -fx-font-size: 13px;
+}
+
+.dark-mode .text-field,
+.dark-mode .combo-box,
+.dark-mode .text-area {
+    -fx-font-size: 14px;
+}
+
 .dark-mode .module-subtitle,
 .dark-mode .meta-label,
 .dark-mode .course-description,
@@ -723,6 +753,19 @@
     -fx-text-fill: #e6f5f1;
     -fx-highlight-fill: #295246;
     -fx-highlight-text-fill: #ffffff;
+    -fx-font-size: 15px;
+}
+
+/* Fix dark mode prompt text colors */
+.dark-mode .text-field:prompt-text,
+.dark-mode .text-area:prompt-text {
+    -fx-text-fill: #a8c5be;
+}
+
+/* Ensure dark mode focused text is visible */
+.dark-mode .text-field:focused,
+.dark-mode .text-area:focused {
+    -fx-text-fill: #f0f7f0;
 }
 
 .dark-mode .text-field:focused,

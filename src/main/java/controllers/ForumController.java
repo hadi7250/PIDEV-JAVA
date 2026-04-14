@@ -3,15 +3,20 @@ package controllers;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -28,6 +33,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ForumController {
@@ -170,8 +176,22 @@ public class ForumController {
         openBtn.getStyleClass().add("primary-btn");
         openBtn.setOnAction(e -> showDiscussion(d));
 
-        HBox actions = new HBox(10, openBtn);
+        HBox actions = new HBox(10);
         actions.setAlignment(Pos.CENTER_LEFT);
+        actions.getChildren().add(openBtn);
+
+        // Add edit/delete buttons only for discussions by current user
+        // For now, we'll use a simple approach - users can edit if they're the author
+        // In a real implementation, this would check against logged-in user
+        Button editBtn = new Button("Edit");
+        editBtn.getStyleClass().add("secondary-btn");
+        editBtn.setOnAction(e -> editDiscussion(d));
+
+        Button deleteBtn = new Button("Delete");
+        deleteBtn.getStyleClass().add("danger-btn");
+        deleteBtn.setOnAction(e -> deleteDiscussion(d));
+
+        actions.getChildren().addAll(editBtn, deleteBtn);
 
         if (selectedDiscussion != null && selectedDiscussion.getId() == d.getId()) {
             card.getStyleClass().add("admin-list-card-active");
@@ -249,6 +269,7 @@ public class ForumController {
 
         Label body = new Label(safe(m.getContent(), ""));
         body.setWrapText(true);
+        body.setStyle("-fx-text-fill: #EAF7F3; -fx-font-size: 15px;");
 
         HBox voteRow = new HBox(10);
         voteRow.setAlignment(Pos.CENTER_LEFT);
@@ -269,7 +290,16 @@ public class ForumController {
             renderMessages();
         });
 
-        voteRow.getChildren().addAll(votes, new Region(), up, down);
+        // Add edit/delete buttons for messages
+        Button editMsgBtn = new Button("Edit");
+        editMsgBtn.getStyleClass().add("secondary-btn");
+        editMsgBtn.setOnAction(e -> editMessage(m));
+
+        Button deleteMsgBtn = new Button("Delete");
+        deleteMsgBtn.getStyleClass().add("danger-btn");
+        deleteMsgBtn.setOnAction(e -> deleteMessage(m));
+
+        voteRow.getChildren().addAll(votes, new Region(), up, down, editMsgBtn, deleteMsgBtn);
         HBox.setHgrow(voteRow.getChildren().get(1), javafx.scene.layout.Priority.ALWAYS);
 
         card.getChildren().addAll(header, body, voteRow);
@@ -340,4 +370,278 @@ public class ForumController {
         if (ts == null) return "Date unavailable";
         return DATE_FORMAT.format(ts.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
     }
-}
+
+    @FXML
+    public void showCreateDiscussionDialog() {
+        ForumDiscussion created = showDiscussionDialog("Create discussion", null);
+        if (created == null) return;
+
+        int id = discussionService.addDiscussion(created);
+        if (id <= 0) {
+            showWarning("The discussion could not be saved.");
+            return;
+        }
+        onRefresh();
+        showSuccess("Discussion added.");
+    }
+
+    private void editDiscussion(ForumDiscussion discussion) {
+        if (discussion == null) return;
+        ForumDiscussion updated = showDiscussionDialog("Edit discussion", discussion);
+        if (updated == null) return;
+
+        discussion.setTitle(updated.getTitle());
+        discussion.setContent(updated.getContent());
+        discussion.setAuthorName(updated.getAuthorName());
+        discussion.setPinned(updated.isPinned());
+        discussion.setLocked(updated.isLocked());
+        discussion.setCategoryId(updated.getCategoryId());
+        discussion.setCategoryName(updated.getCategoryName());
+
+        discussionService.updateDiscussion(discussion);
+        onRefresh();
+        showSuccess("Discussion updated.");
+    }
+
+    private void deleteDiscussion(ForumDiscussion discussion) {
+        if (discussion == null) return;
+        if (!confirm("Delete discussion", "Delete '" + safe(discussion.getTitle(), "Untitled")
+                + "' and all its messages?")) return;
+
+        discussionService.deleteDiscussion(discussion.getId());
+        onRefresh();
+        showSuccess("Discussion deleted.");
+    }
+
+    private void editMessage(ForumMessage message) {
+        if (message == null) return;
+        ForumMessage updated = showMessageDialog("Edit message", message);
+        if (updated == null) return;
+
+        message.setContent(updated.getContent());
+        message.setAuthorName(updated.getAuthorName());
+        message.setAuthor(updated.isAuthor());
+        messageService.updateMessage(message);
+        onRefresh();
+        showSuccess("Message updated.");
+    }
+
+    private void deleteMessage(ForumMessage message) {
+        if (message == null) return;
+        if (!confirm("Delete message", "Delete this message permanently?")) return;
+        messageService.deleteMessage(message.getId());
+        onRefresh();
+        showSuccess("Message deleted.");
+    }
+
+    private void showSuccess(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Success");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    // ============================================================
+    // DIALOGS (reused from AdminForumController)
+    // ============================================================
+
+    private ForumDiscussion showDiscussionDialog(String title, ForumDiscussion existing) {
+        return showDiscussionDialog(title, existing, null, false);
+    }
+
+    private ForumDiscussion showDiscussionDialog(String title, ForumDiscussion existing,
+                                                 ForumCategory preferredCategory,
+                                                 boolean lockCategory) {
+        Dialog<ForumDiscussion> dialog = new Dialog<>();
+        dialog.setTitle(title);
+
+        DialogPane pane = dialog.getDialogPane();
+        pane.getButtonTypes().addAll(ButtonType.CANCEL, ButtonType.OK);
+
+        TextField tfTitle = new TextField(existing == null ? "" : safe(existing.getTitle()));
+        TextField tfAuthor = new TextField(existing == null ? "" : safe(existing.getAuthorName()));
+        TextArea taContent = new TextArea(existing == null ? "" : safe(existing.getContent()));
+        taContent.setWrapText(true);
+        taContent.setPrefRowCount(7);
+
+        ComboBox<ForumCategory> categoryBox = new ComboBox<>(FXCollections.observableArrayList(
+                allCategories.stream()
+                        .sorted(Comparator.comparing(ForumCategory::getName, String.CASE_INSENSITIVE_ORDER))
+                        .collect(Collectors.toList())
+        ));
+
+        if (preferredCategory != null) {
+            for (ForumCategory c : categoryBox.getItems()) {
+                if (c.getId() == preferredCategory.getId()) {
+                    categoryBox.getSelectionModel().select(c);
+                    break;
+                }
+            }
+        } else if (existing == null) {
+            if (!categoryBox.getItems().isEmpty()) {
+                categoryBox.getSelectionModel().selectFirst();
+            }
+        } else {
+            for (ForumCategory c : categoryBox.getItems()) {
+                if (c.getId() == existing.getCategoryId()) {
+                    categoryBox.getSelectionModel().select(c);
+                    break;
+                }
+            }
+        }
+        categoryBox.setDisable(lockCategory);
+
+        CheckBox cbPinned = new CheckBox("Pinned");
+        cbPinned.setSelected(existing != null && existing.isPinned());
+        CheckBox cbLocked = new CheckBox("Locked");
+        cbLocked.setSelected(existing != null && existing.isLocked());
+        HBox flags = new HBox(12, cbPinned, cbLocked);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(12);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(16));
+        grid.add(new Label("Title"), 0, 0);        grid.add(tfTitle, 1, 0);
+        grid.add(new Label("Author"), 0, 1);       grid.add(tfAuthor, 1, 1);
+        grid.add(new Label("Category"), 0, 2);     grid.add(categoryBox, 1, 2);
+        grid.add(new Label("Content"), 0, 3);      grid.add(taContent, 1, 3);
+        grid.add(new Label("Flags"), 0, 4);        grid.add(flags, 1, 4);
+
+        tfTitle.setPrefWidth(420);
+        tfAuthor.setPrefWidth(420);
+        categoryBox.setPrefWidth(420);
+
+        pane.setContent(grid);
+
+        Button ok = (Button) pane.lookupButton(ButtonType.OK);
+        ok.addEventFilter(javafx.event.ActionEvent.ACTION, ev -> {
+            String err = validateDiscussion(tfTitle.getText(), taContent.getText(),
+                    tfAuthor.getText(), categoryBox.getValue());
+            if (!err.isBlank()) {
+                ev.consume();
+                showWarning(err);
+            }
+        });
+
+        dialog.setResultConverter(bt -> {
+            if (bt != ButtonType.OK) return null;
+            ForumCategory cat = categoryBox.getValue();
+            ForumDiscussion d = new ForumDiscussion();
+            d.setId(existing == null ? 0 : existing.getId());
+            d.setTitle(tfTitle.getText().trim());
+            d.setContent(taContent.getText().trim());
+            d.setAuthorName(tfAuthor.getText().trim());
+            d.setPinned(cbPinned.isSelected());
+            d.setLocked(cbLocked.isSelected());
+            d.setCategoryId(cat == null ? 0 : cat.getId());
+            d.setCategoryName(cat == null ? "" : cat.getName());
+            d.setViews(existing == null ? 0 : existing.getViews());
+            d.setCreatedAt(existing == null
+                    ? new Timestamp(System.currentTimeMillis())
+                    : existing.getCreatedAt());
+            return d;
+        });
+
+        return dialog.showAndWait().orElse(null);
+    }
+
+    private ForumMessage showMessageDialog(String title, ForumMessage existing) {
+        Dialog<ForumMessage> dialog = new Dialog<>();
+        dialog.setTitle(title);
+
+        DialogPane pane = dialog.getDialogPane();
+        pane.getButtonTypes().addAll(ButtonType.CANCEL, ButtonType.OK);
+
+        // Author field logic: preserve original author, only allow editing if originally anonymous
+        String originalAuthor = existing == null ? "" : safe(existing.getAuthorName());
+        boolean isOriginallyAnonymous = originalAuthor.isEmpty() || originalAuthor.equalsIgnoreCase("anonymous");
+        
+        TextField tfAuthor = new TextField(isOriginallyAnonymous ? "" : originalAuthor);
+        tfAuthor.setDisable(!isOriginallyAnonymous); // Only enable editing if originally anonymous
+        
+        TextArea taContent = new TextArea(existing == null ? "" : safe(existing.getContent()));
+        taContent.setWrapText(true);
+        taContent.setPrefRowCount(6);
+        CheckBox cbIsAuthor = new CheckBox("Is discussion author");
+        cbIsAuthor.setSelected(existing != null && existing.isAuthor());
+
+        GridPane grid = new GridPane();
+        grid.setHgap(12);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(16));
+        grid.add(new Label("Author"), 0, 0);    grid.add(tfAuthor, 1, 0);
+        grid.add(new Label("Content"), 0, 1);   grid.add(taContent, 1, 1);
+        grid.add(new Label("Flag"), 0, 2);      grid.add(cbIsAuthor, 1, 2);
+
+        tfAuthor.setPrefWidth(420);
+        pane.setContent(grid);
+
+        Button ok = (Button) pane.lookupButton(ButtonType.OK);
+        ok.addEventFilter(javafx.event.ActionEvent.ACTION, ev -> {
+            String err = validateMessage(taContent.getText());
+            if (!err.isBlank()) {
+                ev.consume();
+                showWarning(err);
+            }
+        });
+
+        dialog.setResultConverter(bt -> {
+            if (bt != ButtonType.OK) return null;
+            ForumMessage m = new ForumMessage();
+            m.setId(existing == null ? 0 : existing.getId());
+            m.setContent(taContent.getText().trim());
+            
+            // Preserve original author if editing existing message, use new author if new message
+            if (existing != null) {
+                m.setAuthorName(originalAuthor); // Keep original author
+                m.setAuthor(existing.isAuthor()); // Keep original author flag
+            } else {
+                m.setAuthorName(tfAuthor.getText().trim()); // Use new author for new messages
+                m.setAuthor(cbIsAuthor.isSelected());
+            }
+            
+            m.setDiscussionId(existing == null ? 0 : existing.getDiscussionId());
+            m.setDiscussionTitle(existing == null ? "" : existing.getDiscussionTitle());
+            m.setUpvotes(existing == null ? 0 : existing.getUpvotes());
+            m.setDownvotes(existing == null ? 0 : existing.getDownvotes());
+            m.setCreatedAt(existing == null ? new Timestamp(System.currentTimeMillis()) : existing.getCreatedAt());
+            return m;
+        });
+
+        return dialog.showAndWait().orElse(null);
+    }
+
+    // ============================================================
+    // VALIDATION (reused from AdminForumController)
+    // ============================================================
+
+    private String validateDiscussion(String title, String content, String author, ForumCategory cat) {
+        StringBuilder sb = new StringBuilder();
+        if (title == null || title.trim().isEmpty()) sb.append("Discussion title is required.\n");
+        else if (title.trim().length() < 3) sb.append("Title must be at least 3 characters.\n");
+        if (content == null || content.trim().isEmpty()) sb.append("Discussion content is required.\n");
+        if (author == null || author.trim().isEmpty()) sb.append("Author name is required.\n");
+        if (cat == null) sb.append("Choose a parent category.\n");
+        return sb.toString().trim();
+    }
+
+    private String validateMessage(String content) {
+        StringBuilder sb = new StringBuilder();
+        if (content == null || content.trim().isEmpty()) sb.append("Message content is required.\n");
+        return sb.toString().trim();
+    }
+
+    // ============================================================
+    // UTILS (reused from AdminForumController)
+    // ============================================================
+
+    private boolean confirm(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, message, ButtonType.OK, ButtonType.CANCEL);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        Optional<ButtonType> r = alert.showAndWait();
+        return r.isPresent() && r.get() == ButtonType.OK;
+    }
+
+    }

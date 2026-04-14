@@ -38,6 +38,7 @@
                     <Region HBox.hgrow="ALWAYS" />
                     <TextField fx:id="searchField" prefWidth="280.0" promptText="Search discussions..." />
                     <ComboBox fx:id="categoryFilter" prefWidth="180.0" />
+                    <Button onAction="#showCreateDiscussionDialog" styleClass="primary-btn" text="Create Discussion" />
                     <Button onAction="#onRefresh" styleClass="secondary-btn" text="Refresh" />
                 </HBox>
             </top>
