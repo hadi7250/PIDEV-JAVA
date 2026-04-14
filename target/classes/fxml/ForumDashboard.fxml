@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane xmlns="http://javafx.com/javafx/17"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="controllers.ForumController"
+           prefHeight="720.0"
+           prefWidth="1100.0"
+           styleClass="course-module-root"
+           stylesheets="@../css/courses-module.css">
+
+    <children>
+        <BorderPane prefHeight="720.0" prefWidth="1100.0" styleClass="client-dashboard-shell">
+            <padding>
+                <Insets bottom="18.0" left="18.0" right="18.0" top="18.0" />
+            </padding>
+
+            <top>
+                <HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="module-toolbar client-toolbar">
+                    <VBox spacing="4.0">
+                        <Label styleClass="module-title client-page-title" text="Community Forum" />
+                        <Label styleClass="module-subtitle" text="Browse categories, open discussions, and share your thoughts." />
+                    </VBox>
+                    <Region HBox.hgrow="ALWAYS" />
+                    <TextField fx:id="searchField" prefWidth="280.0" promptText="Search discussions..." />
+                    <ComboBox fx:id="categoryFilter" prefWidth="180.0" />
+                    <Button onAction="#onRefresh" styleClass="secondary-btn" text="Refresh" />
+                </HBox>
+            </top>
+
+            <center>
+                <SplitPane dividerPositions="0.34">
+                    <items>
+                        <VBox spacing="16.0" styleClass="module-card client-sidebar-card">
+                            <VBox spacing="6.0" styleClass="client-spotlight-card">
+                                <Label styleClass="client-spotlight-eyebrow" text="Forum" />
+                                <Label styleClass="client-spotlight-title" text="Pick a discussion and jump into the conversation." wrapText="true" />
+                                <Label styleClass="client-spotlight-copy" text="Pinned topics stay at the top. Locked topics are read-only." wrapText="true" />
+                            </VBox>
+
+                            <Separator />
+                            <HBox alignment="CENTER_LEFT">
+                                <Label styleClass="section-title" text="Discussions" />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Label fx:id="totalLabel" styleClass="meta-label" text="0 discussions" />
+                            </HBox>
+                            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="cards-scroll" VBox.vgrow="ALWAYS">
+                                <content>
+                                    <VBox fx:id="discussionCardsBox" spacing="14.0" styleClass="cards-list" />
+                                </content>
+                            </ScrollPane>
+                        </VBox>
+
+                        <VBox spacing="16.0" styleClass="client-workspace">
+                            <VBox spacing="14.0" styleClass="module-card client-detail-hero">
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <VBox spacing="4.0">
+                                        <Label fx:id="selectedTitle" styleClass="detail-title" text="Select a discussion" />
+                                        <Label fx:id="selectedMeta" styleClass="meta-label" text="Open a discussion card to see replies." />
+                                    </VBox>
+                                    <Region HBox.hgrow="ALWAYS" />
+                                </HBox>
+                                <Label fx:id="selectedContent" styleClass="course-description" text="" wrapText="true" />
+                            </VBox>
+
+                            <VBox spacing="14.0" styleClass="module-card client-chapters-card" VBox.vgrow="ALWAYS">
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <Label styleClass="section-title" text="Messages" />
+                                    <Region HBox.hgrow="ALWAYS" />
+                                    <Label fx:id="lockedNotice" styleClass="meta-label" text="" />
+                                </HBox>
+
+                                <Label fx:id="emptyStateLabel" managed="false" styleClass="empty-note" text="" visible="false" wrapText="true" />
+
+                                <ScrollPane fx:id="messagesScroll" fitToWidth="true" hbarPolicy="NEVER" styleClass="cards-scroll" VBox.vgrow="ALWAYS">
+                                    <content>
+                                        <VBox fx:id="messagesBox" spacing="10.0" styleClass="cards-list" />
+                                    </content>
+                                </ScrollPane>
+
+                                <Separator />
+
+                                <Label styleClass="section-title" text="Post a reply" />
+                                <HBox spacing="10.0">
+                                    <TextField fx:id="replyAuthorField" prefWidth="220.0" promptText="Your name" />
+                                    <Region HBox.hgrow="ALWAYS" />
+                                </HBox>
+                                <TextArea fx:id="replyContentArea" prefRowCount="3" promptText="Write your reply..." wrapText="true" />
+                                <HBox spacing="10.0" alignment="CENTER_RIGHT">
+                                    <Button fx:id="postReplyBtn" disable="true" onAction="#postReply" styleClass="primary-btn" text="Post reply" />
+                                </HBox>
+                            </VBox>
+                        </VBox>
+                    </items>
+                </SplitPane>
+            </center>
+        </BorderPane>
+    </children>
+</StackPane>
