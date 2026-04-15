@@ -5,11 +5,13 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.control.PasswordField;  // ← ADD THIS LINE!
+import javafx.scene.control.PasswordField;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import services.UserService;
 
 import java.io.IOException;
@@ -19,6 +21,7 @@ public class AjouterPersonne {
     private final UserService userService = new UserService();
     private boolean isProcessing = false;
     private boolean isDarkMode = false;
+    private User loggedInUser;
 
     @FXML
     private VBox mainContainer;
@@ -32,6 +35,10 @@ public class AjouterPersonne {
     private TextField TFEmail;
     @FXML
     private PasswordField TFPassword;
+
+    public void setLoggedInUser(User user) {
+        this.loggedInUser = user;
+    }
 
     @FXML
     void toggleTheme() {
@@ -126,9 +133,13 @@ public class AjouterPersonne {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherPersonne.fxml"));
             Parent root = loader.load();
-            TFAge.getScene().setRoot(root);
+            AfficherPersonne controller = loader.getController();
+            controller.setLoggedInUser(loggedInUser);
+            Stage stage = (Stage) mainContainer.getScene().getWindow();
+            stage.setScene(new Scene(root));
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
+            showAlert("Erreur", "Impossible de charger la liste", Alert.AlertType.ERROR);
         }
     }
 

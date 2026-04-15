@@ -94,6 +94,22 @@ public class AfficherCompetencesController implements Initializable {
     }
 
     @FXML
+    private void goToProfile() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserBasicPage.fxml"));
+            Parent root = loader.load();
+            UserBasicPageController controller = loader.getController();
+            controller.setLoggedInUser(loggedInUser);
+            Stage stage = (Stage) tableView.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("EduConnect - My Profile");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "Could not load profile page: " + e.getMessage());
+        }
+    }
+
+    @FXML
     private void goBack() {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/SignIn.fxml"));

@@ -1,56 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?><?import javafx.scene.layout.*?><?import java.net.URL?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
 
-<VBox fx:id="mainContainer" spacing="20" styleClass="light-theme" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AjouterEvaluationController" prefWidth="600" prefHeight="600" >
+<StackPane fx:id="mainContainer" prefHeight="700.0" prefWidth="850.0" styleClass="course-module-root" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AjouterEvaluationController">
+    <stylesheets>
+        <URL value="@modern.css" />
+    </stylesheets>
+    
     <padding>
-        <Insets bottom="30" left="30" right="30" top="30"/>
+        <Insets bottom="20" left="20" right="20" top="20" />
     </padding>
 
-    <HBox alignment="CENTER_RIGHT" spacing="10">
-        <Label styleClass="title-label" text="➕ Create New Evaluation" HBox.hgrow="ALWAYS" />
-        <Button onAction="#toggleTheme" text="🌙 Dark Mode" styleClass="theme-toggle-btn" />
-    </HBox>
+    <BorderPane>
+        <top>
+            <HBox alignment="CENTER_LEFT" spacing="15.0" styleClass="module-toolbar">
+                <padding>
+                    <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+                </padding>
+                <VBox spacing="4.0">
+                    <Label styleClass="module-title" text="Create New Evaluation" />
+                    <Label styleClass="module-subtitle" text="Set up a new assessment, exam, or project for your students." />
+                </VBox>
+                <Region HBox.hgrow="ALWAYS" />
+                <Button onAction="#toggleTheme" styleClass="secondary-btn" text="🌓 Theme" />
+            </HBox>
+        </top>
 
-    <VBox spacing="15" styleClass="input-card" VBox.vgrow="ALWAYS">
-        <Label styleClass="subtitle-label" text="Evaluation Information" />
+        <center>
+            <VBox alignment="CENTER" style="-fx-padding: 30 0 0 0;">
+                <VBox maxWidth="650.0" spacing="20.0" styleClass="module-card">
+                    <Label styleClass="section-title" text="📝 Evaluation Assignment" />
+                    
+                    <VBox spacing="15.0">
+                        <VBox spacing="5">
+                            <Label styleClass="label-bold" text="Evaluation Title" />
+                            <TextField fx:id="titleField" promptText="e.g. Midterm Java Exam" />
+                        </VBox>
+                        
+                        <VBox spacing="5">
+                            <Label styleClass="label-bold" text="Instructions/Description" />
+                            <TextArea fx:id="descriptionArea" prefHeight="100" promptText="Enter evaluation instructions or topics covered..." wrapText="true" />
+                        </VBox>
 
-        <VBox spacing="5">
-            <Label text="Title" styleClass="label-bold" />
-            <TextField fx:id="titleField" promptText="Enter title" />
-        </VBox>
+                        <HBox spacing="15">
+                            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                <Label styleClass="label-bold" text="Assessment Type" />
+                                <ComboBox fx:id="typeComboBox" maxWidth="Infinity" promptText="Select type" />
+                            </VBox>
+                            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                <Label styleClass="label-bold" text="Due Date" />
+                                <DatePicker fx:id="datePicker" maxWidth="Infinity" promptText="Select date" />
+                            </VBox>
+                        </HBox>
 
-        <VBox spacing="5">
-            <Label text="Description" styleClass="label-bold" />
-            <TextArea fx:id="descriptionArea" promptText="Enter description" prefHeight="80" />
-        </VBox>
+                        <HBox spacing="15">
+                            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                <Label styleClass="label-bold" text="Weight/Score Max (0-100)" />
+                                <TextField fx:id="weightField" promptText="e.g. 20.0" />
+                            </VBox>
+                            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                <Label styleClass="label-bold" text="Target Competence" />
+                                <ComboBox fx:id="competenceComboBox" maxWidth="Infinity" promptText="Link to a skill" />
+                            </VBox>
+                        </HBox>
+                    </VBox>
 
-        <HBox spacing="15">
-            <VBox spacing="5" HBox.hgrow="ALWAYS">
-                <Label text="Type" styleClass="label-bold" />
-                <ComboBox fx:id="typeComboBox" maxWidth="Infinity" />
+                    <Separator />
+
+                    <HBox alignment="CENTER" spacing="20">
+                        <Button onAction="#handleCancel" prefWidth="150.0" styleClass="secondary-btn" text="✖ Cancel" />
+                        <Button onAction="#handleCreate" prefWidth="200.0" styleClass="primary-btn" text="🚀 Publish Evaluation" />
+                    </HBox>
+                </VBox>
             </VBox>
-            <VBox spacing="5" HBox.hgrow="ALWAYS">
-                <Label text="Date" styleClass="label-bold" />
-                <DatePicker fx:id="datePicker" maxWidth="Infinity" />
-            </VBox>
-        </HBox>
-
-        <HBox spacing="15">
-            <VBox spacing="5" HBox.hgrow="ALWAYS">
-                <Label text="Weight (0-100)" styleClass="label-bold" />
-                <TextField fx:id="weightField" promptText="Enter weight" />
-            </VBox>
-            <VBox spacing="5" HBox.hgrow="ALWAYS">
-                <Label text="Competence" styleClass="label-bold" />
-                <ComboBox fx:id="competenceComboBox" maxWidth="Infinity" />
-            </VBox>
-        </HBox>
-    </VBox>
-
-    <HBox spacing="20" alignment="CENTER">
-        <Button onAction="#handleCreate" text="✅ Create Evaluation" styleClass="btn-primary" />
-        <Button onAction="#handleCancel" text="✖ Cancel" styleClass="btn-secondary" />
-    </HBox>
-</VBox>
+        </center>
+    </BorderPane>
+</StackPane>

@@ -3,62 +3,78 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import java.net.URL?>
 
-<VBox spacing="15" styleClass="main-container" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.UserBasicPageController">
+<StackPane fx:id="mainContainer" prefHeight="750.0" prefWidth="900.0" styleClass="course-module-root" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.UserBasicPageController">
+    <stylesheets>
+        <URL value="@modern.css" />
+    </stylesheets>
+    
     <padding>
-        <Insets bottom="25" left="25" right="25" top="25"/>
+        <Insets bottom="20" left="20" right="20" top="20" />
     </padding>
 
-    <!-- Header -->
-    <HBox alignment="CENTER_RIGHT" spacing="10">
-        <Label styleClass="title-label" text="👤 My Profile" HBox.hgrow="ALWAYS" />
-        <Button onAction="#toggleTheme" text="🌙 Dark Mode" styleClass="theme-toggle-btn" />
-    </HBox>
+    <BorderPane>
+        <top>
+            <HBox alignment="CENTER_LEFT" spacing="15.0" styleClass="module-toolbar">
+                <padding>
+                    <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+                </padding>
+                <VBox spacing="4.0">
+                    <Label styleClass="module-title" text="My Profile" />
+                    <Label styleClass="module-subtitle" text="Update your personal information and security settings." />
+                </VBox>
+                <Region HBox.hgrow="ALWAYS" />
+                <Button onAction="#toggleTheme" styleClass="secondary-btn" text="🌓 Theme" />
+                <Button onAction="#logout" styleClass="danger-btn" text="🚪 Logout" />
+            </HBox>
+        </top>
 
-    <Label text="Welcome to your dashboard!" style="-fx-font-size: 14px; -fx-text-fill: #666;" />
+        <center>
+            <VBox alignment="CENTER" style="-fx-padding: 30 0 0 0;">
+                <VBox maxWidth="600.0" spacing="20.0" styleClass="module-card">
+                    <Label styleClass="section-title" text="👤 Personal Details" />
+                    
+                    <HBox spacing="15">
+                        <VBox spacing="5" HBox.hgrow="ALWAYS">
+                            <Label styleClass="label-bold" text="First Name" />
+                            <TextField fx:id="firstNameField" promptText="Enter your first name" />
+                        </VBox>
+                        <VBox spacing="5" HBox.hgrow="ALWAYS">
+                            <Label styleClass="label-bold" text="Last Name" />
+                            <TextField fx:id="lastNameField" promptText="Enter your last name" />
+                        </VBox>
+                    </HBox>
 
-    <!-- Profile Card -->
-    <VBox spacing="15" styleClass="input-card">
-        <Label styleClass="subtitle-label" text="📋 My Information" />
+                    <HBox spacing="15">
+                        <VBox spacing="5" HBox.hgrow="ALWAYS">
+                            <Label styleClass="label-bold" text="Age" />
+                            <TextField fx:id="ageField" promptText="Your age" />
+                        </VBox>
+                        <VBox spacing="5" HBox.hgrow="ALWAYS">
+                            <Label styleClass="label-bold" text="Role" />
+                            <TextField fx:id="roleField" editable="false" style="-fx-opacity: 0.8;" />
+                        </VBox>
+                    </HBox>
 
-        <HBox spacing="15">
-            <VBox spacing="5" HBox.hgrow="ALWAYS">
-                <Label text="First Name" styleClass="label-bold" />
-                <TextField fx:id="firstNameField" />
+                    <VBox spacing="5">
+                        <Label styleClass="label-bold" text="Email Address" />
+                        <TextField fx:id="emailField" promptText="your.email@example.com" />
+                    </VBox>
+
+                    <Separator />
+                    
+                    <Label styleClass="section-title" text="🔒 Security" />
+                    <VBox spacing="10">
+                        <PasswordField fx:id="newPasswordField" promptText="New password (leave empty to keep current)" />
+                        <PasswordField fx:id="confirmPasswordField" promptText="Confirm new password" />
+                    </VBox>
+
+                    <HBox alignment="CENTER" style="-fx-padding: 10 0 0 0;">
+                        <Button onAction="#updateProfile" prefWidth="250.0" styleClass="primary-btn" text="💾 Save Profile Changes" />
+                    </HBox>
+                </VBox>
             </VBox>
-            <VBox spacing="5" HBox.hgrow="ALWAYS">
-                <Label text="Last Name" styleClass="label-bold" />
-                <TextField fx:id="lastNameField" />
-            </VBox>
-        </HBox>
-
-        <VBox spacing="5">
-            <Label text="Age" styleClass="label-bold" />
-            <TextField fx:id="ageField" />
-        </VBox>
-
-        <VBox spacing="5">
-            <Label text="Email" styleClass="label-bold" />
-            <TextField fx:id="emailField" />
-        </VBox>
-
-        <VBox spacing="5">
-            <Label text="Role" styleClass="label-bold" />
-            <TextField fx:id="roleField" editable="false" />
-        </VBox>
-
-        <Separator />
-
-        <VBox spacing="5">
-            <Label text="Change Password" styleClass="label-bold" />
-            <PasswordField fx:id="newPasswordField" promptText="New password (leave empty to keep current)" />
-            <PasswordField fx:id="confirmPasswordField" promptText="Confirm new password" />
-        </VBox>
-    </VBox>
-
-    <!-- Action Buttons -->
-    <HBox spacing="20" alignment="CENTER">
-        <Button onAction="#updateProfile" text="💾 Save Changes" styleClass="btn-primary" />
-        <Button onAction="#logout" text="🚪 Logout" styleClass="btn-danger" />
-    </HBox>
-</VBox>
+        </center>
+    </BorderPane>
+</StackPane>

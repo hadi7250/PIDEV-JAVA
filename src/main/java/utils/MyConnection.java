@@ -31,4 +31,9 @@ public class MyConnection {
     public Connection getConnection() {
         return connection;
     }
+
+    // Added for testing - allows injecting a mock or H2 connection
+    public void setConnection(Connection connection) {
+        this.connection = connection;
+    }
 }

@@ -5,11 +5,16 @@ import entities.Evaluation;
 import entities.User;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import services.CompetenceService;
 import services.EvaluationService;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -29,18 +34,22 @@ public class AjouterEvaluationController {
 
     public void setLoggedInUser(User user) {
         this.loggedInUser = user;
+        loadCompetences();
     }
 
     @FXML
     public void initialize() {
         typeComboBox.setItems(FXCollections.observableArrayList("exam", "quiz", "project", "oral", "homework"));
         typeComboBox.setValue("exam");
+    }
 
+    private void loadCompetences() {
         try {
             List<Competence> competences = competenceService.readAll();
             competenceComboBox.setItems(FXCollections.observableArrayList(competences));
         } catch (SQLException e) {
             e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "Could not load competences.");
         }
     }
 
@@ -63,7 +72,7 @@ public class AjouterEvaluationController {
             Evaluation evaluation = new Evaluation(title, description, type, date.atStartOfDay(), score, "pending", "", selectedCompetence);
             evaluationService.create(evaluation);
             showAlert(Alert.AlertType.INFORMATION, "Success!", "Evaluation created successfully!");
-            clearForm();
+            goBack();
         } catch (NumberFormatException e) {
             showAlert(Alert.AlertType.ERROR, "Form Error!", "Weight must be a valid number.");
         } catch (SQLException e) {
@@ -81,7 +90,20 @@ public class AjouterEvaluationController {
 
     @FXML
     private void handleCancel() {
-        clearForm();
+        goBack();
+    }
+
+    private void goBack() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/EvaluationManagement.fxml"));
+            Parent root = loader.load();
+            EvaluationManagementController controller = loader.getController();
+            controller.setLoggedInUser(loggedInUser);
+            Stage stage = (Stage) mainContainer.getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void clearForm() {
@@ -99,12 +121,12 @@ public class AjouterEvaluationController {
         if (isDarkMode) {
             mainContainer.getStyleClass().remove("dark-theme");
             mainContainer.getStyleClass().add("light-theme");
-            if (themeButton != null) themeButton.setText("ðŸŒ™ Dark Mode");
+            if (themeButton != null) themeButton.setText("🌙 Dark Mode");
             isDarkMode = false;
         } else {
             mainContainer.getStyleClass().remove("light-theme");
             mainContainer.getStyleClass().add("dark-theme");
-            if (themeButton != null) themeButton.setText("â˜€ï¸ Light Mode");
+            if (themeButton != null) themeButton.setText("☀️ Light Mode");
             isDarkMode = true;
         }
     }

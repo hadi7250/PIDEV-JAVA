@@ -104,6 +104,21 @@ public class StudentEvaluationsController implements Initializable {
     }
 
     @FXML
+    private void goToProfile() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserBasicPage.fxml"));
+            Parent root = loader.load();
+            UserBasicPageController controller = loader.getController();
+            controller.setLoggedInUser(loggedInUser);
+            Stage stage = (Stage) mainContainer.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("EduConnect - My Profile");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     private void goBack() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherCompetences.fxml"));

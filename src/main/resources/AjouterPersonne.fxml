@@ -3,49 +3,74 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import java.net.URL?>
 
-<VBox fx:id="mainContainer" spacing="20" styleClass="light-theme" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AjouterPersonne">
+<StackPane fx:id="mainContainer" prefHeight="650.0" prefWidth="850.0" styleClass="course-module-root" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AjouterPersonne">
+    <stylesheets>
+        <URL value="@modern.css" />
+    </stylesheets>
+    
     <padding>
-        <Insets bottom="30" left="30" right="30" top="30"/>
+        <Insets bottom="20" left="20" right="20" top="20" />
     </padding>
 
-    <HBox alignment="CENTER_RIGHT" spacing="10">
-        <Label styleClass="title-label" text="➕ Ajouter un utilisateur" HBox.hgrow="ALWAYS" />
-        <Button onAction="#toggleTheme" text="🌙 Dark Mode" styleClass="theme-toggle-btn" />
-    </HBox>
+    <BorderPane>
+        <top>
+            <HBox alignment="CENTER_LEFT" spacing="15.0" styleClass="module-toolbar">
+                <padding>
+                    <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+                </padding>
+                <VBox spacing="4.0">
+                    <Label styleClass="module-title" text="User Registration" />
+                    <Label styleClass="module-subtitle" text="Create a new user account in the system." />
+                </VBox>
+                <Region HBox.hgrow="ALWAYS" />
+                <Button onAction="#toggleTheme" styleClass="secondary-btn" text="🌓 Theme" />
+            </HBox>
+        </top>
 
-    <VBox spacing="15" styleClass="input-card">
-        <Label styleClass="subtitle-label" text="Informations de l'utilisateur" />
+        <center>
+            <VBox alignment="CENTER" style="-fx-padding: 30 0 0 0;">
+                <VBox maxWidth="600.0" spacing="20.0" styleClass="module-card">
+                    <Label styleClass="section-title" text="👤 Account Details" />
+                    
+                    <VBox spacing="15.0">
+                        <HBox spacing="15">
+                            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                <Label styleClass="label-bold" text="First Name" />
+                                <TextField fx:id="TFPrenom" promptText="Enter first name" />
+                            </VBox>
+                            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                <Label styleClass="label-bold" text="Last Name" />
+                                <TextField fx:id="TFNom" promptText="Enter last name" />
+                            </VBox>
+                        </HBox>
 
-        <HBox spacing="15">
-            <VBox spacing="5" HBox.hgrow="ALWAYS">
-                <Label text="Nom" styleClass="label-bold" />
-                <TextField fx:id="TFNom" promptText="Entrez le nom" />
+                        <HBox spacing="15">
+                            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                <Label styleClass="label-bold" text="Age" />
+                                <TextField fx:id="TFAge" promptText="User age" />
+                            </VBox>
+                            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                <Label styleClass="label-bold" text="Email" />
+                                <TextField fx:id="TFEmail" promptText="example@domain.com" />
+                            </VBox>
+                        </HBox>
+
+                        <VBox spacing="5">
+                            <Label styleClass="label-bold" text="Password" />
+                            <PasswordField fx:id="TFPassword" promptText="Choose a strong password" />
+                        </VBox>
+                    </VBox>
+
+                    <Separator />
+
+                    <HBox alignment="CENTER" spacing="20">
+                        <Button onAction="#afficher" prefWidth="180.0" styleClass="secondary-btn" text="📋 View Users List" />
+                        <Button onAction="#ajouter" prefWidth="180.0" styleClass="primary-btn" text="✅ Register User" />
+                    </HBox>
+                </VBox>
             </VBox>
-            <VBox spacing="5" HBox.hgrow="ALWAYS">
-                <Label text="Prénom" styleClass="label-bold" />
-                <TextField fx:id="TFPrenom" promptText="Entrez le prénom" />
-            </VBox>
-        </HBox>
-
-        <VBox spacing="5">
-            <Label text="Âge" styleClass="label-bold" />
-            <TextField fx:id="TFAge" promptText="Entrez l'âge" />
-        </VBox>
-
-        <VBox spacing="5">
-            <Label text="Email" styleClass="label-bold" />
-            <TextField fx:id="TFEmail" promptText="Entrez l'email" />
-        </VBox>
-
-        <VBox spacing="5">
-            <Label text="Mot de passe" styleClass="label-bold" />
-            <PasswordField fx:id="TFPassword" promptText="Entrez le mot de passe" />
-        </VBox>
-    </VBox>
-
-    <HBox spacing="20" alignment="CENTER">
-        <Button onAction="#ajouter" text="✅ Ajouter" styleClass="btn-primary" />
-        <Button onAction="#afficher" text="📋 Gérer les utilisateurs" styleClass="btn-info" />
-    </HBox>
-</VBox>
+        </center>
+    </BorderPane>
+</StackPane>

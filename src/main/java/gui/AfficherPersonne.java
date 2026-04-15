@@ -286,13 +286,13 @@ public class AfficherPersonne implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterPersonne.fxml"));
             Parent root = loader.load();
 
-            // If AjouterPersonne has a method to set admin info, pass it
-            // AjouterPersonne controller = loader.getController();
-            // controller.setLoggedInUser(loggedInAdmin);
+            AjouterPersonne controller = loader.getController();
+            controller.setLoggedInUser(loggedInAdmin);
 
-            tableView.getScene().setRoot(root);
+            Stage stage = (Stage) tableView.getScene().getWindow();
+            stage.setScene(new Scene(root));
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
             showAlert("Erreur", "Impossible de charger la page d'ajout", Alert.AlertType.ERROR);
         }
     }

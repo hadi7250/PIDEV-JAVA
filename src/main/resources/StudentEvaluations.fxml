@@ -1,37 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?><?import javafx.scene.layout.*?><?import java.net.URL?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
 
-<VBox fx:id="mainContainer" spacing="20" styleClass="light-theme" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.StudentEvaluationsController" prefWidth="900" prefHeight="700" >
+<StackPane fx:id="mainContainer" prefHeight="750.0" prefWidth="1100.0" styleClass="course-module-root" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.StudentEvaluationsController">
+    <stylesheets>
+        <URL value="@modern.css" />
+    </stylesheets>
+    
     <padding>
-        <Insets bottom="20" left="20" right="20" top="20"/>
+        <Insets bottom="20" left="20" right="20" top="20" />
     </padding>
 
-    <HBox alignment="CENTER_LEFT" spacing="10">
-        <Button onAction="#goBack" text="Back" styleClass="btn-secondary" />
-        <Label styleClass="title-label" text="My Evaluations" HBox.hgrow="ALWAYS" />
-        <Region HBox.hgrow="ALWAYS" />
-        <Button onAction="#toggleTheme" text="Dark Mode" styleClass="theme-toggle-btn" />
-    </HBox>
+    <BorderPane>
+        <top>
+            <HBox alignment="CENTER_LEFT" spacing="15.0" styleClass="module-toolbar">
+                <padding>
+                    <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+                </padding>
+                <VBox spacing="4.0">
+                    <Label styleClass="module-title" text="My Performance & Evaluations" />
+                    <Label styleClass="module-subtitle" text="View your grades, feedback, and academic progress." />
+                </VBox>
+                <Region HBox.hgrow="ALWAYS" />
+                <Button onAction="#goBack" styleClass="secondary-btn" text="← Back" />
+                <Button onAction="#goToProfile" styleClass="info-btn" text="👤 Profile" />
+                <Button onAction="#toggleTheme" styleClass="secondary-btn" text="🌓 Theme" />
+            </HBox>
+        </top>
 
-    <VBox spacing="10" VBox.vgrow="ALWAYS">
-        <HBox spacing="10" alignment="CENTER_LEFT">
-            <TextField fx:id="searchField" promptText="Search by competence or title..." styleClass="search-field" HBox.hgrow="ALWAYS" />
-            <ComboBox fx:id="statusFilter" promptText="Filter by Status" />
-        </HBox>
-        <TableView fx:id="tableView" VBox.vgrow="ALWAYS">
-            <columns>
-                <TableColumn fx:id="compCol" text="Competence" prefWidth="180" />
-                <TableColumn fx:id="titleCol" text="Title" prefWidth="180" />
-                <TableColumn fx:id="scoreCol" text="Score" prefWidth="100" />
-                <TableColumn fx:id="dateCol" text="Date" prefWidth="150" />
-                <TableColumn fx:id="statusCol" text="Status" prefWidth="120" />
-            </columns>
-        </TableView>
-    </VBox>
+        <center>
+            <VBox spacing="20.0" styleClass="module-card" style="-fx-padding: 25;">
+                <HBox alignment="CENTER_LEFT" spacing="15.0">
+                    <Label styleClass="section-title" text="Evaluation History" />
+                    <Region HBox.hgrow="ALWAYS" />
+                    <TextField fx:id="searchField" prefWidth="300.0" promptText="Search by title or competence..." styleClass="search-field" />
+                    <ComboBox fx:id="statusFilter" prefWidth="150.0" promptText="Filter by status" />
+                </HBox>
+                
+                <TableView fx:id="tableView" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="compCol" prefWidth="200" text="Competence" />
+                        <TableColumn fx:id="titleCol" prefWidth="200" text="Evaluation Title" />
+                        <TableColumn fx:id="scoreCol" prefWidth="100" text="My Score" />
+                        <TableColumn fx:id="dateCol" prefWidth="150" text="Date" />
+                        <TableColumn fx:id="statusCol" prefWidth="120" text="Status" />
+                    </columns>
+                </TableView>
 
-    <HBox spacing="10" alignment="CENTER_RIGHT">
-        <Button onAction="#handleExport" text="Export CSV" styleClass="btn-info" />
-    </HBox>
-</VBox>
+                <HBox alignment="CENTER_RIGHT" spacing="15.0">
+                    <Button onAction="#handleExport" styleClass="info-btn" text="📥 Export Report (CSV)" />
+                </HBox>
+            </VBox>
+        </center>
+    </BorderPane>
+</StackPane>

@@ -3,60 +3,71 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import java.net.URL?>
 
-<VBox spacing="15" styleClass="main-container" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.SignUpController">
+<StackPane prefHeight="750.0" prefWidth="900.0" styleClass="course-module-root" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.SignUpController">
+    <stylesheets>
+        <URL value="@modern.css" />
+    </stylesheets>
+    
     <padding>
-        <Insets bottom="30" left="30" right="30" top="30"/>
+        <Insets bottom="30" left="30" right="30" top="30" />
     </padding>
 
-    <!-- Title -->
-    <Label text="📝 Create Account" styleClass="title-label" />
-    <Label text="Join us today!" style="-fx-text-fill: #666; -fx-font-size: 14px;" />
-
-    <!-- Registration Card -->
-    <VBox spacing="12" styleClass="input-card">
-
-        <HBox spacing="15">
-            <VBox spacing="5" HBox.hgrow="ALWAYS">
-                <Label text="First Name" styleClass="label-bold" />
-                <TextField fx:id="firstNameField" promptText="First name" />
+    <VBox alignment="CENTER" spacing="20.0">
+        <VBox maxWidth="550.0" spacing="20.0" styleClass="module-card" style="-fx-padding: 35;">
+            <VBox alignment="CENTER" spacing="5.0">
+                <Label styleClass="hero-title" text="Join EduConnect" style="-fx-text-fill: #1a7d73; -fx-font-size: 28px;" />
+                <Label styleClass="module-subtitle" text="Create your account to start managing your journey." />
             </VBox>
-            <VBox spacing="5" HBox.hgrow="ALWAYS">
-                <Label text="Last Name" styleClass="label-bold" />
-                <TextField fx:id="lastNameField" promptText="Last name" />
-            </VBox>
-        </HBox>
+            
+            <GridPane hgap="15.0" vgap="15.0">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                </columnConstraints>
+                
+                <children>
+                    <VBox spacing="5.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                        <Label styleClass="label-bold" text="First Name" />
+                        <TextField fx:id="firstNameField" promptText="First name" />
+                    </VBox>
+                    <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                        <Label styleClass="label-bold" text="Last Name" />
+                        <TextField fx:id="lastNameField" promptText="Last name" />
+                    </VBox>
+                    
+                    <VBox spacing="5.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                        <Label styleClass="label-bold" text="Age" />
+                        <TextField fx:id="ageField" promptText="Your age" />
+                    </VBox>
+                    <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <Label styleClass="label-bold" text="Desired Role" />
+                        <ComboBox fx:id="roleComboBox" maxWidth="Infinity" />
+                    </VBox>
+                    
+                    <VBox spacing="5.0" GridPane.columnSpan="2" GridPane.rowIndex="2">
+                        <Label styleClass="label-bold" text="Email Address" />
+                        <TextField fx:id="emailField" promptText="example@domain.com" />
+                    </VBox>
+                    
+                    <VBox spacing="5.0" GridPane.columnIndex="0" GridPane.rowIndex="3">
+                        <Label styleClass="label-bold" text="Password" />
+                        <PasswordField fx:id="passwordField" promptText="Strong password" />
+                    </VBox>
+                    <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                        <Label styleClass="label-bold" text="Confirm Password" />
+                        <PasswordField fx:id="confirmPasswordField" promptText="Repeat password" />
+                    </VBox>
+                </children>
+            </GridPane>
 
-        <VBox spacing="5">
-            <Label text="Age" styleClass="label-bold" />
-            <TextField fx:id="ageField" promptText="Age" />
+            <Button maxWidth="Infinity" onAction="#handleSignUp" styleClass="primary-btn" text="✅ Create Account" style="-fx-pref-height: 45; -fx-font-size: 15px;" />
+            
+            <HBox alignment="CENTER" spacing="10.0">
+                <Label text="Already have an account?" styleClass="meta-label" />
+                <Button onAction="#goToSignIn" styleClass="secondary-btn" text="Sign In Instead" />
+            </HBox>
         </VBox>
-
-        <VBox spacing="5">
-            <Label text="Email" styleClass="label-bold" />
-            <TextField fx:id="emailField" promptText="Email address" />
-        </VBox>
-
-        <VBox spacing="5">
-            <Label text="Role" styleClass="label-bold" />
-            <ComboBox fx:id="roleComboBox" maxWidth="Infinity" promptText="Choose your role" />
-        </VBox>
-
-        <VBox spacing="5">
-            <Label text="Password" styleClass="label-bold" />
-            <PasswordField fx:id="passwordField" promptText="Choose a password" />
-        </VBox>
-
-        <VBox spacing="5">
-            <Label text="Confirm Password" styleClass="label-bold" />
-            <PasswordField fx:id="confirmPasswordField" promptText="Confirm your password" />
-        </VBox>
-
     </VBox>
-
-    <!-- Buttons -->
-    <HBox spacing="20" alignment="CENTER">
-        <Button onAction="#handleSignUp" text="✅ Sign Up" styleClass="btn-primary" />
-        <Button onAction="#goToSignIn" text="← Back to Login" styleClass="btn-info" />
-    </HBox>
-</VBox>
+</StackPane>

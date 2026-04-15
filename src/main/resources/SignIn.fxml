@@ -3,36 +3,44 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import java.net.URL?>
 
-<VBox spacing="20" styleClass="main-container" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.SignInController">
+<StackPane prefHeight="600.0" prefWidth="800.0" styleClass="course-module-root" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.SignInController">
+    <stylesheets>
+        <URL value="@modern.css" />
+    </stylesheets>
+    
     <padding>
-        <Insets bottom="40" left="40" right="40" top="40"/>
+        <Insets bottom="40" left="40" right="40" top="40" />
     </padding>
 
-    <!-- Title -->
-    <Label text="🔐 Welcome Back!" styleClass="title-label" />
-    <Label text="Please sign in to continue" style="-fx-text-fill: #666; -fx-font-size: 14px;" />
+    <VBox alignment="CENTER" spacing="30.0">
+        <VBox maxWidth="450.0" spacing="25.0" styleClass="module-card" style="-fx-padding: 40;">
+            <VBox alignment="CENTER" spacing="10.0">
+                <Label styleClass="hero-title" text="EduConnect" style="-fx-text-fill: #1a7d73; -fx-font-size: 32px;" />
+                <Label styleClass="module-subtitle" text="Welcome back! Please login to your account." />
+            </VBox>
+            
+            <VBox spacing="15.0">
+                <VBox spacing="8.0">
+                    <Label styleClass="label-bold" text="Email Address" />
+                    <TextField fx:id="emailField" promptText="Enter your email" style="-fx-pref-height: 45;" />
+                </VBox>
+                
+                <VBox spacing="8.0">
+                    <Label styleClass="label-bold" text="Password" />
+                    <PasswordField fx:id="passwordField" promptText="Enter your password" style="-fx-pref-height: 45;" />
+                </VBox>
+            </VBox>
 
-    <!-- Login Card -->
-    <VBox spacing="15" styleClass="input-card">
-
-        <!-- Email Field -->
-        <VBox spacing="5">
-            <Label text="Email" styleClass="label-bold" />
-            <TextField fx:id="emailField" promptText="Enter your email" />
+            <Button maxWidth="Infinity" onAction="#handleLogin" styleClass="primary-btn" text="🚀 Login to Dashboard" style="-fx-pref-height: 50; -fx-font-size: 16px;" />
+            
+            <Separator />
+            
+            <HBox alignment="CENTER" spacing="10.0">
+                <Label text="Don't have an account?" styleClass="meta-label" />
+                <Button onAction="#goToSignUp" styleClass="secondary-btn" text="Create Account" />
+            </HBox>
         </VBox>
-
-        <!-- Password Field -->
-        <VBox spacing="5">
-            <Label text="Password" styleClass="label-bold" />
-            <PasswordField fx:id="passwordField" promptText="Enter your password" />
-        </VBox>
-
     </VBox>
-
-    <!-- Buttons -->
-    <HBox spacing="20" alignment="CENTER">
-        <Button onAction="#handleLogin" text="🔓 Sign In" styleClass="btn-primary" />
-        <Button onAction="#goToSignUp" text="📝 Create Account" styleClass="btn-info" />
-    </HBox>
-</VBox>
+</StackPane>

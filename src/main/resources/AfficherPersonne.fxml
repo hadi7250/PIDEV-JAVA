@@ -3,70 +3,107 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import java.net.URL?>
 
-<VBox fx:id="mainContainer" spacing="15" styleClass="light-theme" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AfficherPersonne">
+<StackPane fx:id="mainContainer" prefHeight="750.0" prefWidth="1200.0" styleClass="course-module-root" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AfficherPersonne">
+    <stylesheets>
+        <URL value="@modern.css" />
+    </stylesheets>
+    
     <padding>
-        <Insets bottom="25" left="25" right="25" top="25"/>
+        <Insets bottom="20" left="20" right="20" top="20" />
     </padding>
 
-    <!-- Header with Title, Logout, and Theme Toggle -->
-    <HBox alignment="CENTER_RIGHT" spacing="10">
-        <VBox HBox.hgrow="ALWAYS">
-            <Label styleClass="title-label" text="📋 Gestion des Utilisateurs" />
-            <Label fx:id="adminInfoLabel" text="" style="-fx-font-size: 12px; -fx-text-fill: #666;" />
-        </VBox>
-        <Button onAction="#logout" text="🚪 Logout" styleClass="btn-danger" />
-        <Button onAction="#toggleTheme" text="🌙 Dark Mode" styleClass="theme-toggle-btn" />
-    </HBox>
+    <BorderPane>
+        <top>
+            <HBox alignment="CENTER_LEFT" spacing="15.0" styleClass="module-toolbar">
+                <padding>
+                    <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+                </padding>
+                <VBox spacing="4.0">
+                    <Label styleClass="module-title" text="Admin Dashboard - User Management" />
+                    <Label fx:id="adminInfoLabel" styleClass="module-subtitle" text="👑 Logged in as: Admin" />
+                </VBox>
+                <Region HBox.hgrow="ALWAYS" />
+                <Button onAction="#refreshTable" styleClass="secondary-btn" text="🔄 Refresh" />
+                <Button onAction="#toggleTheme" styleClass="secondary-btn" text="🌓 Theme" />
+                <Button onAction="#logout" styleClass="danger-btn" text="🚪 Logout" />
+            </HBox>
+        </top>
 
-    <!-- Search Section -->
-    <VBox spacing="10">
-        <Label styleClass="subtitle-label" text="🔍 Rechercher un utilisateur" />
-        <HBox spacing="10" alignment="CENTER_LEFT">
-            <TextField fx:id="searchField" promptText="Tapez un nom ou prénom..." styleClass="search-field" HBox.hgrow="ALWAYS" />
-            <Button onAction="#searchUsers" text="Rechercher" styleClass="btn-info" />
-            <Button onAction="#resetSearch" text="Réinitialiser" styleClass="btn-primary" />
-        </HBox>
-    </VBox>
+        <center>
+            <SplitPane dividerPositions="0.65" style="-fx-padding: 20 0 0 0;">
+                <items>
+                    <!-- Left Side: Table -->
+                    <VBox spacing="15.0" styleClass="module-card">
+                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                            <Label styleClass="section-title" text="Registered Users" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <TextField fx:id="searchField" prefWidth="300.0" promptText="Search by name or email..." styleClass="search-field" />
+                            <Button onAction="#resetSearch" styleClass="secondary-btn" text="Reset" />
+                        </HBox>
+                        <TableView fx:id="tableView" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="idCol" prefWidth="50" text="ID" />
+                                <TableColumn fx:id="prenomCol" prefWidth="120" text="First Name" />
+                                <TableColumn fx:id="nomCol" prefWidth="120" text="Last Name" />
+                                <TableColumn fx:id="ageCol" prefWidth="60" text="Age" />
+                                <TableColumn fx:id="emailCol" prefWidth="200" text="Email" />
+                                <TableColumn fx:id="roleCol" prefWidth="100" text="Role" />
+                            </columns>
+                        </TableView>
+                    </VBox>
 
-    <!-- Table Section -->
-    <VBox spacing="10">
-        <Label styleClass="subtitle-label" text="📊 Liste des utilisateurs" />
-        <TableView fx:id="tableView" prefHeight="300">
-            <columns>
-                <TableColumn fx:id="idCol" prefWidth="50" text="ID"/>
-                <TableColumn fx:id="nomCol" prefWidth="150" text="Nom"/>
-                <TableColumn fx:id="prenomCol" prefWidth="150" text="Prénom"/>
-                <TableColumn fx:id="ageCol" prefWidth="80" text="Âge"/>
-                <TableColumn fx:id="emailCol" prefWidth="200" text="Email"/>
-                <TableColumn fx:id="roleCol" prefWidth="100" text="Rôle"/>
-            </columns>
-        </TableView>
-    </VBox>
+                    <!-- Right Side: Edit Form -->
+                    <VBox spacing="15.0" styleClass="module-card">
+                        <Label styleClass="section-title" text="Manage User" />
+                        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
+                            <VBox spacing="15.0">
+                                <HBox spacing="10">
+                                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                        <Label styleClass="label-bold" text="First Name" />
+                                        <TextField fx:id="editPrenomField" />
+                                    </VBox>
+                                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                        <Label styleClass="label-bold" text="Last Name" />
+                                        <TextField fx:id="editNomField" />
+                                    </VBox>
+                                </HBox>
+                                
+                                <HBox spacing="10">
+                                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                        <Label styleClass="label-bold" text="Age" />
+                                        <TextField fx:id="editAgeField" />
+                                    </VBox>
+                                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                        <Label styleClass="label-bold" text="Role" />
+                                        <ComboBox fx:id="editRoleCombo" maxWidth="Infinity" />
+                                    </VBox>
+                                </HBox>
 
-    <!-- Edit Section -->
-    <VBox spacing="10" styleClass="input-card">
-        <Label styleClass="subtitle-label" text="✏️ Modifier un utilisateur" />
-        <Label text="Sélectionnez un utilisateur dans le tableau pour le modifier" style="-fx-font-size: 11px;" />
+                                <VBox spacing="5">
+                                    <Label styleClass="label-bold" text="Email" />
+                                    <TextField fx:id="editEmailField" />
+                                </VBox>
 
-        <HBox spacing="15">
-            <TextField fx:id="editNomField" promptText="Nom" prefWidth="140" />
-            <TextField fx:id="editPrenomField" promptText="Prénom" prefWidth="140" />
-            <TextField fx:id="editAgeField" promptText="Âge" prefWidth="80" />
-            <TextField fx:id="editEmailField" promptText="Email" prefWidth="180" />
-            <ComboBox fx:id="editRoleCombo" promptText="Rôle" prefWidth="100" />
-        </HBox>
-
-        <HBox spacing="15">
-            <PasswordField fx:id="editPasswordField" promptText="Nouveau mot de passe (optionnel)" HBox.hgrow="ALWAYS" />
-        </HBox>
-    </VBox>
-
-    <!-- Action Buttons -->
-    <HBox spacing="20" alignment="CENTER">
-        <Button onAction="#updateUser" text="✏️ Modifier" styleClass="btn-warning" />
-        <Button onAction="#deleteUser" text="🗑️ Supprimer" styleClass="btn-danger" />
-        <Button onAction="#refreshTable" text="🔄 Actualiser" styleClass="btn-info" />
-        <Button onAction="#goToAddUser" text="➕ Ajouter un utilisateur" styleClass="btn-primary" />
-    </HBox>
-</VBox>
+                                <VBox spacing="5">
+                                    <Label styleClass="label-bold" text="Reset Password" />
+                                    <PasswordField fx:id="editPasswordField" promptText="Leave empty to keep current" />
+                                </VBox>
+                                
+                                <Separator />
+                                
+                                <VBox spacing="10.0" alignment="CENTER">
+                                    <Button maxWidth="Infinity" onAction="#updateUser" styleClass="primary-btn" text="💾 Update User Info" />
+                                    <Button maxWidth="Infinity" onAction="#deleteUser" styleClass="danger-btn" text="🗑️ Delete Account" />
+                                    <Separator />
+                                    <Button maxWidth="Infinity" onAction="#goToAddUser" styleClass="info-btn" text="➕ Create New User" />
+                                </VBox>
+                            </VBox>
+                        </ScrollPane>
+                    </VBox>
+                </items>
+            </SplitPane>
+        </center>
+    </BorderPane>
+</StackPane>
