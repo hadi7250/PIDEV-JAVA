@@ -1,5 +1,6 @@
 package gui;
 
+import entities.Competence;
 import entities.Evaluation;
 import entities.User;
 import javafx.collections.FXCollections;
@@ -11,8 +12,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import services.CompetenceService;
 import services.EvaluationService;
 
 import java.io.IOException;
@@ -24,28 +26,45 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 public class EvaluationManagementController implements Initializable {
-    @FXML private VBox mainContainer;
+    @FXML private StackPane mainContainer;
+    
+    // Competences Table
+    @FXML private TableView<Competence> competenceTableView;
+    @FXML private TableColumn<Competence, String> compNameCol;
+    @FXML private TableColumn<Competence, Integer> compUserCol;
+
+    // Evaluations Table
     @FXML private TableView<Evaluation> tableView;
-    @FXML private TableColumn<Evaluation, String> compCol;
     @FXML private TableColumn<Evaluation, String> titleCol;
     @FXML private TableColumn<Evaluation, Float> scoreCol;
     @FXML private TableColumn<Evaluation, String> statusCol;
     @FXML private TableColumn<Evaluation, LocalDateTime> dateCol;
 
+    @FXML private Label totalLabel;
     @FXML private TextField searchField;
     @FXML private TextField scoreField;
     @FXML private ComboBox<String> statusCombo;
     @FXML private TextArea commentArea;
 
     private EvaluationService service = new EvaluationService();
+    private CompetenceService competenceService = new CompetenceService();
     private User loggedInUser;
+    
     private Evaluation selectedEvaluation;
+    private Competence selectedCompetence;
+    
     private ObservableList<Evaluation> allEvaluations = FXCollections.observableArrayList();
+    private ObservableList<Competence> allCompetences = FXCollections.observableArrayList();
+    
     private boolean isDarkMode = false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        compCol.setCellValueFactory(new PropertyValueFactory<>("competence"));
+        // Competence Columns
+        compNameCol.setCellValueFactory(new PropertyValueFactory<>("title"));
+        compUserCol.setCellValueFactory(new PropertyValueFactory<>("userId"));
+
+        // Evaluation Columns
         titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
         scoreCol.setCellValueFactory(new PropertyValueFactory<>("score"));
         statusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
@@ -53,6 +72,15 @@ public class EvaluationManagementController implements Initializable {
 
         statusCombo.setItems(FXCollections.observableArrayList("pending", "graded", "rejected"));
 
+        // Competence Selection
+        competenceTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                selectedCompetence = newVal;
+                filterEvaluationsByCompetence(newVal);
+            }
+        });
+
+        // Evaluation Selection
         tableView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
                 selectedEvaluation = newVal;
@@ -60,12 +88,12 @@ public class EvaluationManagementController implements Initializable {
             }
         });
 
-        searchField.textProperty().addListener((obs, oldVal, newVal) -> searchEvaluations());
+        searchField.textProperty().addListener((obs, oldVal, newVal) -> searchData());
     }
 
     public void setLoggedInUser(User user) {
         this.loggedInUser = user;
-        refreshTable();
+        refreshData();
     }
 
     private void loadSelectedEvaluation() {
@@ -74,21 +102,46 @@ public class EvaluationManagementController implements Initializable {
         commentArea.setText(selectedEvaluation.getComment());
     }
 
-    private void refreshTable() {
+    @FXML
+    private void refreshData() {
         try {
-            List<Evaluation> list = service.readAll();
-            allEvaluations = FXCollections.observableArrayList(list);
+            List<Competence> cList = competenceService.readAll();
+            allCompetences = FXCollections.observableArrayList(cList);
+            competenceTableView.setItems(allCompetences);
+
+            List<Evaluation> eList = service.readAll();
+            allEvaluations = FXCollections.observableArrayList(eList);
             tableView.setItems(allEvaluations);
+            
+            if (totalLabel != null) {
+                totalLabel.setText("Total Evaluations: " + allEvaluations.size());
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    private void searchEvaluations() {
+    private void filterEvaluationsByCompetence(Competence comp) {
+        List<Evaluation> filtered = allEvaluations.stream()
+            .filter(e -> e.getCompetence() != null && e.getCompetence().getId() == comp.getId())
+            .collect(Collectors.toList());
+        tableView.setItems(FXCollections.observableArrayList(filtered));
+    }
+
+    private void searchData() {
         String text = searchField.getText().toLowerCase();
+        
+        // Search in competences
+        competenceTableView.setItems(FXCollections.observableArrayList(
+            allCompetences.stream()
+                .filter(c -> c.getTitle().toLowerCase().contains(text))
+                .collect(Collectors.toList())
+        ));
+
+        // Search in evaluations
         tableView.setItems(FXCollections.observableArrayList(
             allEvaluations.stream()
-                .filter(e -> e.getTitle().toLowerCase().contains(text) || e.getCompetence().getTitle().toLowerCase().contains(text))
+                .filter(e -> e.getTitle().toLowerCase().contains(text))
                 .collect(Collectors.toList())
         ));
     }
@@ -101,7 +154,7 @@ public class EvaluationManagementController implements Initializable {
             selectedEvaluation.setStatus(statusCombo.getValue());
             selectedEvaluation.setComment(commentArea.getText());
             service.update(selectedEvaluation);
-            refreshTable();
+            refreshData();
             showAlert(Alert.AlertType.INFORMATION, "Success", "Evaluation graded successfully!");
         } catch (NumberFormatException e) {
             showAlert(Alert.AlertType.ERROR, "Error", "Invalid score format.");
@@ -112,48 +165,50 @@ public class EvaluationManagementController implements Initializable {
     private void handleDelete() throws SQLException {
         if (selectedEvaluation == null) return;
         service.delete(selectedEvaluation);
-        refreshTable();
+        refreshData();
         showAlert(Alert.AlertType.INFORMATION, "Success", "Evaluation deleted successfully!");
     }
 
     @FXML
     private void goToAdd() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterEvaluation.fxml"));
-            Parent root = loader.load();
-            AjouterEvaluationController controller = loader.getController();
-            controller.setLoggedInUser(loggedInUser);
-            Stage stage = (Stage) mainContainer.getScene().getWindow();
-            stage.setScene(new Scene(root));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
-    private void toggleTheme() {
-        // (Theme logic)
+        loadSubModule("/fxml/AjouterEvaluation.fxml");
     }
 
     @FXML
     private void goToProfile() {
+        loadSubModule("/fxml/UserBasicPage.fxml");
+    }
+
+    private void loadSubModule(String fxmlPath) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserBasicPage.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
-            UserBasicPageController controller = loader.getController();
-            controller.setLoggedInUser(loggedInUser);
-            Stage stage = (Stage) mainContainer.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("EduConnect - My Profile");
+            
+            Object controller = loader.getController();
+            if (controller instanceof AjouterEvaluationController) ((AjouterEvaluationController) controller).setLoggedInUser(loggedInUser);
+            else if (controller instanceof UserBasicPageController) ((UserBasicPageController) controller).setLoggedInUser(loggedInUser);
+
+            StackPane contentHost = (StackPane) mainContainer.getScene().lookup("#contentHost");
+            if (contentHost != null) {
+                contentHost.getChildren().setAll(root);
+            } else {
+                Stage stage = (Stage) mainContainer.getScene().getWindow();
+                stage.setScene(new Scene(root));
+            }
         } catch (IOException e) {
             e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Error", "Could not load profile page: " + e.getMessage());
         }
     }
 
     @FXML
     private void goBack() {
-        // (Back logic)
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/SignIn.fxml"));
+            Stage stage = (Stage) mainContainer.getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void showAlert(Alert.AlertType type, String title, String msg) {

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+
+<StackPane fx:id="mainContainer" prefHeight="750.0" prefWidth="1200.0" styleClass="course-module-root" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.EvaluationManagementController">
+    <stylesheets>
+        <URL value="@../modern.css" />
+    </stylesheets>
+    
+    <BorderPane styleClass="client-dashboard-shell">
+        <padding>
+            <Insets bottom="18.0" left="18.0" right="18.0" top="18.0" />
+        </padding>
+
+        <top>
+            <HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="module-toolbar client-toolbar">
+                <padding>
+                    <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+                </padding>
+                <VBox spacing="4.0">
+                    <Label styleClass="module-title client-page-title" text="Evaluation Studio" />
+                    <Label styleClass="module-subtitle" text="Grade student performances, provide qualitative feedback, and track historical results." />
+                </VBox>
+                <Region HBox.hgrow="ALWAYS" />
+                <TextField fx:id="searchField" prefWidth="280.0" promptText="Search assessments or competences..." styleClass="search-field" />
+                <Button onAction="#refreshData" styleClass="secondary-btn" text="Refresh All" />
+            </HBox>
+        </top>
+
+        <center>
+            <SplitPane dividerPositions="0.3, 0.7" style="-fx-padding: 20 0 0 0;">
+                <items>
+                    <!-- Left Side: Competences Table (to pick which student/skill to grade) -->
+                    <VBox spacing="16.0" styleClass="module-card client-sidebar-card">
+                        <Label styleClass="section-title" text="Target Competences" />
+                        <TableView fx:id="competenceTableView" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="compNameCol" prefWidth="150" text="Skill Title" />
+                                <TableColumn fx:id="compUserCol" prefWidth="100" text="Student ID" />
+                            </columns>
+                        </TableView>
+                    </VBox>
+
+                    <!-- Middle: Evaluations Table -->
+                    <VBox spacing="16.0" styleClass="module-card client-sidebar-card">
+                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                            <Label styleClass="section-title" text="Assessment Ledger" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="totalLabel" styleClass="meta-label" text="Live tracking" />
+                        </HBox>
+                        <TableView fx:id="tableView" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="titleCol" prefWidth="150" text="Assessment Title" />
+                                <TableColumn fx:id="scoreCol" prefWidth="80" text="Score" />
+                                <TableColumn fx:id="statusCol" prefWidth="100" text="Status" />
+                                <TableColumn fx:id="dateCol" prefWidth="120" text="Date" />
+                            </columns>
+                        </TableView>
+                    </VBox>
+
+                    <!-- Right Side: Grade Form -->
+                    <VBox spacing="16.0" styleClass="module-card client-workspace">
+                        <Label styleClass="section-title" text="Grading Terminal" />
+                        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="cards-scroll" VBox.vgrow="ALWAYS">
+                            <VBox spacing="15.0">
+                                <VBox spacing="5" styleClass="module-card">
+                                    <Label styleClass="label-bold" text="Performance Score (0-100)" />
+                                    <TextField fx:id="scoreField" promptText="Enter numerical result" />
+                                </VBox>
+                                <VBox spacing="5" styleClass="module-card">
+                                    <Label styleClass="label-bold" text="Evaluation Status" />
+                                    <ComboBox fx:id="statusCombo" maxWidth="Infinity" promptText="Assign new status" />
+                                </VBox>
+                                <VBox spacing="5" styleClass="module-card">
+                                    <Label styleClass="label-bold" text="Teacher Feedback" />
+                                    <TextArea fx:id="commentArea" prefHeight="150" promptText="Provide constructive comments..." wrapText="true" />
+                                </VBox>
+                                
+                                <Separator />
+                                
+                                <VBox spacing="10.0" alignment="CENTER">
+                                    <Button maxWidth="Infinity" onAction="#handleGrade" styleClass="primary-btn" text="✅ Commit Grade" />
+                                    <Button maxWidth="Infinity" onAction="#handleDelete" styleClass="danger-btn" text="🗑️ Purge Record" />
+                                    <Button maxWidth="Infinity" onAction="#goToAdd" styleClass="info-btn" text="➕ New Assessment" />
+                                </VBox>
+                            </VBox>
+                        </ScrollPane>
+                    </VBox>
+                </items>
+            </SplitPane>
+        </center>
+    </BorderPane>
+</StackPane>
