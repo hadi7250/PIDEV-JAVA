@@ -11,6 +11,15 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         // Populate forum with realistic data
+        System.out.println("Creating user schema tables...");
+        try {
+            services.UserSchemaService.ensureSchema();
+            System.out.println("User schema creation completed successfully!");
+        } catch (Exception e) {
+            System.err.println("User schema creation failed: " + e.getMessage());
+            e.printStackTrace();
+        }
+
         System.out.println("Populating forum with realistic data...");
         try {
             ForumDataPopulator populator = new ForumDataPopulator();
@@ -21,9 +30,9 @@ public class Main extends Application {
             e.printStackTrace();
         }
         
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EduConnectLayout.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SignIn.fxml"));
         stage.setScene(new Scene(loader.load()));
-        stage.setTitle("EduConnect");
+        stage.setTitle("EduConnect - Sign In");
         stage.show();
     }
 

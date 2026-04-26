@@ -48,7 +48,20 @@
             <Button fx:id="btnForum" maxWidth="1.7976931348623157E308" onAction="#openForum" styleClass="nav-btn" text="Forum" />
             <Button fx:id="btnAdminForum" maxWidth="1.7976931348623157E308" onAction="#openAdminForum" styleClass="nav-btn" text="Admin forum" />
 
+            <Separator />
+
+            <Label styleClass="section-title" text="Admin" />
+            <Button fx:id="btnAdminUsers" maxWidth="1.7976931348623157E308" onAction="#openAdminUsers" styleClass="nav-btn" text="Admin Users" />
+
             <Region VBox.vgrow="ALWAYS" />
+
+            <!-- User Section -->
+            <Separator />
+            <VBox spacing="10" styleClass="user-section">
+                <Label fx:id="userProfileLabel" styleClass="section-title" text="👤 Guest" />
+                <Button fx:id="btnMyProfile" maxWidth="1.7976931348623157E308" onAction="#openMyProfile" styleClass="nav-btn" text="My Profile" />
+                <Button fx:id="btnLogout" maxWidth="1.7976931348623157E308" onAction="#logout" styleClass="nav-btn" text="Logout" />
+            </VBox>
         </VBox>
     </left>
 

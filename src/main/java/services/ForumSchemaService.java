@@ -73,6 +73,26 @@ public final class ForumSchemaService {
                                 ON DELETE CASCADE
                         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
                         """);
+
+                st.executeUpdate("""
+                        CREATE TABLE IF NOT EXISTS forum_votes (
+                            user_id INT NOT NULL,
+                            message_id INT NOT NULL,
+                            vote_type ENUM('up', 'down') NOT NULL,
+                            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                            PRIMARY KEY (user_id, message_id),
+                            INDEX idx_forum_votes_user (user_id),
+                            INDEX idx_forum_votes_message (message_id),
+                            CONSTRAINT fk_forum_votes_user
+                                FOREIGN KEY (user_id)
+                                REFERENCES user(id)
+                                ON DELETE CASCADE,
+                            CONSTRAINT fk_forum_votes_message
+                                FOREIGN KEY (message_id)
+                                REFERENCES forum_message(id_forum_message)
+                                ON DELETE CASCADE
+                        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+                        """);
             }
 
             initialized = true;

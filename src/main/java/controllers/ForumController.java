@@ -26,8 +26,9 @@ import models.ForumMessage;
 import services.ForumCategoryService;
 import services.ForumDiscussionService;
 import services.ForumMessageService;
+import utils.SessionManager;
 
-import java.sql.Timestamp;
+import java.sql.*;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import utils.MyDB;
 
 public class ForumController {
     private static final DateTimeFormatter DATE_FORMAT =
@@ -77,6 +79,82 @@ public class ForumController {
 
         clearDetail();
         onRefresh();
+    }
+
+    // ===== Vote Management Methods =====
+    
+    private String getUserVote(int messageId) {
+        if (!SessionManager.getInstance().isLoggedIn()) {
+            return null;
+        }
+        
+        int userId = SessionManager.getInstance().getCurrentUserId();
+        String query = "SELECT vote_type FROM forum_votes WHERE user_id = ? AND message_id = ?";
+        
+        try (PreparedStatement pstmt = MyDB.getInstance().getConnection().prepareStatement(query)) {
+            pstmt.setInt(1, userId);
+            pstmt.setInt(2, messageId);
+            ResultSet rs = pstmt.executeQuery();
+            
+            if (rs.next()) {
+                return rs.getString("vote_type");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error checking user vote: " + e.getMessage());
+        }
+        return null;
+    }
+    
+    private boolean setUserVote(int messageId, String voteType) {
+        if (!SessionManager.getInstance().isLoggedIn()) {
+            return false;
+        }
+        
+        int userId = SessionManager.getInstance().getCurrentUserId();
+        
+        // First check if user already voted
+        String existingVote = getUserVote(messageId);
+        
+        if (existingVote != null) {
+            // User already voted, remove the vote
+            String deleteQuery = "DELETE FROM forum_votes WHERE user_id = ? AND message_id = ?";
+            try (PreparedStatement pstmt = MyDB.getInstance().getConnection().prepareStatement(deleteQuery)) {
+                pstmt.setInt(1, userId);
+                pstmt.setInt(2, messageId);
+                pstmt.executeUpdate();
+                
+                // Decrement the appropriate counter
+                if ("up".equals(existingVote)) {
+                    messageService.downvote(messageId); // Remove upvote
+                } else {
+                    messageService.upvote(messageId); // Remove downvote
+                }
+                return true;
+            } catch (SQLException e) {
+                System.err.println("Error removing vote: " + e.getMessage());
+                return false;
+            }
+        } else {
+            // New vote, add it
+            String insertQuery = "INSERT INTO forum_votes (user_id, message_id, vote_type) VALUES (?, ?, ?)";
+            try (PreparedStatement pstmt = MyDB.getInstance().getConnection().prepareStatement(insertQuery)) {
+                pstmt.setInt(1, userId);
+                pstmt.setInt(2, messageId);
+                pstmt.setString(3, voteType);
+                pstmt.executeUpdate();
+                
+                // Increment the appropriate counter
+                if ("up".equals(voteType)) {
+                    messageService.upvote(messageId);
+                } else {
+                    messageService.downvote(messageId);
+                }
+                return true;
+            } catch (SQLException e) {
+                System.err.println("Error adding vote: " + e.getMessage());
+                return false;
+            }
+        }
     }
 
     @FXML
@@ -218,15 +296,19 @@ public class ForumController {
         selectedContent.setText(safe(d.getContent(), ""));
 
         if (d.isLocked()) {
-            lockedNotice.setText("\uD83D\uDD12 Locked \u2014 replies disabled");
+            lockedNotice.setText("\uD83D\uDD12 Locked — replies disabled");
             postReplyBtn.setDisable(true);
             replyContentArea.setDisable(true);
-            replyAuthorField.setDisable(true);
         } else {
             lockedNotice.setText("");
-            postReplyBtn.setDisable(false);
-            replyContentArea.setDisable(false);
-            replyAuthorField.setDisable(false);
+            // Only enable reply if user is logged in
+            boolean isLoggedIn = SessionManager.getInstance().isLoggedIn();
+            postReplyBtn.setDisable(!isLoggedIn);
+            replyContentArea.setDisable(!isLoggedIn);
+            
+            if (!isLoggedIn) {
+                lockedNotice.setText("You must be logged in to post replies.");
+            }
         }
 
         renderMessages();
@@ -276,18 +358,35 @@ public class ForumController {
         Label votes = new Label("\u25B2 " + m.getUpvotes() + "   \u25BC " + m.getDownvotes());
         votes.getStyleClass().add("admin-card-meta");
 
-        Button up = new Button("Upvote");
+        // Check if user has already voted on this message
+        String userVote = getUserVote(m.getId());
+        
+        Button up = new Button(userVote != null && userVote.equals("up") ? "✓ Upvoted" : "Upvote");
         up.getStyleClass().add("secondary-btn");
+        if (userVote != null && userVote.equals("up")) {
+            up.getStyleClass().add("vote-active");
+        }
         up.setOnAction(e -> {
-            messageService.upvote(m.getId());
-            renderMessages();
+            if (SessionManager.getInstance().isLoggedIn()) {
+                setUserVote(m.getId(), "up");
+                renderMessages();
+            } else {
+                showWarning("You must be logged in to vote.");
+            }
         });
 
-        Button down = new Button("Downvote");
+        Button down = new Button(userVote != null && userVote.equals("down") ? "✓ Downvoted" : "Downvote");
         down.getStyleClass().add("secondary-btn");
+        if (userVote != null && userVote.equals("down")) {
+            down.getStyleClass().add("vote-active");
+        }
         down.setOnAction(e -> {
-            messageService.downvote(m.getId());
-            renderMessages();
+            if (SessionManager.getInstance().isLoggedIn()) {
+                setUserVote(m.getId(), "down");
+                renderMessages();
+            } else {
+                showWarning("You must be logged in to vote.");
+            }
         });
 
         // Add edit/delete buttons for messages
@@ -316,11 +415,19 @@ public class ForumController {
             showWarning("This discussion is locked.");
             return;
         }
-        String author = safe(replyAuthorField.getText()).trim();
+        
+        // Check if user is logged in
+        if (!SessionManager.getInstance().isLoggedIn()) {
+            showWarning("You must be logged in to post replies.");
+            return;
+        }
+        
         String content = safe(replyContentArea.getText()).trim();
 
-        if (author.isEmpty()) { showWarning("Please enter your name."); return; }
         if (content.isEmpty()) { showWarning("Reply content cannot be empty."); return; }
+
+        // Use logged-in user's name as author
+        String author = SessionManager.getInstance().getCurrentUserFullName();
 
         ForumMessage msg = new ForumMessage(content, author, selectedDiscussion.getId());
         msg.setCreatedAt(new Timestamp(System.currentTimeMillis()));
@@ -346,7 +453,6 @@ public class ForumController {
         messagesBox.getChildren().clear();
         postReplyBtn.setDisable(true);
         replyContentArea.setDisable(true);
-        replyAuthorField.setDisable(true);
     }
 
     // ===== utils =====
@@ -447,6 +553,11 @@ public class ForumController {
     // ============================================================
 
     private ForumDiscussion showDiscussionDialog(String title, ForumDiscussion existing) {
+        // Check if user is logged in for creating new discussions
+        if (existing == null && !SessionManager.getInstance().isLoggedIn()) {
+            showWarning("You must be logged in to create discussions.");
+            return null;
+        }
         return showDiscussionDialog(title, existing, null, false);
     }
 
@@ -460,7 +571,12 @@ public class ForumController {
         pane.getButtonTypes().addAll(ButtonType.CANCEL, ButtonType.OK);
 
         TextField tfTitle = new TextField(existing == null ? "" : safe(existing.getTitle()));
-        TextField tfAuthor = new TextField(existing == null ? "" : safe(existing.getAuthorName()));
+        
+        // Author field - pre-fill with logged-in user for new discussions, make read-only
+        String authorName = existing == null ? SessionManager.getInstance().getCurrentUserFullName() : safe(existing.getAuthorName());
+        TextField tfAuthor = new TextField(authorName);
+        tfAuthor.setDisable(existing == null); // Disable for new discussions (use logged-in user)
+        
         TextArea taContent = new TextArea(existing == null ? "" : safe(existing.getContent()));
         taContent.setWrapText(true);
         taContent.setPrefRowCount(7);
@@ -621,7 +737,7 @@ public class ForumController {
         if (title == null || title.trim().isEmpty()) sb.append("Discussion title is required.\n");
         else if (title.trim().length() < 3) sb.append("Title must be at least 3 characters.\n");
         if (content == null || content.trim().isEmpty()) sb.append("Discussion content is required.\n");
-        if (author == null || author.trim().isEmpty()) sb.append("Author name is required.\n");
+        // Author validation not needed for new discussions since it's auto-filled from logged-in user
         if (cat == null) sb.append("Choose a parent category.\n");
         return sb.toString().trim();
     }

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox fx:id="mainContainer" spacing="20" styleClass="light-theme" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AjouterPersonne">
+    <padding>
+        <Insets bottom="30" left="30" right="30" top="30"/>
+    </padding>
+
+    <HBox alignment="CENTER_RIGHT" spacing="10">
+        <Label styleClass="title-label" text="➕ Ajouter un utilisateur" HBox.hgrow="ALWAYS" />
+        <Button onAction="#toggleTheme" text="🌙 Dark Mode" styleClass="theme-toggle-btn" />
+    </HBox>
+
+    <VBox spacing="15" styleClass="input-card">
+        <Label styleClass="subtitle-label" text="Informations de l'utilisateur" />
+
+        <HBox spacing="15">
+            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                <Label text="Nom" styleClass="label-bold" />
+                <TextField fx:id="TFNom" promptText="Entrez le nom" />
+            </VBox>
+            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                <Label text="Prénom" styleClass="label-bold" />
+                <TextField fx:id="TFPrenom" promptText="Entrez le prénom" />
+            </VBox>
+        </HBox>
+
+        <VBox spacing="5">
+            <Label text="Âge" styleClass="label-bold" />
+            <TextField fx:id="TFAge" promptText="Entrez l'âge" />
+        </VBox>
+
+        <VBox spacing="5">
+            <Label text="Email" styleClass="label-bold" />
+            <TextField fx:id="TFEmail" promptText="Entrez l'email" />
+        </VBox>
+
+        <VBox spacing="5">
+            <Label text="Mot de passe" styleClass="label-bold" />
+            <PasswordField fx:id="TFPassword" promptText="Entrez le mot de passe" />
+        </VBox>
+    </VBox>
+
+    <HBox spacing="20" alignment="CENTER">
+        <Button onAction="#ajouter" text="✅ Ajouter" styleClass="btn-primary" />
+        <Button onAction="#afficher" text="📋 Gérer les utilisateurs" styleClass="btn-info" />
+    </HBox>
+</VBox>

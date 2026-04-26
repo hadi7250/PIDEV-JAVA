@@ -1,21 +1,29 @@
-C:\Users\JeLJleN\Downloads\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\app\Launcher.java
-C:\Users\JeLJleN\Downloads\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\app\Main.java
-C:\Users\JeLJleN\Downloads\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\controllers\AdminCoursController.java
-C:\Users\JeLJleN\Downloads\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\controllers\AdminForumController.java
-C:\Users\JeLJleN\Downloads\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\controllers\CoursController.java
-C:\Users\JeLJleN\Downloads\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\controllers\EduConnectController.java
-C:\Users\JeLJleN\Downloads\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\controllers\ForumController.java
-C:\Users\JeLJleN\Downloads\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\models\Chapitre.java
-C:\Users\JeLJleN\Downloads\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\models\Cours.java
-C:\Users\JeLJleN\Downloads\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\models\ForumCategory.java
-C:\Users\JeLJleN\Downloads\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\models\ForumDiscussion.java
-C:\Users\JeLJleN\Downloads\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\models\ForumMessage.java
-C:\Users\JeLJleN\Downloads\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\ChapitreService.java
-C:\Users\JeLJleN\Downloads\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\CourseModuleSchemaService.java
-C:\Users\JeLJleN\Downloads\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\CoursService.java
-C:\Users\JeLJleN\Downloads\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\ForumCategoryService.java
-C:\Users\JeLJleN\Downloads\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\ForumDataPopulator.java
-C:\Users\JeLJleN\Downloads\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\ForumDiscussionService.java
-C:\Users\JeLJleN\Downloads\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\ForumMessageService.java
-C:\Users\JeLJleN\Downloads\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\ForumSchemaService.java
-C:\Users\JeLJleN\Downloads\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\utils\MyDB.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\app\Launcher.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\app\Main.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\controllers\AdminCoursController.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\controllers\AdminForumController.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\controllers\CoursController.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\controllers\EduConnectController.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\controllers\ForumController.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\entities\User.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\gui\AfficherPersonne.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\gui\AjouterPersonne.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\gui\SignInController.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\gui\SignUpController.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\models\Chapitre.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\models\Cours.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\models\ForumCategory.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\models\ForumDiscussion.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\models\ForumMessage.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\ChapitreService.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\CourseModuleSchemaService.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\CoursService.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\ForumCategoryService.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\ForumDataPopulator.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\ForumDiscussionService.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\ForumMessageService.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\ForumSchemaService.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\UserSchemaService.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\UserService.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\utils\MyDB.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\utils\SessionManager.java
