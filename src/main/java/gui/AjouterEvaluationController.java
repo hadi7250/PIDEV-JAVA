@@ -28,6 +28,8 @@ public class AjouterEvaluationController {
     @FXML private DatePicker datePicker;
     @FXML private TextField weightField;
     @FXML private ComboBox<Competence> competenceComboBox;
+    @FXML private ComboBox<String> languageComboBox;
+    @FXML private TextArea codeContentArea;
 
     private EvaluationService evaluationService = new EvaluationService();
     private CompetenceService competenceService = new CompetenceService();
@@ -42,6 +44,9 @@ public class AjouterEvaluationController {
     public void initialize() {
         typeComboBox.setItems(FXCollections.observableArrayList("exam", "quiz", "project", "oral", "homework"));
         typeComboBox.setValue("exam");
+        
+        languageComboBox.setItems(FXCollections.observableArrayList("java", "python", "javascript", "c++", "sql", "html/css"));
+        languageComboBox.setValue("java");
     }
 
     private void loadCompetences() {
@@ -62,6 +67,8 @@ public class AjouterEvaluationController {
         java.time.LocalDate date = datePicker.getValue();
         String scoreStr = weightField.getText();
         Competence selectedCompetence = competenceComboBox.getValue();
+        String language = languageComboBox.getValue();
+        String codeContent = codeContentArea.getText();
 
         if (title.isEmpty() || date == null || scoreStr.isEmpty() || selectedCompetence == null) {
             showAlert(Alert.AlertType.ERROR, "Form Error!", "Please fill in all required fields.");
@@ -70,7 +77,7 @@ public class AjouterEvaluationController {
 
         try {
             Float score = Float.parseFloat(scoreStr);
-            Evaluation evaluation = new Evaluation(title, description, type, date.atStartOfDay(), score, "pending", "", selectedCompetence);
+            Evaluation evaluation = new Evaluation(title, description, type, date.atStartOfDay(), score, "pending", "", codeContent, language, selectedCompetence);
             evaluationService.create(evaluation);
             showAlert(Alert.AlertType.INFORMATION, "Success!", "Evaluation created successfully!");
             goBack();
@@ -120,6 +127,8 @@ public class AjouterEvaluationController {
         datePicker.setValue(null);
         weightField.clear();
         competenceComboBox.setValue(null);
+        languageComboBox.setValue("java");
+        codeContentArea.clear();
     }
 
     @FXML
