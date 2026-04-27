@@ -1012,7 +1012,7 @@ public class AdminCoursController {
             }
         }).start();
     }
-    /*private void generateChapterContentAsync(String title, TextArea taContent, TextField tfLink, Button btnAutoGenerate) {
+    private void generateChapterContentAsync(String title, TextArea taContent, TextField tfLink, Button btnAutoGenerate) {
         // 👇 PASTE YOUR API KEY HERE 👇
         String apiKey = "AIzaSyDoL0C90Kg4xYmkP5nFp1G6tV8X5PzNkRg";
 
@@ -1082,5 +1082,5 @@ public class AdminCoursController {
                 });
             }
         }).start();
-    }*/
+    }
 }
