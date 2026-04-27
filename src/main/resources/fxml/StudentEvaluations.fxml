@@ -33,22 +33,20 @@
         <center>
             <SplitPane dividerPositions="0.65" style="-fx-padding: 20 0 0 0;">
                 <items>
-                    <!-- Left Side: Table -->
+                    <!-- Left Side: Grid -->
                     <VBox spacing="16.0" styleClass="module-card client-sidebar-card">
                         <HBox alignment="CENTER_LEFT" spacing="10.0">
-                            <Label styleClass="section-title" text="Evaluation History" />
+                            <Label styleClass="section-title" text="Evaluation Inventory" />
                             <Region HBox.hgrow="ALWAYS" />
                             <ComboBox fx:id="statusFilter" prefWidth="150.0" promptText="Filter Status" />
                         </HBox>
-                        <TableView fx:id="tableView" VBox.vgrow="ALWAYS">
-                            <columns>
-                                <TableColumn fx:id="compCol" prefWidth="180" text="Competence" />
-                                <TableColumn fx:id="titleCol" prefWidth="180" text="Evaluation Title" />
-                                <TableColumn fx:id="scoreCol" prefWidth="80" text="Score" />
-                                <TableColumn fx:id="statusCol" prefWidth="100" text="Status" />
-                                <TableColumn fx:id="dateCol" prefWidth="120" text="Date" />
-                            </columns>
-                        </TableView>
+                        <ScrollPane fitToWidth="true" styleClass="cards-scroll" VBox.vgrow="ALWAYS">
+                            <FlowPane fx:id="evaluationGrid" hgap="20.0" vgap="20.0">
+                                <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                </padding>
+                            </FlowPane>
+                        </ScrollPane>
                     </VBox>
 
                     <!-- Right Side: Details / Feedback -->

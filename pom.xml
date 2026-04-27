@@ -43,6 +43,16 @@
             <artifactId>javafx-swing</artifactId>
             <version>${javafx.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.sialcasa</groupId>
+            <artifactId>monacofx</artifactId>
+            <version>0.0.3</version>
+        </dependency>
     
         <!-- JPA / Hibernate -->
         <dependency>

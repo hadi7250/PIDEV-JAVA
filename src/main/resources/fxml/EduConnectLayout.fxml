@@ -38,6 +38,7 @@
                 <Insets bottom="18.0" left="18.0" right="18.0" top="18.0" />
             </padding>
             <Label styleClass="section-title" text="Navigation" />
+            <Button fx:id="btnHome" maxWidth="1.7976931348623157E308" onAction="#openHome" styleClass="nav-btn" text="Home" />
             <Button fx:id="btnCompetences" maxWidth="1.7976931348623157E308" onAction="#openCompetences" styleClass="nav-btn" text="Competences" />
             <Button fx:id="btnEvaluations" maxWidth="1.7976931348623157E308" onAction="#openEvaluationManagement" styleClass="nav-btn" text="Evaluations (Teacher)" />
             <Button fx:id="btnStudentEvaluations" maxWidth="1.7976931348623157E308" onAction="#openMyEvaluations" styleClass="nav-btn" text="My Evaluations" />

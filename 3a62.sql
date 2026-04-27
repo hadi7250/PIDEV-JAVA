@@ -95,6 +95,8 @@ CREATE TABLE `evaluation` (
   `score` float DEFAULT NULL,
   `status` varchar(50) DEFAULT NULL,
   `comment` text DEFAULT NULL,
+  `code_content` text DEFAULT NULL,
+  `language` varchar(50) DEFAULT NULL,
   `competence_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 

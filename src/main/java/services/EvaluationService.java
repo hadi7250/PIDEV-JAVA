@@ -17,7 +17,7 @@ public class EvaluationService implements IService<Evaluation> {
 
     @Override
     public void create(Evaluation evaluation) throws SQLException {
-        String sql = "INSERT INTO `evaluation` (title, description, type, date, score, status, comment, competence_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO `evaluation` (title, description, type, date, score, status, comment, code_content, language, competence_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pst = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pst.setString(1, evaluation.getTitle());
             pst.setString(2, evaluation.getDescription());
@@ -26,7 +26,9 @@ public class EvaluationService implements IService<Evaluation> {
             pst.setFloat(5, evaluation.getScore());
             pst.setString(6, evaluation.getStatus());
             pst.setString(7, evaluation.getComment());
-            pst.setInt(8, evaluation.getCompetence().getId());
+            pst.setString(8, evaluation.getCodeContent());
+            pst.setString(9, evaluation.getLanguage());
+            pst.setInt(10, evaluation.getCompetence().getId());
             pst.executeUpdate();
 
             ResultSet rs = pst.getGeneratedKeys();
@@ -38,7 +40,7 @@ public class EvaluationService implements IService<Evaluation> {
 
     @Override
     public void update(Evaluation evaluation) throws SQLException {
-        String sql = "UPDATE `evaluation` SET title = ?, description = ?, type = ?, date = ?, score = ?, status = ?, comment = ?, competence_id = ? WHERE id = ?";
+        String sql = "UPDATE `evaluation` SET title = ?, description = ?, type = ?, date = ?, score = ?, status = ?, comment = ?, code_content = ?, language = ?, competence_id = ? WHERE id = ?";
         try (PreparedStatement pst = connection.prepareStatement(sql)) {
             pst.setString(1, evaluation.getTitle());
             pst.setString(2, evaluation.getDescription());
@@ -47,8 +49,10 @@ public class EvaluationService implements IService<Evaluation> {
             pst.setFloat(5, evaluation.getScore());
             pst.setString(6, evaluation.getStatus());
             pst.setString(7, evaluation.getComment());
-            pst.setInt(8, evaluation.getCompetence().getId());
-            pst.setInt(9, evaluation.getId());
+            pst.setString(8, evaluation.getCodeContent());
+            pst.setString(9, evaluation.getLanguage());
+            pst.setInt(10, evaluation.getCompetence().getId());
+            pst.setInt(11, evaluation.getId());
             pst.executeUpdate();
         }
     }
@@ -79,6 +83,8 @@ public class EvaluationService implements IService<Evaluation> {
                 e.setScore(rs.getFloat("score"));
                 e.setStatus(rs.getString("status"));
                 e.setComment(rs.getString("comment"));
+                e.setCodeContent(rs.getString("code_content"));
+                e.setLanguage(rs.getString("language"));
                 
                 Competence c = new Competence();
                 c.setId(rs.getInt("competence_id"));
@@ -116,6 +122,8 @@ public class EvaluationService implements IService<Evaluation> {
                     e.setScore(rs.getFloat("score"));
                     e.setStatus(rs.getString("status"));
                     e.setComment(rs.getString("comment"));
+                    e.setCodeContent(rs.getString("code_content"));
+                    e.setLanguage(rs.getString("language"));
 
                     Competence c = new Competence();
                     c.setId(rs.getInt("competence_id"));
@@ -152,6 +160,8 @@ public class EvaluationService implements IService<Evaluation> {
                     e.setScore(rs.getFloat("score"));
                     e.setStatus(rs.getString("status"));
                     e.setComment(rs.getString("comment"));
+                    e.setCodeContent(rs.getString("code_content"));
+                    e.setLanguage(rs.getString("language"));
                     list.add(e);
                 }
             }

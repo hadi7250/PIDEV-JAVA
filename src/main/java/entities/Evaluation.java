@@ -11,6 +11,8 @@ public class Evaluation {
     private Float score; // Renamed from weight
     private String status;
     private String comment;
+    private String codeContent;
+    private String language;
     private Competence competence;
 
     public Evaluation() {
@@ -24,6 +26,19 @@ public class Evaluation {
         this.score = score;
         this.status = status;
         this.comment = comment;
+        this.competence = competence;
+    }
+
+    public Evaluation(String title, String description, String type, LocalDateTime date, Float score, String status, String comment, String codeContent, String language, Competence competence) {
+        this.title = title;
+        this.description = description;
+        this.type = type;
+        this.date = date;
+        this.score = score;
+        this.status = status;
+        this.comment = comment;
+        this.codeContent = codeContent;
+        this.language = language;
         this.competence = competence;
     }
 
@@ -51,6 +66,12 @@ public class Evaluation {
 
     public String getComment() { return comment; }
     public void setComment(String comment) { this.comment = comment; }
+
+    public String getCodeContent() { return codeContent; }
+    public void setCodeContent(String codeContent) { this.codeContent = codeContent; }
+
+    public String getLanguage() { return language; }
+    public void setLanguage(String language) { this.language = language; }
 
     public Competence getCompetence() { return competence; }
     public void setCompetence(Competence competence) { this.competence = competence; }

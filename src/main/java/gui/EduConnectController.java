@@ -23,6 +23,7 @@ public class EduConnectController {
     @FXML private Button btnEvaluations;
     @FXML private Button btnStudentEvaluations;
     @FXML private Button btnAdmin;
+    @FXML private Button btnHome;
 
     private User loggedInUser;
     private boolean isDarkMode = false;
@@ -44,12 +45,8 @@ public class EduConnectController {
         btnStudentEvaluations.setVisible(isStudent);
         btnStudentEvaluations.setManaged(isStudent);
 
-        // Initial module load
-        if (user.isAdmin()) openUserManagement();
-        else if (isTeacher) openEvaluationManagement();
-        else {
-            openCompetences();
-        }
+        // Initial module load - start with Home
+        openHome();
     }
 
     @FXML private void openUserManagement() { 
@@ -68,9 +65,13 @@ public class EduConnectController {
         loadModule("/fxml/StudentEvaluations.fxml"); 
         setActive(btnStudentEvaluations);
     }
+    @FXML private void openHome() { 
+        loadModule("/fxml/Home.fxml"); 
+        setActive(btnHome);
+    }
 
     private void setActive(Button active) {
-        for (Button button : new Button[]{btnCompetences, btnEvaluations, btnStudentEvaluations, btnAdmin}) {
+        for (Button button : new Button[]{btnCompetences, btnEvaluations, btnStudentEvaluations, btnAdmin, btnHome}) {
             if (button != null) {
                 button.getStyleClass().remove("nav-btn-active");
             }
@@ -92,6 +93,7 @@ public class EduConnectController {
             else if (controller instanceof AfficherCompetencesController) ((AfficherCompetencesController) controller).setLoggedInUser(loggedInUser);
             else if (controller instanceof StudentEvaluationsController) ((StudentEvaluationsController) controller).setLoggedInUser(loggedInUser);
             else if (controller instanceof UserBasicPageController) ((UserBasicPageController) controller).setLoggedInUser(loggedInUser);
+            else if (controller instanceof HomeController) ((HomeController) controller).setLoggedInUser(loggedInUser);
 
             contentHost.getChildren().setAll(module);
         } catch (IOException e) {

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox fx:id="cardRoot" prefWidth="250.0" spacing="10.0" styleClass="module-card" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.EvaluationCardController" onMouseClicked="#handleCardClick">
+    <padding>
+        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+    </padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="10.0">
+        <Label fx:id="typeLabel" styleClass="badge-info" text="EXAM" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Label fx:id="statusLabel" styleClass="badge-pending" text="PENDING" />
+    </HBox>
+
+    <Label fx:id="titleLabel" styleClass="section-title" text="Java Syntax Mastery" wrapText="true" />
+    <Label fx:id="compLabel" styleClass="module-subtitle" text="Core Java Competence" />
+    
+    <Separator />
+
+    <HBox alignment="CENTER_LEFT">
+        <VBox spacing="2.0">
+            <Label styleClass="label-bold" text="Due Date" />
+            <Label fx:id="dateLabel" text="Oct 12, 2023" />
+        </VBox>
+        <Region HBox.hgrow="ALWAYS" />
+        <VBox alignment="TOP_RIGHT" spacing="2.0">
+            <Label styleClass="label-bold" text="Score" />
+            <Label fx:id="scoreLabel" styleClass="detail-title" text="85/100" />
+        </VBox>
+    </HBox>
+
+    <Button fx:id="takeBtn" maxWidth="Infinity" onAction="#handleTakeEvaluation" styleClass="primary-btn" text="Take Evaluation" />
+</VBox>

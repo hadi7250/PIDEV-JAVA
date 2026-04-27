@@ -11,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -26,12 +27,7 @@ import java.util.stream.Collectors;
 
 public class StudentEvaluationsController implements Initializable {
     @FXML private StackPane mainContainer;
-    @FXML private TableView<Evaluation> tableView;
-    @FXML private TableColumn<Evaluation, String> compCol;
-    @FXML private TableColumn<Evaluation, String> titleCol;
-    @FXML private TableColumn<Evaluation, Float> scoreCol;
-    @FXML private TableColumn<Evaluation, LocalDateTime> dateCol;
-    @FXML private TableColumn<Evaluation, String> statusCol;
+    @FXML private FlowPane evaluationGrid;
 
     @FXML private TextField searchField;
     @FXML private ComboBox<String> statusFilter;
@@ -45,25 +41,14 @@ public class StudentEvaluationsController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        compCol.setCellValueFactory(new PropertyValueFactory<>("competence"));
-        titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
-        scoreCol.setCellValueFactory(new PropertyValueFactory<>("score"));
-        dateCol.setCellValueFactory(new PropertyValueFactory<>("date"));
-        statusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
-
-        statusFilter.setItems(FXCollections.observableArrayList("pending", "graded", "rejected"));
+        statusFilter.setItems(FXCollections.observableArrayList("All", "pending", "graded", "rejected"));
+        statusFilter.setValue("All");
         searchField.textProperty().addListener((obs, oldVal, newVal) -> applyFilters());
         statusFilter.valueProperty().addListener((obs, oldVal, newVal) -> applyFilters());
-
-        tableView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                showDetails(newVal);
-            }
-        });
     }
 
-    private void showDetails(Evaluation e) {
-        scoreDetailLabel.setText(e.getScore() + "/100");
+    public void showDetails(Evaluation e) {
+        scoreDetailLabel.setText(e.getScore() + "/100 (" + e.getStatus() + ")");
         commentDetailLabel.setText(e.getComment() != null && !e.getComment().isEmpty() ? e.getComment() : "No feedback provided yet.");
     }
 
@@ -73,15 +58,30 @@ public class StudentEvaluationsController implements Initializable {
     }
 
     @FXML
-    private void refreshTable() {
+    public void refreshTable() {
         try {
             if (loggedInUser != null) {
                 List<Evaluation> list = service.readByStudent(loggedInUser.getId());
                 allEvaluations = FXCollections.observableArrayList(list);
-                tableView.setItems(allEvaluations);
+                populateGrid(allEvaluations);
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void populateGrid(List<Evaluation> evaluations) {
+        evaluationGrid.getChildren().clear();
+        for (Evaluation e : evaluations) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EvaluationCard.fxml"));
+                VBox card = loader.load();
+                EvaluationCardController controller = loader.getController();
+                controller.setData(e, this);
+                evaluationGrid.getChildren().add(card);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
@@ -91,10 +91,29 @@ public class StudentEvaluationsController implements Initializable {
 
         List<Evaluation> filtered = allEvaluations.stream()
             .filter(e -> e.getTitle().toLowerCase().contains(search) || (e.getCompetence() != null && e.getCompetence().getTitle().toLowerCase().contains(search)))
-            .filter(e -> status == null || e.getStatus().equalsIgnoreCase(status))
+            .filter(e -> status == null || status.equals("All") || e.getStatus().equalsIgnoreCase(status))
             .collect(Collectors.toList());
 
-        tableView.setItems(FXCollections.observableArrayList(filtered));
+        populateGrid(filtered);
+    }
+
+    public void openEditor(Evaluation evaluation) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EvaluationEditor.fxml"));
+            VBox editorRoot = loader.load();
+            EvaluationEditorController controller = loader.getController();
+            controller.setEvaluation(evaluation, this);
+            
+            mainContainer.getChildren().add(editorRoot);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void closeEditor() {
+        if (mainContainer.getChildren().size() > 1) {
+            mainContainer.getChildren().remove(mainContainer.getChildren().size() - 1);
+        }
     }
 
     @FXML
