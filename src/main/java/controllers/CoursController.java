@@ -518,6 +518,45 @@ public class CoursController {
             content.getChildren().addAll(linksLabel, linksBox);
         }
 
+        // 👇 --- 5. VIRTUAL TUTOR Q&A (INSERTED HERE) --- 👇
+        VBox tutorBox = new VBox(8);
+        tutorBox.setPadding(new Insets(15, 0, 0, 0));
+
+        Label tutorTitle = new Label("🤖 Ask the Virtual Tutor");
+        tutorTitle.setStyle("-fx-font-weight: bold; -fx-text-fill: #2a9d8f;");
+
+        TextField tfQuestion = new TextField();
+        tfQuestion.setPromptText("Confused? Ask a question about this chapter...");
+
+        Button btnAsk = new Button("Ask");
+        btnAsk.setStyle("-fx-background-color: #2a9d8f; -fx-text-fill: white; -fx-cursor: hand;");
+
+        TextArea taAnswer = new TextArea();
+        taAnswer.setWrapText(true);
+        taAnswer.setEditable(false);
+        taAnswer.setPrefRowCount(4);
+        taAnswer.setVisible(false); // Hidden until they ask a question
+        taAnswer.setManaged(false);
+
+        btnAsk.setOnAction(e -> {
+            if (tfQuestion.getText().trim().isEmpty()) return;
+            btnAsk.setText("Thinking...");
+            btnAsk.setDisable(true);
+            taAnswer.setVisible(true);
+            taAnswer.setManaged(true);
+            taAnswer.setText("Thinking...");
+
+            // Call the AI method
+            askTutorAsync(safe(chapitre.getContenu()), tfQuestion.getText().trim(), taAnswer, btnAsk);
+        });
+
+        HBox askBox = new HBox(10, tfQuestion, btnAsk);
+        javafx.scene.layout.HBox.setHgrow(tfQuestion, javafx.scene.layout.Priority.ALWAYS);
+
+        tutorBox.getChildren().addAll(tutorTitle, askBox, taAnswer);
+        content.getChildren().add(tutorBox);
+        // 👆 --------------------------------------------- 👆
+
         // --- 4. CLEAN SCROLLPANE (No forced heights!) ---
         javafx.scene.control.ScrollPane scrollContent = new javafx.scene.control.ScrollPane(content);
         scrollContent.setFitToWidth(true);
@@ -792,5 +831,76 @@ public class CoursController {
 
     private String safe(String value, String fallback) {
         return value == null || value.isBlank() ? fallback : value;
+    }
+    private void askTutorAsync(String chapterContent, String question, TextArea taAnswer, Button btnAsk) {
+        // 👇 PASTE YOUR API KEY HERE 👇
+        String apiKey = "AIzaSyDoL0C90Kg4xYmkP5nFp1G6tV8X5PzNkRg";
+
+        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + apiKey;
+
+        new Thread(() -> {
+            try {
+                // Clean the text so it doesn't break the JSON format
+                String safeContent = chapterContent.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", " ");
+                String safeQuestion = question.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", " ");
+
+                // The secret prompt that tells Gemini how to behave
+                String prompt = "You are a helpful, strict virtual tutor for a student. " +
+                        "You must obey these rules absolutely: " +
+                        "1. Use ONLY the provided Chapter Content to answer the question. " +
+                        "2. If the question asks about something NOT in the text, or asks about system administration, passwords, admin rights, or the application's code, you MUST refuse. " +
+                        "3. If you refuse, reply EXACTLY with: 'I am sorry, but I can only answer questions directly related to this specific lesson. Please adjust your question!' " +
+                        "Keep answers brief, clear, and easy to understand. \\n\\n" +
+                        "Chapter Content: " + safeContent + "\\n\\n" +
+                        "Student Question: " + safeQuestion;
+
+                String requestBody = "{\n" +
+                        "  \"contents\": [\n" +
+                        "    {\n" +
+                        "      \"parts\": [\n" +
+                        "        {\n" +
+                        "          \"text\": \"" + prompt + "\"\n" +
+                        "        }\n" +
+                        "      ]\n" +
+                        "    }\n" +
+                        "  ]\n" +
+                        "}";
+
+                java.net.http.HttpClient client = java.net.http.HttpClient.newHttpClient();
+                java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
+                        .uri(java.net.URI.create(url))
+                        .header("Content-Type", "application/json")
+                        .POST(java.net.http.HttpRequest.BodyPublishers.ofString(requestBody))
+                        .build();
+
+                java.net.http.HttpResponse<String> response = client.send(request, java.net.http.HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() == 200) {
+                    com.google.gson.JsonObject jsonObject = com.google.gson.JsonParser.parseString(response.body()).getAsJsonObject();
+                    com.google.gson.JsonArray candidates = jsonObject.getAsJsonArray("candidates");
+                    com.google.gson.JsonObject contentObj = candidates.get(0).getAsJsonObject().getAsJsonObject("content");
+                    String answer = contentObj.getAsJsonArray("parts").get(0).getAsJsonObject().get("text").getAsString();
+
+                    javafx.application.Platform.runLater(() -> {
+                        taAnswer.setText(answer.trim());
+                        btnAsk.setText("Ask");
+                        btnAsk.setDisable(false);
+                    });
+                } else {
+                    javafx.application.Platform.runLater(() -> {
+                        taAnswer.setText("Oops! The tutor couldn't answer right now. Please try again.");
+                        btnAsk.setText("Ask");
+                        btnAsk.setDisable(false);
+                    });
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                javafx.application.Platform.runLater(() -> {
+                    taAnswer.setText("Connection error. Please check your internet.");
+                    btnAsk.setText("Ask");
+                    btnAsk.setDisable(false);
+                });
+            }
+        }).start();
     }
 }
