@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import services.CompetenceService;
@@ -15,7 +16,7 @@ import services.CompetenceService;
 import java.sql.SQLException;
 
 public class AjouterCompetenceController {
-    @FXML private VBox mainContainer;
+    @FXML private StackPane mainContainer;
     private boolean isDarkMode = false;
     @FXML private TextField nameField;
     @FXML private TextArea descriptionArea;
@@ -81,13 +82,23 @@ public class AjouterCompetenceController {
 
     @FXML
     private void handleCancel() {
+        loadSubModule("/fxml/AfficherCompetences.fxml");
+    }
+
+    private void loadSubModule(String fxmlPath) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherCompetences.fxml"));
-            javafx.scene.Parent root = loader.load();
-            AfficherCompetencesController controller = loader.getController();
-            controller.setLoggedInUser(loggedInUser);
-            javafx.stage.Stage stage = (javafx.stage.Stage) mainContainer.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+            Object controller = loader.getController();
+            if (controller instanceof AfficherCompetencesController) ((AfficherCompetencesController) controller).setLoggedInUser(loggedInUser);
+
+            StackPane contentHost = (StackPane) mainContainer.getScene().lookup("#contentHost");
+            if (contentHost != null) {
+                contentHost.getChildren().setAll(root);
+            } else {
+                Stage stage = (Stage) mainContainer.getScene().getWindow();
+                stage.setScene(new Scene(root));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

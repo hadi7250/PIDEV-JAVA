@@ -36,7 +36,7 @@ public class SignInController {
         if (loggedInUser != null) {
             try {
                 // Load the Shell Layout (Template)
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/EduConnectLayout.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EduConnectLayout.fxml"));
                 Parent root = loader.load();
                 
                 // Get the shell controller and pass the user
@@ -60,7 +60,7 @@ public class SignInController {
     @FXML
     void goToSignUp() {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/SignUp.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/SignUp.fxml"));
             Stage stage = (Stage) emailField.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Sign Up");

@@ -10,6 +10,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import services.UserService;
@@ -32,7 +33,7 @@ public class AfficherPersonne implements Initializable {
 
     // FXML Components
     @FXML
-    private VBox mainContainer;
+    private StackPane mainContainer;
     @FXML
     private Label adminInfoLabel;
     @FXML
@@ -283,14 +284,19 @@ public class AfficherPersonne implements Initializable {
     @FXML
     void goToAddUser() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterPersonne.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AjouterPersonne.fxml"));
             Parent root = loader.load();
 
             AjouterPersonne controller = loader.getController();
             controller.setLoggedInUser(loggedInAdmin);
 
-            Stage stage = (Stage) tableView.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            StackPane contentHost = (StackPane) mainContainer.getScene().lookup("#contentHost");
+            if (contentHost != null) {
+                contentHost.getChildren().setAll(root);
+            } else {
+                Stage stage = (Stage) tableView.getScene().getWindow();
+                stage.setScene(new Scene(root));
+            }
         } catch (IOException e) {
             e.printStackTrace();
             showAlert("Erreur", "Impossible de charger la page d'ajout", Alert.AlertType.ERROR);
@@ -306,7 +312,7 @@ public class AfficherPersonne implements Initializable {
 
         if (confirmation.showAndWait().get() == ButtonType.OK) {
             try {
-                Parent root = FXMLLoader.load(getClass().getResource("/SignIn.fxml"));
+                Parent root = FXMLLoader.load(getClass().getResource("/fxml/SignIn.fxml"));
                 Stage stage = (Stage) tableView.getScene().getWindow();
                 stage.setScene(new Scene(root));
                 stage.setTitle("Connexion - User Management System");

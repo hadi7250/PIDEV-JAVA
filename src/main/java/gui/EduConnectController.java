@@ -18,44 +18,67 @@ public class EduConnectController {
 
     @FXML private BorderPane shellRoot;
     @FXML private StackPane contentHost;
-    @FXML private Label userWelcomeLabel;
-    @FXML private Label roleLabel;
     @FXML private Button themeToggleBtn;
-    @FXML private VBox adminMenu;
-    @FXML private VBox teacherMenu;
-    @FXML private VBox studentMenu;
+    @FXML private Button btnCompetences;
+    @FXML private Button btnEvaluations;
+    @FXML private Button btnStudentEvaluations;
+    @FXML private Button btnAdmin;
 
     private User loggedInUser;
     private boolean isDarkMode = false;
 
     public void initUser(User user) {
         this.loggedInUser = user;
-        userWelcomeLabel.setText("Welcome, " + user.getFirstName());
         
         String role = user.getRole().toUpperCase();
-        roleLabel.setText("EduConnect Portal - " + role);
 
         // Visibility based on roles
-        adminMenu.setVisible(user.isAdmin());
-        adminMenu.setManaged(user.isAdmin());
+        btnAdmin.setVisible(user.isAdmin());
+        btnAdmin.setManaged(user.isAdmin());
 
-        teacherMenu.setVisible("TEACHER".equals(role) || user.isAdmin());
-        teacherMenu.setManaged("TEACHER".equals(role) || user.isAdmin());
+        boolean isTeacher = "TEACHER".equals(role);
+        btnEvaluations.setVisible(isTeacher || user.isAdmin());
+        btnEvaluations.setManaged(isTeacher || user.isAdmin());
 
-        studentMenu.setVisible("STUDENT".equals(role) || user.isAdmin());
-        studentMenu.setManaged("STUDENT".equals(role) || user.isAdmin());
+        boolean isStudent = "STUDENT".equals(role);
+        btnStudentEvaluations.setVisible(isStudent);
+        btnStudentEvaluations.setManaged(isStudent);
 
         // Initial module load
         if (user.isAdmin()) openUserManagement();
-        else if ("TEACHER".equals(role)) openEvaluationManagement();
-        else openCompetences();
+        else if (isTeacher) openEvaluationManagement();
+        else {
+            openCompetences();
+        }
     }
 
-    @FXML private void openUserManagement() { loadModule("/AfficherPersonne.fxml"); }
-    @FXML private void openEvaluationManagement() { loadModule("/EvaluationManagement.fxml"); }
-    @FXML private void openCompetences() { loadModule("/AfficherCompetences.fxml"); }
-    @FXML private void openMyEvaluations() { loadModule("/StudentEvaluations.fxml"); }
-    @FXML private void openProfile() { loadModule("/UserBasicPage.fxml"); }
+    @FXML private void openUserManagement() { 
+        loadModule("/fxml/AfficherPersonne.fxml"); 
+        setActive(btnAdmin);
+    }
+    @FXML private void openEvaluationManagement() { 
+        loadModule("/fxml/EvaluationManagement.fxml"); 
+        setActive(btnEvaluations);
+    }
+    @FXML private void openCompetences() { 
+        loadModule("/fxml/AfficherCompetences.fxml"); 
+        setActive(btnCompetences);
+    }
+    @FXML private void openMyEvaluations() { 
+        loadModule("/fxml/StudentEvaluations.fxml"); 
+        setActive(btnStudentEvaluations);
+    }
+
+    private void setActive(Button active) {
+        for (Button button : new Button[]{btnCompetences, btnEvaluations, btnStudentEvaluations, btnAdmin}) {
+            if (button != null) {
+                button.getStyleClass().remove("nav-btn-active");
+            }
+        }
+        if (active != null) {
+            active.getStyleClass().add("nav-btn-active");
+        }
+    }
 
     private void loadModule(String fxmlPath) {
         try {
@@ -92,7 +115,7 @@ public class EduConnectController {
     @FXML
     private void handleLogout() {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/SignIn.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/SignIn.fxml"));
             Stage stage = (Stage) shellRoot.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("SignIn - EduConnect");

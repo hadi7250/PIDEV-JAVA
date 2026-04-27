@@ -379,7 +379,7 @@
     -fx-border-radius: 20;
     -fx-border-width: 1.5;
     -fx-padding: 16;
-    -fx-effect: dropshadow(gaussian, rgba(20, 79, 69, 0.08), 18, 0.25, 0, 4);
+    -fx-effect: dropshadow(gaussian, rgba(20, 79, 69, 0.08), 18, 0.22, 0, 5);
 }
 
 .course-browser-card:hover,

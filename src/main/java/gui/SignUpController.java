@@ -112,7 +112,7 @@ public class SignUpController {
     @FXML
     void goToSignIn() {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/SignIn.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/SignIn.fxml"));
             Stage stage = (Stage) firstNameField.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Sign In");

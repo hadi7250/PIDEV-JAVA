@@ -11,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import services.CompetenceService;
@@ -18,29 +19,35 @@ import services.CompetenceService;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class AfficherCompetencesController implements Initializable {
-    @FXML private VBox mainContainer;
+    @FXML private StackPane mainContainer;
     @FXML private TableView<Competence> tableView;
     @FXML private TableColumn<Competence, String> nameCol;
     @FXML private TableColumn<Competence, String> categoryCol;
     @FXML private TableColumn<Competence, Integer> levelCol;
     @FXML private TableColumn<Competence, String> descCol;
     
+    @FXML private Label totalLabel;
     @FXML private TextField searchField;
     @FXML private TextField editNameField;
     @FXML private TextArea editDescriptionArea;
     @FXML private ComboBox<String> editCategoryCombo;
     @FXML private Slider editLevelSlider;
+    @FXML private Button btnUpdate;
+    @FXML private Button btnDelete;
+    @FXML private Button btnAdd;
 
     private CompetenceService service = new CompetenceService();
     private User loggedInUser;
     private Competence selectedCompetence;
+    private ObservableList<Competence> allCompetences = FXCollections.observableArrayList();
     private boolean isDarkMode = false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        nameCol.setCellValueFactory(new PropertyValueFactory<>("title"));
         categoryCol.setCellValueFactory(new PropertyValueFactory<>("category"));
         levelCol.setCellValueFactory(new PropertyValueFactory<>("maxLevel"));
         descCol.setCellValueFactory(new PropertyValueFactory<>("description"));
@@ -51,17 +58,34 @@ public class AfficherCompetencesController implements Initializable {
             if (newVal != null) {
                 selectedCompetence = newVal;
                 loadSelectedCompetence();
+                updateEditability();
             }
         });
+
+        searchField.textProperty().addListener((obs, oldVal, newVal) -> searchCompetences());
+    }
+
+    private void updateEditability() {
+        if (selectedCompetence == null || loggedInUser == null) return;
+        
+        boolean canEdit = loggedInUser.isAdmin() || selectedCompetence.getUserId() == loggedInUser.getId();
+        btnUpdate.setDisable(!canEdit);
+        btnDelete.setDisable(!canEdit);
     }
 
     public void setLoggedInUser(User user) {
         this.loggedInUser = user;
         refreshTable();
+        
+        // Hide "Add" button for teachers, they don't add student competences here
+        if (user != null && "TEACHER".equals(user.getRole().toUpperCase())) {
+            btnAdd.setVisible(false);
+            btnAdd.setManaged(false);
+        }
     }
 
     private void loadSelectedCompetence() {
-        editNameField.setText(selectedCompetence.getName());
+        editNameField.setText(selectedCompetence.getTitle());
         editDescriptionArea.setText(selectedCompetence.getDescription());
         editCategoryCombo.setValue(selectedCompetence.getCategory());
         editLevelSlider.setValue(selectedCompetence.getMaxLevel());
@@ -70,11 +94,30 @@ public class AfficherCompetencesController implements Initializable {
     private void refreshTable() {
         try {
             if (loggedInUser != null) {
-                tableView.setItems(FXCollections.observableArrayList(service.readAllByUser(loggedInUser.getId())));
+                String role = loggedInUser.getRole().toUpperCase();
+                if (loggedInUser.isAdmin() || "TEACHER".equals(role)) {
+                    allCompetences = FXCollections.observableArrayList(service.readAll());
+                } else {
+                    allCompetences = FXCollections.observableArrayList(service.readAllByUser(loggedInUser.getId()));
+                }
+                tableView.setItems(allCompetences);
+                if (totalLabel != null) {
+                    totalLabel.setText("Total Records: " + allCompetences.size());
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private void searchCompetences() {
+        String text = searchField.getText().toLowerCase();
+        tableView.setItems(FXCollections.observableArrayList(
+            allCompetences.stream()
+                .filter(c -> (c.getTitle() != null && c.getTitle().toLowerCase().contains(text)) || 
+                             (c.getCategory() != null && c.getCategory().toLowerCase().contains(text)))
+                .collect(Collectors.toList())
+        ));
     }
 
     @FXML
@@ -95,25 +138,14 @@ public class AfficherCompetencesController implements Initializable {
 
     @FXML
     private void goToProfile() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserBasicPage.fxml"));
-            Parent root = loader.load();
-            UserBasicPageController controller = loader.getController();
-            controller.setLoggedInUser(loggedInUser);
-            Stage stage = (Stage) tableView.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("EduConnect - My Profile");
-        } catch (Exception e) {
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Error", "Could not load profile page: " + e.getMessage());
-        }
+        loadSubModule("/fxml/UserBasicPage.fxml");
     }
 
     @FXML
     private void goBack() {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/SignIn.fxml"));
-            Stage stage = (Stage) tableView.getScene().getWindow();
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/SignIn.fxml"));
+            Stage stage = (Stage) mainContainer.getScene().getWindow();
             stage.setScene(new Scene(root));
         } catch (Exception e) {
             e.printStackTrace();
@@ -122,30 +154,34 @@ public class AfficherCompetencesController implements Initializable {
 
     @FXML
     private void goToAdd() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AjouterCompetence.fxml"));
-            Parent root = loader.load();
-            AjouterCompetenceController controller = loader.getController();
-            controller.setLoggedInUser(loggedInUser);
-            Stage stage = (Stage) tableView.getScene().getWindow();
-            stage.setScene(new Scene(root));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        loadSubModule("/fxml/AjouterCompetence.fxml");
     }
 
     @FXML
     private void goToEvaluations() {
+        loadSubModule("/fxml/StudentEvaluations.fxml");
+    }
+
+    private void loadSubModule(String fxmlPath) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/StudentEvaluations.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
-            StudentEvaluationsController controller = loader.getController();
-            controller.setLoggedInUser(loggedInUser);
-            Stage stage = (Stage) tableView.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            
+            Object controller = loader.getController();
+            if (controller instanceof AjouterCompetenceController) ((AjouterCompetenceController) controller).setLoggedInUser(loggedInUser);
+            else if (controller instanceof StudentEvaluationsController) ((StudentEvaluationsController) controller).setLoggedInUser(loggedInUser);
+            else if (controller instanceof UserBasicPageController) ((UserBasicPageController) controller).setLoggedInUser(loggedInUser);
+
+            StackPane contentHost = (StackPane) mainContainer.getScene().lookup("#contentHost");
+            if (contentHost != null) {
+                contentHost.getChildren().setAll(root);
+            } else {
+                Stage stage = (Stage) mainContainer.getScene().getWindow();
+                stage.setScene(new Scene(root));
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Error", "Could not load evaluations page: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Error", "Could not load module: " + e.getMessage());
         }
     }
 

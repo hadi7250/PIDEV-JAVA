@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import services.CompetenceService;
@@ -19,7 +20,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class AjouterEvaluationController {
-    @FXML private VBox mainContainer;
+    @FXML private StackPane mainContainer;
     private boolean isDarkMode = false;
     @FXML private TextField titleField;
     @FXML private TextArea descriptionArea;
@@ -95,12 +96,18 @@ public class AjouterEvaluationController {
 
     private void goBack() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/EvaluationManagement.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EvaluationManagement.fxml"));
             Parent root = loader.load();
             EvaluationManagementController controller = loader.getController();
             controller.setLoggedInUser(loggedInUser);
-            Stage stage = (Stage) mainContainer.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            
+            StackPane contentHost = (StackPane) mainContainer.getScene().lookup("#contentHost");
+            if (contentHost != null) {
+                contentHost.getChildren().setAll(root);
+            } else {
+                Stage stage = (Stage) mainContainer.getScene().getWindow();
+                stage.setScene(new Scene(root));
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="shellRoot"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="gui.EduConnectController"
+            prefHeight="760.0"
+            prefWidth="1280.0"
+            styleClass="shell-root"
+            stylesheets="@../modern.css">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="14.0" styleClass="shell-topbar">
+            <padding>
+                <Insets bottom="18.0" left="24.0" right="24.0" top="18.0" />
+            </padding>
+            <VBox spacing="4.0">
+                <Label styleClass="hero-title" text="EduConnect" />
+                <Label styleClass="hero-subtitle" text="Standalone Java course manager for cours and chapter modules." />
+            </VBox>
+            <Region HBox.hgrow="ALWAYS" />
+            <Button fx:id="themeToggleBtn" onAction="#toggleTheme" styleClass="theme-toggle-btn" text="Dark mode" />
+        </HBox>
+    </top>
+
+    <left>
+        <VBox spacing="10.0" styleClass="shell-sidebar">
+            <padding>
+                <Insets bottom="18.0" left="18.0" right="18.0" top="18.0" />
+            </padding>
+            <Label styleClass="section-title" text="Navigation" />
+            <Button fx:id="btnCompetences" maxWidth="1.7976931348623157E308" onAction="#openCompetences" styleClass="nav-btn" text="Competences" />
+            <Button fx:id="btnEvaluations" maxWidth="1.7976931348623157E308" onAction="#openEvaluationManagement" styleClass="nav-btn" text="Evaluations (Teacher)" />
+            <Button fx:id="btnStudentEvaluations" maxWidth="1.7976931348623157E308" onAction="#openMyEvaluations" styleClass="nav-btn" text="My Evaluations" />
+            <Button fx:id="btnAdmin" maxWidth="1.7976931348623157E308" onAction="#openUserManagement" styleClass="nav-btn" text="Admin Users" />
+            <Button fx:id="btnLogout" maxWidth="1.7976931348623157E308" onAction="#handleLogout" styleClass="nav-btn" text="Logout" />
+            <Region VBox.vgrow="ALWAYS" />
+        </VBox>
+    </left>
+
+    <center>
+        <StackPane fx:id="contentHost" styleClass="shell-content">
+            <padding>
+                <Insets bottom="18.0" left="18.0" right="18.0" top="18.0" />
+            </padding>
+        </StackPane>
+    </center>
+</BorderPane>

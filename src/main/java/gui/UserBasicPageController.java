@@ -10,6 +10,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import services.UserService;
@@ -20,7 +21,7 @@ import java.util.ResourceBundle;
 public class UserBasicPageController implements Initializable {
 
     @FXML
-    private VBox mainContainer;
+    private StackPane mainContainer;
 
     @FXML
     private TextField firstNameField;
@@ -133,7 +134,7 @@ public class UserBasicPageController implements Initializable {
     @FXML
     void logout() {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/SignIn.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/SignIn.fxml"));
             Stage stage = (Stage) firstNameField.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Sign In");

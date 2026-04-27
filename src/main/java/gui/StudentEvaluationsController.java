@@ -11,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import services.EvaluationService;
@@ -24,7 +25,7 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 public class StudentEvaluationsController implements Initializable {
-    @FXML private VBox mainContainer;
+    @FXML private StackPane mainContainer;
     @FXML private TableView<Evaluation> tableView;
     @FXML private TableColumn<Evaluation, String> compCol;
     @FXML private TableColumn<Evaluation, String> titleCol;
@@ -34,6 +35,8 @@ public class StudentEvaluationsController implements Initializable {
 
     @FXML private TextField searchField;
     @FXML private ComboBox<String> statusFilter;
+    @FXML private Label scoreDetailLabel;
+    @FXML private Label commentDetailLabel;
 
     private EvaluationService service = new EvaluationService();
     private User loggedInUser;
@@ -51,6 +54,17 @@ public class StudentEvaluationsController implements Initializable {
         statusFilter.setItems(FXCollections.observableArrayList("pending", "graded", "rejected"));
         searchField.textProperty().addListener((obs, oldVal, newVal) -> applyFilters());
         statusFilter.valueProperty().addListener((obs, oldVal, newVal) -> applyFilters());
+
+        tableView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                showDetails(newVal);
+            }
+        });
+    }
+
+    private void showDetails(Evaluation e) {
+        scoreDetailLabel.setText(e.getScore() + "/100");
+        commentDetailLabel.setText(e.getComment() != null && !e.getComment().isEmpty() ? e.getComment() : "No feedback provided yet.");
     }
 
     public void setLoggedInUser(User user) {
@@ -58,6 +72,7 @@ public class StudentEvaluationsController implements Initializable {
         refreshTable();
     }
 
+    @FXML
     private void refreshTable() {
         try {
             if (loggedInUser != null) {
@@ -105,28 +120,30 @@ public class StudentEvaluationsController implements Initializable {
 
     @FXML
     private void goToProfile() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserBasicPage.fxml"));
-            Parent root = loader.load();
-            UserBasicPageController controller = loader.getController();
-            controller.setLoggedInUser(loggedInUser);
-            Stage stage = (Stage) mainContainer.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("EduConnect - My Profile");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        loadSubModule("/fxml/UserBasicPage.fxml");
     }
 
     @FXML
     private void goBack() {
+        loadSubModule("/fxml/AfficherCompetences.fxml");
+    }
+
+    private void loadSubModule(String fxmlPath) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherCompetences.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
-            AfficherCompetencesController controller = loader.getController();
-            controller.setLoggedInUser(loggedInUser);
-            Stage stage = (Stage) mainContainer.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            
+            Object controller = loader.getController();
+            if (controller instanceof AfficherCompetencesController) ((AfficherCompetencesController) controller).setLoggedInUser(loggedInUser);
+            else if (controller instanceof UserBasicPageController) ((UserBasicPageController) controller).setLoggedInUser(loggedInUser);
+
+            StackPane contentHost = (StackPane) mainContainer.getScene().lookup("#contentHost");
+            if (contentHost != null) {
+                contentHost.getChildren().setAll(root);
+            } else {
+                Stage stage = (Stage) mainContainer.getScene().getWindow();
+                stage.setScene(new Scene(root));
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

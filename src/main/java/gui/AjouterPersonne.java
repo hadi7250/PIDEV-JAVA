@@ -10,6 +10,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.PasswordField;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import services.UserService;
@@ -24,7 +25,7 @@ public class AjouterPersonne {
     private User loggedInUser;
 
     @FXML
-    private VBox mainContainer;
+    private StackPane mainContainer;
     @FXML
     private TextField TFAge;
     @FXML
@@ -131,12 +132,18 @@ public class AjouterPersonne {
     @FXML
     void afficher(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AfficherPersonne.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AfficherPersonne.fxml"));
             Parent root = loader.load();
             AfficherPersonne controller = loader.getController();
             controller.setLoggedInUser(loggedInUser);
-            Stage stage = (Stage) mainContainer.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            
+            StackPane contentHost = (StackPane) mainContainer.getScene().lookup("#contentHost");
+            if (contentHost != null) {
+                contentHost.getChildren().setAll(root);
+            } else {
+                Stage stage = (Stage) mainContainer.getScene().getWindow();
+                stage.setScene(new Scene(root));
+            }
         } catch (IOException e) {
             e.printStackTrace();
             showAlert("Erreur", "Impossible de charger la liste", Alert.AlertType.ERROR);

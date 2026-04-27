@@ -105,7 +105,20 @@ public class EvaluationManagementController implements Initializable {
     @FXML
     private void refreshData() {
         try {
-            List<Competence> cList = competenceService.readAll();
+            // Load competences based on user role
+            List<Competence> cList;
+            if (loggedInUser != null) {
+                String role = loggedInUser.getRole().toUpperCase();
+                if (loggedInUser.isAdmin() || "TEACHER".equals(role)) {
+                    // Teachers and admins see all competences
+                    cList = competenceService.readAll();
+                } else {
+                    // Students only see their own competences
+                    cList = competenceService.readAllByUser(loggedInUser.getId());
+                }
+            } else {
+                cList = competenceService.readAll();
+            }
             allCompetences = FXCollections.observableArrayList(cList);
             competenceTableView.setItems(allCompetences);
 

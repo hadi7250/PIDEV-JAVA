@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+
+<StackPane fx:id="mainContainer" prefHeight="750.0" prefWidth="1100.0" styleClass="course-module-root" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.StudentEvaluationsController">
+    <stylesheets>
+        <URL value="@../modern.css" />
+    </stylesheets>
+    
+    <BorderPane styleClass="client-dashboard-shell">
+        <padding>
+            <Insets bottom="18.0" left="18.0" right="18.0" top="18.0" />
+        </padding>
+
+        <top>
+            <HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="module-toolbar client-toolbar">
+                <padding>
+                    <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+                </padding>
+                <VBox spacing="4.0">
+                    <Label styleClass="module-title client-page-title" text="My Performance Ledger" />
+                    <Label styleClass="module-subtitle" text="View your grades, teacher feedback, and academic progress." />
+                </VBox>
+                <Region HBox.hgrow="ALWAYS" />
+                <TextField fx:id="searchField" prefWidth="280.0" promptText="Search evaluations..." styleClass="search-field" />
+                <Button onAction="#refreshTable" styleClass="secondary-btn" text="Refresh" />
+            </HBox>
+        </top>
+
+        <center>
+            <SplitPane dividerPositions="0.65" style="-fx-padding: 20 0 0 0;">
+                <items>
+                    <!-- Left Side: Table -->
+                    <VBox spacing="16.0" styleClass="module-card client-sidebar-card">
+                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                            <Label styleClass="section-title" text="Evaluation History" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <ComboBox fx:id="statusFilter" prefWidth="150.0" promptText="Filter Status" />
+                        </HBox>
+                        <TableView fx:id="tableView" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="compCol" prefWidth="180" text="Competence" />
+                                <TableColumn fx:id="titleCol" prefWidth="180" text="Evaluation Title" />
+                                <TableColumn fx:id="scoreCol" prefWidth="80" text="Score" />
+                                <TableColumn fx:id="statusCol" prefWidth="100" text="Status" />
+                                <TableColumn fx:id="dateCol" prefWidth="120" text="Date" />
+                            </columns>
+                        </TableView>
+                    </VBox>
+
+                    <!-- Right Side: Details / Feedback -->
+                    <VBox spacing="16.0" styleClass="module-card client-workspace">
+                        <Label styleClass="section-title" text="Evaluation Details &amp; Feedback" />
+                        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="cards-scroll" VBox.vgrow="ALWAYS">
+                            <VBox spacing="15.0">
+                                <VBox spacing="5" styleClass="module-card">
+                                    <Label styleClass="label-bold" text="Grade Received" />
+                                    <Label fx:id="scoreDetailLabel" styleClass="detail-title" text="N/A" />
+                                </VBox>
+                                
+                                <VBox spacing="5" styleClass="module-card">
+                                    <Label styleClass="label-bold" text="Teacher Feedback" />
+                                    <Label fx:id="commentDetailLabel" styleClass="course-description" text="Select an evaluation to view detailed feedback from your instructor." wrapText="true" />
+                                </VBox>
+
+                                <Separator />
+                                
+                                <VBox spacing="10.0" alignment="CENTER">
+                                    <Button maxWidth="Infinity" onAction="#handleExport" styleClass="info-btn" text="📥 Download Report (CSV)" />
+                                    <Button maxWidth="Infinity" onAction="#goToProfile" styleClass="secondary-btn" text="👤 My Profile" />
+                                </VBox>
+                            </VBox>
+                        </ScrollPane>
+                    </VBox>
+                </items>
+            </SplitPane>
+        </center>
+    </BorderPane>
+</StackPane>
