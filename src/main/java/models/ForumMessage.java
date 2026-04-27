@@ -13,6 +13,7 @@ public class ForumMessage {
     private Timestamp updatedAt;
     private int discussionId;
     private String discussionTitle;
+    private Integer parentMessageId;
 
     public ForumMessage() {
     }
@@ -37,6 +38,23 @@ public class ForumMessage {
         this.updatedAt = updatedAt;
         this.discussionId = discussionId;
         this.discussionTitle = discussionTitle;
+    }
+
+    public ForumMessage(int id, String content, String authorName, boolean isAuthor,
+                        int upvotes, int downvotes,
+                        Timestamp createdAt, Timestamp updatedAt,
+                        int discussionId, String discussionTitle, Integer parentMessageId) {
+        this.id = id;
+        this.content = content;
+        this.authorName = authorName;
+        this.isAuthor = isAuthor;
+        this.upvotes = upvotes;
+        this.downvotes = downvotes;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.discussionId = discussionId;
+        this.discussionTitle = discussionTitle;
+        this.parentMessageId = parentMessageId;
     }
 
     public int getId() { return id; }
@@ -68,6 +86,9 @@ public class ForumMessage {
 
     public String getDiscussionTitle() { return discussionTitle; }
     public void setDiscussionTitle(String discussionTitle) { this.discussionTitle = discussionTitle; }
+
+    public Integer getParentMessageId() { return parentMessageId; }
+    public void setParentMessageId(Integer parentMessageId) { this.parentMessageId = parentMessageId; }
 
     @Override
     public String toString() {

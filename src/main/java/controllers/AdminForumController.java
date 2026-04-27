@@ -14,12 +14,15 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -29,6 +32,7 @@ import models.ForumMessage;
 import services.ForumCategoryService;
 import services.ForumDiscussionService;
 import services.ForumMessageService;
+import services.ForumStatsService;
 
 import java.sql.Timestamp;
 import java.time.ZoneId;
@@ -72,6 +76,9 @@ public class AdminForumController {
     @FXML private VBox messageCardsBox;
     @FXML private Label messageCountLabel;
 
+    // --- Stats tab ---
+    @FXML private FlowPane statsFlowPane;
+
     @FXML private Label statusLabel;
 
     private final ForumCategoryService categoryService = new ForumCategoryService();
@@ -107,6 +114,7 @@ public class AdminForumController {
         messageDiscussionFilter.valueProperty().addListener((obs, oldV, newV) -> applyMessageFilter());
 
         clearCategoryDetails();
+        initStatsTab();
         refreshAll();
     }
 
@@ -372,7 +380,8 @@ public class AdminForumController {
         card.getStyleClass().add("admin-list-card");
 
         String prefix = (d.isPinned() ? "\uD83D\uDCCC " : "") + (d.isLocked() ? "\uD83D\uDD12 " : "");
-        Label title = new Label(prefix + safe(d.getTitle(), "Untitled discussion"));
+        String solvedIndicator = d.isSolved() ? " ✔ Solved" : "";
+        Label title = new Label(prefix + safe(d.getTitle(), "Untitled discussion") + solvedIndicator);
         title.getStyleClass().add("admin-card-title");
         title.setWrapText(true);
 
@@ -402,10 +411,38 @@ public class AdminForumController {
         deleteBtn.getStyleClass().add("danger-btn");
         deleteBtn.setOnAction(e -> deleteDiscussion(d));
 
-        actions.getChildren().addAll(editBtn, deleteBtn);
+        // Add Pin/Unpin button
+        Button pinBtn = new Button(d.isPinned() ? "📌 Unpin" : "📌 Pin");
+        pinBtn.getStyleClass().add("secondary-btn");
+        pinBtn.setOnAction(e -> togglePin(d));
+
+        // Add Solve/Unsolve button
+        Button solveBtn = new Button(d.isSolved() ? "✅ Unsolved" : "✅ Solve");
+        solveBtn.getStyleClass().add("secondary-btn");
+        solveBtn.setOnAction(e -> toggleSolved(d));
+
+        actions.getChildren().addAll(editBtn, deleteBtn, pinBtn, solveBtn);
 
         card.getChildren().addAll(title, meta, content, actions);
         return card;
+    }
+
+    private void togglePin(ForumDiscussion discussion) {
+        boolean newPinnedState = !discussion.isPinned();
+        discussionService.togglePinned(discussion.getId(), newPinnedState);
+        discussion.setPinned(newPinnedState);
+        
+        // Refresh the discussion cards to show updated state
+        renderDiscussionCards();
+    }
+
+    private void toggleSolved(ForumDiscussion discussion) {
+        boolean newSolvedState = !discussion.isSolved();
+        discussionService.toggleSolved(discussion.getId(), newSolvedState);
+        discussion.setSolved(newSolvedState);
+        
+        // Refresh the discussion cards to show updated state
+        renderDiscussionCards();
     }
 
     private VBox createMessageCard(ForumMessage m) {
@@ -430,20 +467,6 @@ public class AdminForumController {
         HBox actions = new HBox(10);
         actions.setAlignment(Pos.CENTER_LEFT);
 
-        Button upBtn = new Button("Upvote");
-        upBtn.getStyleClass().add("secondary-btn");
-        upBtn.setOnAction(e -> {
-            messageService.upvote(m.getId());
-            refreshAll();
-        });
-
-        Button downBtn = new Button("Downvote");
-        downBtn.getStyleClass().add("secondary-btn");
-        downBtn.setOnAction(e -> {
-            messageService.downvote(m.getId());
-            refreshAll();
-        });
-
         Button editBtn = new Button("Edit");
         editBtn.getStyleClass().add("secondary-btn");
         editBtn.setOnAction(e -> editMessage(m));
@@ -452,7 +475,7 @@ public class AdminForumController {
         deleteBtn.getStyleClass().add("danger-btn");
         deleteBtn.setOnAction(e -> deleteMessage(m));
 
-        actions.getChildren().addAll(upBtn, downBtn, editBtn, deleteBtn);
+        actions.getChildren().addAll(editBtn, deleteBtn);
 
         card.getChildren().addAll(author, in, body, votes, actions);
         return card;
@@ -732,28 +755,48 @@ public class AdminForumController {
             colorPicker.setValue(Color.web("#007bff"));
         }
 
+        // Error labels
+        Label nameErrorLabel = new Label();
+        nameErrorLabel.setStyle("-fx-text-fill: #d32f2f; -fx-font-size: 12px;");
+        nameErrorLabel.setVisible(false);
+        nameErrorLabel.setManaged(false);
+        
+        Label colorErrorLabel = new Label();
+        colorErrorLabel.setStyle("-fx-text-fill: #d32f2f; -fx-font-size: 12px;");
+        colorErrorLabel.setVisible(false);
+        colorErrorLabel.setManaged(false);
+
         GridPane grid = new GridPane();
         grid.setHgap(12);
         grid.setVgap(10);
         grid.setPadding(new Insets(16));
         grid.add(new Label("Name"), 0, 0);
         grid.add(tfName, 1, 0);
-        grid.add(new Label("Description"), 0, 1);
-        grid.add(taDesc, 1, 1);
-        grid.add(new Label("Color"), 0, 2);
-        grid.add(colorPicker, 1, 2);
+        grid.add(nameErrorLabel, 1, 1);
+        grid.add(new Label("Description"), 0, 2);
+        grid.add(taDesc, 1, 2);
+        grid.add(new Label("Color"), 0, 3);
+        grid.add(colorPicker, 1, 3);
+        grid.add(colorErrorLabel, 1, 4);
 
         tfName.setPrefWidth(420);
         pane.setContent(grid);
 
-        Button ok = (Button) pane.lookupButton(ButtonType.OK);
-        ok.addEventFilter(javafx.event.ActionEvent.ACTION, ev -> {
-            String err = validateCategory(tfName.getText());
-            if (!err.isBlank()) {
-                ev.consume();
-                showWarning(err);
-            }
+        // Real-time validation
+        tfName.textProperty().addListener((obs, oldText, newText) -> {
+            validateCategoryName(newText.trim(), nameErrorLabel);
+            updateOkButton(dialog, tfName, colorPicker, nameErrorLabel, colorErrorLabel);
         });
+        
+        colorPicker.valueProperty().addListener((obs, oldColor, newColor) -> {
+            validateCategoryColor(toHex(newColor), colorErrorLabel);
+            updateOkButton(dialog, tfName, colorPicker, nameErrorLabel, colorErrorLabel);
+        });
+
+        // Initial validation
+        validateCategoryName(tfName.getText().trim(), nameErrorLabel);
+        validateCategoryColor(toHex(colorPicker.getValue()), colorErrorLabel);
+        updateOkButton(dialog, tfName, colorPicker, nameErrorLabel, colorErrorLabel);
 
         dialog.setResultConverter(bt -> {
             if (bt != ButtonType.OK) return null;
@@ -1011,5 +1054,112 @@ public class AdminForumController {
         d.setId(0);
         d.setTitle("All discussions");
         return d;
+    }
+
+    // ===== Stats Tab Methods =====
+    
+    private void initStatsTab() {
+        refreshStats();
+    }
+    
+    @FXML
+    public void refreshStats() {
+        if (statsFlowPane == null) return;
+        
+        ForumStatsService statsService = ForumStatsService.getInstance();
+        statsFlowPane.getChildren().clear();
+        
+        // Create stats cards
+        statsFlowPane.getChildren().add(createStatCard("Total Discussions", String.valueOf(statsService.getTotalDiscussions())));
+        statsFlowPane.getChildren().add(createStatCard("Total Messages", String.valueOf(statsService.getTotalMessages())));
+        statsFlowPane.getChildren().add(createStatCard("Most Active Category", statsService.getMostActiveCategory()));
+        statsFlowPane.getChildren().add(createStatCard("Top Author", statsService.getTopAuthor()));
+        statsFlowPane.getChildren().add(createStatCard("Total Votes", String.valueOf(statsService.getTotalVotes())));
+        
+        // Recent activity card with ListView
+        VBox recentActivityCard = createRecentActivityCard(statsService.getRecentActivityLog(5));
+        statsFlowPane.getChildren().add(recentActivityCard);
+    }
+    
+    private VBox createStatCard(String title, String value) {
+        VBox card = new VBox(8);
+        card.getStyleClass().add("stat-card");
+        card.setPrefSize(200, 120);
+        
+        Label valueLabel = new Label(value);
+        valueLabel.getStyleClass().add("stat-value");
+        
+        Label titleLabel = new Label(title);
+        titleLabel.getStyleClass().add("stat-title");
+        
+        card.getChildren().addAll(valueLabel, titleLabel);
+        return card;
+    }
+    
+    private VBox createRecentActivityCard(List<String> recentActivities) {
+        VBox card = new VBox(8);
+        card.getStyleClass().add("stat-card");
+        card.setPrefSize(250, 200);
+        
+        Label titleLabel = new Label("Recent Activity");
+        titleLabel.getStyleClass().add("stat-title");
+        
+        ListView<String> activityList = new ListView<>();
+        activityList.getStyleClass().add("activity-list");
+        activityList.setItems(FXCollections.observableArrayList(recentActivities));
+        
+        VBox.setVgrow(activityList, Priority.ALWAYS);
+        
+        card.getChildren().addAll(titleLabel, activityList);
+        return card;
+    }
+
+    // ===== Input Validation Methods =====
+    
+    private void validateCategoryName(String name, Label errorLabel) {
+        boolean isValid = true;
+        String errorMessage = "";
+        
+        if (name.isEmpty()) {
+            isValid = false;
+            errorMessage = "Category name is required.";
+        } else if (name.length() < 2) {
+            isValid = false;
+            errorMessage = "Category name must be at least 2 characters.";
+        } else if (name.length() > 50) {
+            isValid = false;
+            errorMessage = "Category name cannot exceed 50 characters.";
+        } else if (!name.matches("[a-zA-ZÀ-ÿ0-9 _-]+")) {
+            isValid = false;
+            errorMessage = "Category name can only contain letters, numbers, spaces, hyphens, and underscores.";
+        }
+        
+        errorLabel.setText(errorMessage);
+        errorLabel.setVisible(!isValid);
+        errorLabel.setManaged(!isValid);
+    }
+    
+    private void validateCategoryColor(String color, Label errorLabel) {
+        boolean isValid = true;
+        String errorMessage = "";
+        
+        if (color == null || !color.matches("#[0-9A-Fa-f]{6}")) {
+            isValid = false;
+            errorMessage = "Please select a valid color.";
+        }
+        
+        errorLabel.setText(errorMessage);
+        errorLabel.setVisible(!isValid);
+        errorLabel.setManaged(!isValid);
+    }
+    
+    private void updateOkButton(Dialog<?> dialog, TextField nameField, ColorPicker colorPicker, 
+                              Label nameErrorLabel, Label colorErrorLabel) {
+        Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+        boolean isNameValid = nameErrorLabel.getText().isEmpty();
+        boolean isColorValid = colorErrorLabel.getText().isEmpty();
+        boolean hasName = !nameField.getText().trim().isEmpty();
+        
+        okButton.setDisable(!(isNameValid && isColorValid && hasName));
     }
 }

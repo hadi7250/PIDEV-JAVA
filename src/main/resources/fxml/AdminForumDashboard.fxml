@@ -10,6 +10,7 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
@@ -120,6 +121,22 @@
                                     <VBox fx:id="messageCardsBox" spacing="14.0" styleClass="cards-list" />
                                 </content>
                             </ScrollPane>
+                        </VBox>
+                    </content>
+                </Tab>
+
+                <Tab fx:id="statsTab" text="📊 Stats">
+                    <content>
+                        <VBox spacing="20.0" styleClass="module-card">
+                            <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                <Label styleClass="module-title" text="Forum Statistics Dashboard" />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Button onAction="#refreshStats" styleClass="secondary-btn" text="🔄 Refresh" />
+                            </HBox>
+                            
+                            <FlowPane fx:id="statsFlowPane" hgap="15.0" vgap="15.0" prefWrapLength="1000">
+                                <!-- Stats cards will be added here programmatically -->
+                            </FlowPane>
                         </VBox>
                     </content>
                 </Tab>

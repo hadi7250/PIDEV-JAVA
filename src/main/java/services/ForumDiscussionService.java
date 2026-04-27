@@ -33,12 +33,13 @@ public class ForumDiscussionService {
                    d.forum_discussion_author_name,
                    d.forum_discussion_is_pinned,
                    d.forum_discussion_is_locked,
-                   d.forum_discussion_views,
+                   COALESCE((SELECT COUNT(*) FROM forum_views v WHERE v.discussion_id = d.id_forum_discussion), 0) AS forum_discussion_views,
                    d.forum_discussion_created_at,
                    d.forum_discussion_updated_at,
                    d.id_forum_category,
                    c.forum_category_name AS category_name,
-                   (SELECT COUNT(*) FROM forum_message m WHERE m.id_forum_discussion = d.id_forum_discussion) AS message_count
+                   (SELECT COUNT(*) FROM forum_message m WHERE m.id_forum_discussion = d.id_forum_discussion) AS message_count,
+                   d.solved
             FROM forum_discussion d
             LEFT JOIN forum_category c ON c.id_forum_category = d.id_forum_category
             """;
@@ -111,8 +112,8 @@ public class ForumDiscussionService {
                 INSERT INTO forum_discussion
                     (forum_discussion_title, forum_discussion_content, forum_discussion_author_name,
                      forum_discussion_is_pinned, forum_discussion_is_locked, forum_discussion_views,
-                     forum_discussion_created_at, id_forum_category)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                     forum_discussion_created_at, id_forum_category, solved)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """;
 
         try {
@@ -132,6 +133,7 @@ public class ForumDiscussionService {
                 } else {
                     ps.setNull(8, java.sql.Types.INTEGER);
                 }
+                ps.setBoolean(9, discussion.isSolved());
                 ps.executeUpdate();
 
                 try (ResultSet keys = ps.getGeneratedKeys()) {
@@ -156,7 +158,8 @@ public class ForumDiscussionService {
                     forum_discussion_is_pinned = ?,
                     forum_discussion_is_locked = ?,
                     forum_discussion_updated_at = ?,
-                    id_forum_category = ?
+                    id_forum_category = ?,
+                    solved = ?
                 WHERE id_forum_discussion = ?
                 """;
 
@@ -174,7 +177,8 @@ public class ForumDiscussionService {
                 } else {
                     ps.setNull(7, java.sql.Types.INTEGER);
                 }
-                ps.setInt(8, discussion.getId());
+                ps.setBoolean(8, discussion.isSolved());
+                ps.setInt(9, discussion.getId());
                 ps.executeUpdate();
             }
         } catch (Exception e) {
@@ -210,6 +214,141 @@ public class ForumDiscussionService {
         }
     }
 
+    public void togglePinned(int discussionId, boolean pinned) {
+        String sql = "UPDATE forum_discussion SET forum_discussion_is_pinned = ? WHERE id_forum_discussion = ?";
+
+        try {
+            Connection c = conn();
+            try (PreparedStatement ps = c.prepareStatement(sql)) {
+                ps.setInt(1, pinned ? 1 : 0);
+                ps.setInt(2, discussionId);
+                ps.executeUpdate();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void toggleSolved(int discussionId, boolean solved) {
+        String sql = "UPDATE forum_discussion SET solved = ? WHERE id_forum_discussion = ?";
+
+        try {
+            Connection c = conn();
+            try (PreparedStatement ps = c.prepareStatement(sql)) {
+                ps.setBoolean(1, solved);
+                ps.setInt(2, discussionId);
+                ps.executeUpdate();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<ForumDiscussion> getFilteredDiscussions(int categoryId, String sortBy, String searchText) {
+        List<ForumDiscussion> list = new ArrayList<>();
+        
+        StringBuilder sql = new StringBuilder(BASE_SELECT);
+        
+        // Add LEFT JOIN for message count if needed for replies sorting
+        if ("replies".equals(sortBy)) {
+            sql = new StringBuilder("""
+                    SELECT d.id_forum_discussion,
+                           d.forum_discussion_title,
+                           d.forum_discussion_content,
+                           d.forum_discussion_author_name,
+                           d.forum_discussion_is_pinned,
+                           d.forum_discussion_is_locked,
+                           COALESCE((SELECT COUNT(*) FROM forum_views v WHERE v.discussion_id = d.id_forum_discussion), 0) AS forum_discussion_views,
+                           d.forum_discussion_created_at,
+                           d.forum_discussion_updated_at,
+                           d.id_forum_category,
+                           c.forum_category_name AS category_name,
+                           COUNT(m.id_forum_message) AS message_count,
+                           d.solved
+                    FROM forum_discussion d
+                    LEFT JOIN forum_category c ON c.id_forum_category = d.id_forum_category
+                    LEFT JOIN forum_message m ON m.id_forum_discussion = d.id_forum_discussion
+                    """);
+        }
+        
+        // Add WHERE clauses
+        List<String> whereClauses = new ArrayList<>();
+        
+        if (categoryId > 0) {
+            whereClauses.add("d.id_forum_category = ?");
+        }
+        
+        if (searchText != null && !searchText.trim().isEmpty()) {
+            whereClauses.add("(LOWER(d.forum_discussion_title) LIKE LOWER(?) OR LOWER(d.forum_discussion_content) LIKE LOWER(?) OR LOWER(d.forum_discussion_author_name) LIKE LOWER(?))");
+        }
+        
+        if ("pinned".equals(sortBy)) {
+            whereClauses.add("d.forum_discussion_is_pinned = 1");
+        }
+        
+        if ("solved".equals(sortBy)) {
+            whereClauses.add("d.solved = true");
+        }
+        
+        if (!whereClauses.isEmpty()) {
+            sql.append(" WHERE ").append(String.join(" AND ", whereClauses));
+        }
+        
+        // Add GROUP BY for replies sorting
+        if ("replies".equals(sortBy)) {
+            sql.append(" GROUP BY d.id_forum_discussion");
+        }
+        
+        // Add ORDER BY
+        switch (sortBy) {
+            case "views":
+                sql.append(" ORDER BY d.forum_discussion_views DESC, d.forum_discussion_created_at DESC");
+                break;
+            case "replies":
+                sql.append(" ORDER BY message_count DESC, d.forum_discussion_created_at DESC");
+                break;
+            case "newest":
+                sql.append(" ORDER BY d.forum_discussion_created_at DESC");
+                break;
+            case "pinned":
+                sql.append(" ORDER BY d.forum_discussion_is_pinned DESC, d.forum_discussion_created_at DESC");
+                break;
+            case "solved":
+                sql.append(" ORDER BY d.solved DESC, d.forum_discussion_created_at DESC");
+                break;
+            default:
+                sql.append(" ORDER BY d.forum_discussion_is_pinned DESC, d.forum_discussion_created_at DESC");
+                break;
+        }
+
+        try {
+            Connection c = conn();
+            try (PreparedStatement ps = c.prepareStatement(sql.toString())) {
+                int paramIndex = 1;
+                
+                if (categoryId > 0) {
+                    ps.setInt(paramIndex++, categoryId);
+                }
+                
+                if (searchText != null && !searchText.trim().isEmpty()) {
+                    String searchPattern = "%" + searchText.trim() + "%";
+                    ps.setString(paramIndex++, searchPattern);
+                    ps.setString(paramIndex++, searchPattern);
+                    ps.setString(paramIndex++, searchPattern);
+                }
+                
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    list.add(map(rs));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return list;
+    }
+
     private ForumDiscussion map(ResultSet rs) throws SQLException {
         return new ForumDiscussion(
                 rs.getInt("id_forum_discussion"),
@@ -223,7 +362,8 @@ public class ForumDiscussionService {
                 rs.getTimestamp("forum_discussion_updated_at"),
                 rs.getInt("id_forum_category"),
                 rs.getString("category_name"),
-                rs.getInt("message_count")
+                rs.getInt("message_count"),
+                rs.getBoolean("solved")
         );
     }
 }

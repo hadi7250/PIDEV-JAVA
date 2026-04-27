@@ -5,6 +5,7 @@ C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAV
 C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\controllers\CoursController.java
 C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\controllers\EduConnectController.java
 C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\controllers\ForumController.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\controllers\NotificationController.java
 C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\entities\User.java
 C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\gui\AfficherPersonne.java
 C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\gui\AjouterPersonne.java
@@ -15,6 +16,7 @@ C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAV
 C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\models\ForumCategory.java
 C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\models\ForumDiscussion.java
 C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\models\ForumMessage.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\BadWordFilterService.java
 C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\ChapitreService.java
 C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\CourseModuleSchemaService.java
 C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\CoursService.java
@@ -23,6 +25,9 @@ C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAV
 C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\ForumDiscussionService.java
 C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\ForumMessageService.java
 C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\ForumSchemaService.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\ForumStatsService.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\ForumViewService.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\NotificationService.java
 C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\UserSchemaService.java
 C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\UserService.java
 C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\utils\MyDB.java

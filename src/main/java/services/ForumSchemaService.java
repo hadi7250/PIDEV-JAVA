@@ -55,21 +55,41 @@ public final class ForumSchemaService {
                         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
                         """);
 
+                // Add solved column to forum_discussions table (if not exists)
+                try {
+                    st.executeUpdate("ALTER TABLE forum_discussion ADD COLUMN IF NOT EXISTS solved BOOLEAN DEFAULT FALSE");
+                    System.out.println("✓ Solved column added to forum_discussions table");
+                } catch (SQLException e) {
+                    // Column might already exist, ignore error
+                    System.out.println("ℹ Solved column already exists or could not be added: " + e.getMessage());
+                }
+
+                try {
+                    st.executeUpdate("ALTER TABLE forum_message ADD COLUMN IF NOT EXISTS parent_message_id INT NULL");
+                    System.out.println("✓ Parent message column added to forum_message table");
+                } catch (SQLException e) {
+                    // Column might already exist, ignore error
+                    System.out.println("ℹ Parent message column already exists or could not be added: " + e.getMessage());
+                }
+
                 st.executeUpdate("""
                         CREATE TABLE IF NOT EXISTS forum_message (
                             id_forum_message INT AUTO_INCREMENT PRIMARY KEY,
-                            forum_message_content LONGTEXT NOT NULL,
-                            forum_message_author_name VARCHAR(255) NOT NULL,
-                            forum_message_is_author TINYINT NOT NULL DEFAULT 0,
-                            forum_message_upvotes INT NOT NULL DEFAULT 0,
-                            forum_message_downvotes INT NOT NULL DEFAULT 0,
-                            forum_message_created_at DATETIME NOT NULL,
-                            forum_message_updated_at DATETIME NULL,
-                            id_forum_discussion INT NOT NULL,
-                            INDEX idx_forum_message_discussion (id_forum_discussion),
-                            CONSTRAINT fk_forum_message_discussion
-                                FOREIGN KEY (id_forum_discussion)
+                            content TEXT NOT NULL,
+                            author_name VARCHAR(255) NOT NULL,
+                            discussion_id INT NOT NULL,
+                            parent_message_id INT NULL,
+                            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                            INDEX idx_message_discussion (discussion_id),
+                            INDEX idx_message_created (created_at),
+                            INDEX idx_message_parent (parent_message_id),
+                            CONSTRAINT fk_message_discussion
+                                FOREIGN KEY (discussion_id)
                                 REFERENCES forum_discussion(id_forum_discussion)
+                                ON DELETE CASCADE,
+                            CONSTRAINT fk_message_parent
+                                FOREIGN KEY (parent_message_id)
+                                REFERENCES forum_message(id_forum_message)
                                 ON DELETE CASCADE
                         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
                         """);
@@ -88,6 +108,53 @@ public final class ForumSchemaService {
                                 REFERENCES user(id)
                                 ON DELETE CASCADE,
                             CONSTRAINT fk_forum_votes_message
+                                FOREIGN KEY (message_id)
+                                REFERENCES forum_message(id_forum_message)
+                                ON DELETE CASCADE
+                        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+                        """);
+
+                st.executeUpdate("""
+                        CREATE TABLE IF NOT EXISTS forum_views (
+                            user_id INT NOT NULL,
+                            discussion_id INT NOT NULL,
+                            viewed_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                            PRIMARY KEY (user_id, discussion_id),
+                            INDEX idx_forum_views_user (user_id),
+                            INDEX idx_forum_views_discussion (discussion_id),
+                            CONSTRAINT fk_forum_views_user
+                                FOREIGN KEY (user_id)
+                                REFERENCES user(id)
+                                ON DELETE CASCADE,
+                            CONSTRAINT fk_forum_views_discussion
+                                FOREIGN KEY (discussion_id)
+                                REFERENCES forum_discussion(id_forum_discussion)
+                                ON DELETE CASCADE
+                        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+                        """);
+
+                st.executeUpdate("""
+                        CREATE TABLE IF NOT EXISTS notifications (
+                            id INT AUTO_INCREMENT PRIMARY KEY,
+                            user_id INT NOT NULL,
+                            type VARCHAR(50) NOT NULL,
+                            message TEXT NOT NULL,
+                            discussion_id INT NOT NULL,
+                            message_id INT NULL,
+                            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                            is_read BOOLEAN DEFAULT FALSE,
+                            INDEX idx_notifications_user (user_id),
+                            INDEX idx_notifications_read (is_read),
+                            INDEX idx_notifications_created (created_at),
+                            CONSTRAINT fk_notifications_user
+                                FOREIGN KEY (user_id)
+                                REFERENCES user(id)
+                                ON DELETE CASCADE,
+                            CONSTRAINT fk_notifications_discussion
+                                FOREIGN KEY (discussion_id)
+                                REFERENCES forum_discussion(id_forum_discussion)
+                                ON DELETE CASCADE,
+                            CONSTRAINT fk_notifications_message
                                 FOREIGN KEY (message_id)
                                 REFERENCES forum_message(id_forum_message)
                                 ON DELETE CASCADE

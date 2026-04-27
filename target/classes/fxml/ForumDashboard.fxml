@@ -40,6 +40,10 @@
                     <ComboBox fx:id="categoryFilter" prefWidth="180.0" />
                     <Button onAction="#showCreateDiscussionDialog" styleClass="primary-btn" text="Create Discussion" />
                     <Button onAction="#onRefresh" styleClass="secondary-btn" text="Refresh" />
+                    <HBox alignment="CENTER_RIGHT" spacing="8.0">
+                        <Button fx:id="notificationBtn" text="🔔" styleClass="notification-btn" onAction="#showNotifications" />
+                        <Label fx:id="notificationBadge" text="0" styleClass="notification-badge" visible="false" />
+                    </HBox>
                 </HBox>
             </top>
 
@@ -59,6 +63,14 @@
                                 <Region HBox.hgrow="ALWAYS" />
                                 <Label fx:id="totalLabel" styleClass="meta-label" text="0 discussions" />
                             </HBox>
+                            <!-- Smart Filter Bar -->
+                            <HBox spacing="8.0" alignment="CENTER_LEFT">
+                                <Button fx:id="filterMostViewedBtn" styleClass="secondary-btn" text="🔥 Most Viewed" />
+                                <Button fx:id="filterMostRepliedBtn" styleClass="secondary-btn" text="💬 Most Replied" />
+                                <Button fx:id="filterNewestBtn" styleClass="primary-btn" text="🆕 Newest" />
+                                <Button fx:id="filterPinnedBtn" styleClass="secondary-btn" text="📌 Pinned" />
+                                <Button fx:id="filterSolvedBtn" styleClass="secondary-btn" text="✅ Solved" />
+                            </HBox>
                             <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="cards-scroll" VBox.vgrow="ALWAYS">
                                 <content>
                                     <VBox fx:id="discussionCardsBox" spacing="14.0" styleClass="cards-list" />
@@ -75,7 +87,7 @@
                                     </VBox>
                                     <Region HBox.hgrow="ALWAYS" />
                                 </HBox>
-                                <Label fx:id="selectedContent" styleClass="course-description" text="" wrapText="true" />
+                                <TextArea fx:id="selectedContent" styleClass="course-description" text="" wrapText="true" editable="false" />
                             </VBox>
 
                             <VBox spacing="14.0" styleClass="module-card client-chapters-card" VBox.vgrow="ALWAYS">
@@ -96,10 +108,6 @@
                                 <Separator />
 
                                 <Label styleClass="section-title" text="Post a reply" />
-                                <HBox spacing="10.0">
-                                    <TextField fx:id="replyAuthorField" prefWidth="220.0" promptText="Your name" />
-                                    <Region HBox.hgrow="ALWAYS" />
-                                </HBox>
                                 <TextArea fx:id="replyContentArea" prefRowCount="3" promptText="Write your reply..." wrapText="true" />
                                 <HBox spacing="10.0" alignment="CENTER_RIGHT">
                                     <Button fx:id="postReplyBtn" disable="true" onAction="#postReply" styleClass="primary-btn" text="Post reply" />

@@ -31,12 +31,13 @@ public class ForumMessageService {
                    m.forum_message_content,
                    m.forum_message_author_name,
                    m.forum_message_is_author,
-                   m.forum_message_upvotes,
-                   m.forum_message_downvotes,
+                   COALESCE((SELECT COUNT(*) FROM forum_votes v WHERE v.message_id = m.id_forum_message AND v.vote_type = 'up'), 0) AS forum_message_upvotes,
+                   COALESCE((SELECT COUNT(*) FROM forum_votes v WHERE v.message_id = m.id_forum_message AND v.vote_type = 'down'), 0) AS forum_message_downvotes,
                    m.forum_message_created_at,
                    m.forum_message_updated_at,
                    m.id_forum_discussion,
-                   d.forum_discussion_title AS discussion_title
+                   d.forum_discussion_title AS discussion_title,
+                   m.parent_message_id
             FROM forum_message m
             LEFT JOIN forum_discussion d ON d.id_forum_discussion = m.id_forum_discussion
             """;
@@ -88,8 +89,8 @@ public class ForumMessageService {
                 INSERT INTO forum_message
                     (forum_message_content, forum_message_author_name, forum_message_is_author,
                      forum_message_upvotes, forum_message_downvotes,
-                     forum_message_created_at, id_forum_discussion)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                     forum_message_created_at, id_forum_discussion, parent_message_id)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """;
 
         try {
@@ -104,6 +105,11 @@ public class ForumMessageService {
                         ? new Timestamp(System.currentTimeMillis())
                         : message.getCreatedAt());
                 ps.setInt(7, message.getDiscussionId());
+                if (message.getParentMessageId() != null) {
+                    ps.setInt(8, message.getParentMessageId());
+                } else {
+                    ps.setNull(8, java.sql.Types.INTEGER);
+                }
                 ps.executeUpdate();
 
                 try (ResultSet keys = ps.getGeneratedKeys()) {
@@ -158,29 +164,9 @@ public class ForumMessageService {
         }
     }
 
-    public void upvote(int id) {
-        adjustVote(id, "forum_message_upvotes", +1);
-    }
-
-    public void downvote(int id) {
-        adjustVote(id, "forum_message_downvotes", +1);
-    }
-
-    private void adjustVote(int id, String column, int delta) {
-        String sql = "UPDATE forum_message SET " + column + " = " + column + " + ? WHERE id_forum_message = ?";
-        try {
-            Connection c = conn();
-            try (PreparedStatement ps = c.prepareStatement(sql)) {
-                ps.setInt(1, delta);
-                ps.setInt(2, id);
-                ps.executeUpdate();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
+    
     private ForumMessage map(ResultSet rs) throws SQLException {
+        Integer parentMessageId = rs.getObject("parent_message_id", Integer.class);
         return new ForumMessage(
                 rs.getInt("id_forum_message"),
                 rs.getString("forum_message_content"),
@@ -191,7 +177,8 @@ public class ForumMessageService {
                 rs.getTimestamp("forum_message_created_at"),
                 rs.getTimestamp("forum_message_updated_at"),
                 rs.getInt("id_forum_discussion"),
-                rs.getString("discussion_title")
+                rs.getString("discussion_title"),
+                parentMessageId
         );
     }
 }

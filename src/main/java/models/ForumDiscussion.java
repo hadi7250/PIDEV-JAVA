@@ -15,6 +15,7 @@ public class ForumDiscussion {
     private int categoryId;
     private String categoryName;
     private int messageCount;
+    private boolean solved;
 
     public ForumDiscussion() {
     }
@@ -24,12 +25,13 @@ public class ForumDiscussion {
         this.content = content;
         this.authorName = authorName;
         this.categoryId = categoryId;
+        this.solved = false; // Default to false
     }
 
     public ForumDiscussion(int id, String title, String content, String authorName,
                            boolean pinned, boolean locked, int views,
                            Timestamp createdAt, Timestamp updatedAt,
-                           int categoryId, String categoryName, int messageCount) {
+                           int categoryId, String categoryName, int messageCount, boolean solved) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -42,6 +44,7 @@ public class ForumDiscussion {
         this.categoryId = categoryId;
         this.categoryName = categoryName;
         this.messageCount = messageCount;
+        this.solved = solved;
     }
 
     public int getId() { return id; }
@@ -79,6 +82,9 @@ public class ForumDiscussion {
 
     public int getMessageCount() { return messageCount; }
     public void setMessageCount(int messageCount) { this.messageCount = messageCount; }
+
+    public boolean isSolved() { return solved; }
+    public void setSolved(boolean solved) { this.solved = solved; }
 
     @Override
     public String toString() {
