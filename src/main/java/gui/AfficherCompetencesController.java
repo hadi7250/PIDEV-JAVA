@@ -28,7 +28,7 @@ public class AfficherCompetencesController implements Initializable {
     @FXML private TableColumn<Competence, String> categoryCol;
     @FXML private TableColumn<Competence, Integer> levelCol;
     @FXML private TableColumn<Competence, String> descCol;
-    
+
     @FXML private Label totalLabel;
     @FXML private TextField searchField;
     @FXML private TextField editNameField;
@@ -67,7 +67,7 @@ public class AfficherCompetencesController implements Initializable {
 
     private void updateEditability() {
         if (selectedCompetence == null || loggedInUser == null) return;
-        
+
         boolean canEdit = loggedInUser.isAdmin() || selectedCompetence.getUserId() == loggedInUser.getId();
         btnUpdate.setDisable(!canEdit);
         btnDelete.setDisable(!canEdit);
@@ -76,7 +76,7 @@ public class AfficherCompetencesController implements Initializable {
     public void setLoggedInUser(User user) {
         this.loggedInUser = user;
         refreshTable();
-        
+
         // Hide "Add" button for teachers, they don't add student competences here
         if (user != null && "TEACHER".equals(user.getRole().toUpperCase())) {
             btnAdd.setVisible(false);
@@ -91,7 +91,9 @@ public class AfficherCompetencesController implements Initializable {
         editLevelSlider.setValue(selectedCompetence.getMaxLevel());
     }
 
+    @FXML
     private void refreshTable() {
+
         try {
             if (loggedInUser != null) {
                 String role = loggedInUser.getRole().toUpperCase();
@@ -114,7 +116,7 @@ public class AfficherCompetencesController implements Initializable {
         String text = searchField.getText().toLowerCase();
         tableView.setItems(FXCollections.observableArrayList(
             allCompetences.stream()
-                .filter(c -> (c.getTitle() != null && c.getTitle().toLowerCase().contains(text)) || 
+                .filter(c -> (c.getTitle() != null && c.getTitle().toLowerCase().contains(text)) ||
                              (c.getCategory() != null && c.getCategory().toLowerCase().contains(text)))
                 .collect(Collectors.toList())
         ));
@@ -166,7 +168,7 @@ public class AfficherCompetencesController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
-            
+
             Object controller = loader.getController();
             if (controller instanceof AjouterCompetenceController) ((AjouterCompetenceController) controller).setLoggedInUser(loggedInUser);
             else if (controller instanceof StudentEvaluationsController) ((StudentEvaluationsController) controller).setLoggedInUser(loggedInUser);
