@@ -473,6 +473,22 @@ public class CoursController {
         VBox content = new VBox(12);
         content.setPadding(new Insets(10, 0, 0, 0));
 
+        // --- 1. AI SUMMARY AT THE TOP ---
+        if (!safe(chapitre.getAiSummary()).isBlank()) {
+            VBox summaryBox = new VBox(6);
+            summaryBox.getStyleClass().add("summary-card");
+
+            Label summaryTitle = new Label("✨ AI Summary");
+            summaryTitle.getStyleClass().add("summary-title");
+
+            Label summaryBody = new Label(chapitre.getAiSummary());
+            summaryBody.setWrapText(true);
+
+            summaryBox.getChildren().addAll(summaryTitle, summaryBody);
+            content.getChildren().add(summaryBox);
+        }
+
+        // --- 2. MAIN CONTENT ---
         Label contentLabel = new Label("Content");
         contentLabel.getStyleClass().add("chapter-section-title");
 
@@ -485,6 +501,7 @@ public class CoursController {
 
         content.getChildren().addAll(contentLabel, contentArea);
 
+        // --- 3. WEBSITE RESOURCES ---
         List<String> links = extractLinks(chapitre);
         if (!links.isEmpty()) {
             Label linksLabel = new Label("Website resources");
@@ -501,22 +518,24 @@ public class CoursController {
             content.getChildren().addAll(linksLabel, linksBox);
         }
 
-        if (!safe(chapitre.getAiSummary()).isBlank()) {
-            VBox summaryBox = new VBox(6);
-            summaryBox.getStyleClass().add("summary-card");
+        // --- 4. CLEAN SCROLLPANE (No forced heights!) ---
+        javafx.scene.control.ScrollPane scrollContent = new javafx.scene.control.ScrollPane(content);
+        scrollContent.setFitToWidth(true);
+        scrollContent.setHbarPolicy(javafx.scene.control.ScrollPane.ScrollBarPolicy.NEVER);
+        scrollContent.setStyle("-fx-background-color: transparent; -fx-background: transparent; -fx-padding: 0;");
 
-            Label summaryTitle = new Label("Saved summary");
-            summaryTitle.getStyleClass().add("summary-title");
+        TitledPane pane = new TitledPane(safe(chapitre.getTitre(), "Untitled chapter"), scrollContent);
 
-            Label summaryBody = new Label(chapitre.getAiSummary());
-            summaryBody.setWrapText(true);
+        // --- 1. TURN OFF JAVAFX ANIMATION BUG ---
+        pane.setAnimated(false);
 
-            summaryBox.getChildren().addAll(summaryTitle, summaryBody);
-            content.getChildren().add(summaryBox);
-        }
+        // --- 2. FORCE SCROLLPANE TO ALWAYS STAY AT THE TOP ---
+        pane.expandedProperty().addListener((obs, wasExpanded, isExpanded) -> {
+            if (isExpanded) {
+                javafx.application.Platform.runLater(() -> scrollContent.setVvalue(0.0));
+            }
+        });
 
-        TitledPane pane = new TitledPane(safe(chapitre.getTitre(), "Untitled chapter"), content);
-        pane.setAnimated(true);
         return pane;
     }
 

@@ -1,4 +1,14 @@
+
 package controllers;
+
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import javafx.application.Platform;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonArray;
+
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -677,11 +687,30 @@ public class AdminCoursController {
         pane.getButtonTypes().addAll(ButtonType.CANCEL, ButtonType.OK);
 
         TextField tfTitle = new TextField(existing == null ? "" : safe(existing.getTitre()));
+        tfTitle.setPromptText("Enter a topic (e.g., 'Java Loops')");
+        tfTitle.setPrefWidth(260);
+
         TextArea taContent = new TextArea(existing == null ? "" : safe(existing.getContenu()));
         taContent.setWrapText(true);
         taContent.setPrefRowCount(7);
         TextField tfLink = new TextField(existing == null ? "" : safe(existing.getResourceUrl()));
         tfLink.setPromptText("https://example.com/material");
+
+        // --- NEW: AI AUTO-GENERATE BUTTON ---
+        Button btnAutoGenerate = new Button("✨ Auto-Generate Lesson");
+        btnAutoGenerate.getStyleClass().add("primary-btn");
+        btnAutoGenerate.setOnAction(e -> {
+            if (tfTitle.getText().trim().isEmpty()) {
+                showWarning("Please type a chapter title or topic first!");
+                return;
+            }
+            btnAutoGenerate.setDisable(true);
+            btnAutoGenerate.setText("Generating...");
+            generateChapterContentAsync(tfTitle.getText(), taContent, tfLink, btnAutoGenerate);
+        });
+
+        HBox titleBox = new HBox(10, tfTitle, btnAutoGenerate);
+        // ------------------------------------
 
         ComboBox<Cours> courseBox = new ComboBox<>(FXCollections.observableArrayList(
                 allCours.stream()
@@ -714,22 +743,37 @@ public class AdminCoursController {
         taSummary.setWrapText(true);
         taSummary.setPrefRowCount(4);
 
+        // --- EXISTING: AI SUMMARY BUTTON ---
+        Button btnGenerateAI = new Button("✨ Generate AI Summary");
+        btnGenerateAI.getStyleClass().add("primary-btn");
+        btnGenerateAI.setOnAction(e -> {
+            if (taContent.getText().trim().isEmpty()) {
+                showWarning("Please enter chapter content first so the AI has something to summarize.");
+                return;
+            }
+            btnGenerateAI.setDisable(true);
+            btnGenerateAI.setText("Generating...");
+            generateAiSummaryAsync(taContent.getText(), taSummary, btnGenerateAI);
+        });
+
+        VBox summaryHeaderBox = new VBox(5, new Label("Saved summary"), btnGenerateAI);
+        // -----------------------------------
+
         GridPane grid = new GridPane();
         grid.setHgap(12);
         grid.setVgap(10);
         grid.setPadding(new Insets(16));
-        grid.add(new Label("Title"), 0, 0);
-        grid.add(tfTitle, 1, 0);
+        grid.add(new Label("Title/Topic"), 0, 0);
+        grid.add(titleBox, 1, 0); // Put our combined Title + Button box here
         grid.add(new Label("Course"), 0, 1);
         grid.add(courseBox, 1, 1);
         grid.add(new Label("Content"), 0, 2);
         grid.add(taContent, 1, 2);
         grid.add(new Label("Material link"), 0, 3);
         grid.add(tfLink, 1, 3);
-        grid.add(new Label("Saved summary"), 0, 4);
+        grid.add(summaryHeaderBox, 0, 4);
         grid.add(taSummary, 1, 4);
 
-        tfTitle.setPrefWidth(420);
         courseBox.setPrefWidth(420);
         tfLink.setPrefWidth(420);
 
@@ -911,4 +955,132 @@ public class AdminCoursController {
         }
         return DATE_FORMAT.format(timestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
     }
+    private void generateAiSummaryAsync(String content, TextArea taSummary, Button btnGenerateAI) {
+        // TODO: Replace with your actual Google Gemini API Key
+        String apiKey = "AIzaSyDoL0C90Kg4xYmkP5nFp1G6tV8X5PzNkRg";
+
+        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + apiKey;
+
+        // Run network request on a background thread so the app doesn't freeze
+        new Thread(() -> {
+            try {
+                // Escape quotes and newlines for JSON
+                String safeContent = content.replace("\"", "\\\"").replace("\n", " ");
+                String prompt = "Summarize the following educational chapter content in 2 or 3 short, clear sentences: " + safeContent;
+
+                String requestBody = "{ \"contents\": [{ \"parts\": [{\"text\": \"" + prompt + "\"}] }] }";
+
+                HttpClient client = HttpClient.newHttpClient();
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create(url))
+                        .header("Content-Type", "application/json")
+                        .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                        .build();
+
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() == 200) {
+                    JsonObject jsonObject = JsonParser.parseString(response.body()).getAsJsonObject();
+                    JsonArray candidates = jsonObject.getAsJsonArray("candidates");
+                    JsonObject contentObj = candidates.get(0).getAsJsonObject().getAsJsonObject("content");
+                    String summary = contentObj.getAsJsonArray("parts").get(0).getAsJsonObject().get("text").getAsString();
+
+                    // Update UI on the JavaFX Application Thread
+                    Platform.runLater(() -> {
+                        taSummary.setText(summary.trim());
+                        btnGenerateAI.setText("✨ Generate AI Summary");
+                        btnGenerateAI.setDisable(false);
+                    });
+                } else {
+                    String errorMessage = response.body();
+                    System.out.println("GOOGLE API ERROR: " + errorMessage);
+
+                    Platform.runLater(() -> {
+                        // 👇 NEW: Show the actual message in the popup
+                        showWarning("AI Request failed (" + response.statusCode() + ").\nGoogle says: " + errorMessage);
+                        btnGenerateAI.setText("✨ Generate AI Summary");
+                        btnGenerateAI.setDisable(false);
+                    });
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                Platform.runLater(() -> {
+                    showWarning("Could not connect to AI service. Check your internet connection.");
+                    btnGenerateAI.setText("✨ Generate AI Summary");
+                    btnGenerateAI.setDisable(false);
+                });
+            }
+        }).start();
+    }
+    /*private void generateChapterContentAsync(String title, TextArea taContent, TextField tfLink, Button btnAutoGenerate) {
+        // 👇 PASTE YOUR API KEY HERE 👇
+        String apiKey = "AIzaSyDoL0C90Kg4xYmkP5nFp1G6tV8X5PzNkRg";
+
+        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + apiKey;
+
+        new Thread(() -> {
+            try {
+                String safeTitle = title.replace("\"", "\\\"").replace("\n", " ");
+                String prompt = "Write a comprehensive educational lesson about '" + safeTitle + "'. Also, find a highly relevant educational YouTube video URL about this topic. Return the response STRICTLY as a valid JSON object with exactly two keys: 'content' (the lesson text) and 'youtube_url' (the video link).";
+
+                // We force Gemini to output perfect JSON using responseMimeType
+                String requestBody = "{\n" +
+                        "  \"contents\": [\n" +
+                        "    {\n" +
+                        "      \"parts\": [\n" +
+                        "        {\n" +
+                        "          \"text\": \"" + prompt + "\"\n" +
+                        "        }\n" +
+                        "      ]\n" +
+                        "    }\n" +
+                        "  ],\n" +
+                        "  \"generationConfig\": {\n" +
+                        "    \"responseMimeType\": \"application/json\"\n" +
+                        "  }\n" +
+                        "}";
+
+                HttpClient client = HttpClient.newHttpClient();
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create(url))
+                        .header("Content-Type", "application/json")
+                        .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                        .build();
+
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() == 200) {
+                    JsonObject jsonObject = JsonParser.parseString(response.body()).getAsJsonObject();
+                    JsonArray candidates = jsonObject.getAsJsonArray("candidates");
+                    JsonObject contentObj = candidates.get(0).getAsJsonObject().getAsJsonObject("content");
+                    String rawText = contentObj.getAsJsonArray("parts").get(0).getAsJsonObject().get("text").getAsString();
+
+                    // Read the JSON generated by Gemini
+                    JsonObject aiResult = JsonParser.parseString(rawText).getAsJsonObject();
+                    String generatedContent = aiResult.has("content") ? aiResult.get("content").getAsString() : "";
+                    String generatedUrl = aiResult.has("youtube_url") ? aiResult.get("youtube_url").getAsString() : "";
+
+                    Platform.runLater(() -> {
+                        taContent.setText(generatedContent.trim());
+                        tfLink.setText(generatedUrl.trim());
+                        btnAutoGenerate.setText("✨ Auto-Generate Lesson");
+                        btnAutoGenerate.setDisable(false);
+                    });
+                } else {
+                    String errorMessage = response.body();
+                    Platform.runLater(() -> {
+                        showWarning("AI Request failed (" + response.statusCode() + ").\n" + errorMessage);
+                        btnAutoGenerate.setText("✨ Auto-Generate Lesson");
+                        btnAutoGenerate.setDisable(false);
+                    });
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                Platform.runLater(() -> {
+                    showWarning("Could not connect to AI service. Check your internet connection.");
+                    btnAutoGenerate.setText("✨ Auto-Generate Lesson");
+                    btnAutoGenerate.setDisable(false);
+                });
+            }
+        }).start();
+    }*/
 }

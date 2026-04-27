@@ -30,7 +30,7 @@ public class Chapitre {
         this.coursId = coursId;
         this.coursTitre = coursTitre;
         this.aiSummary = aiSummary;
-        
+
     }
 
     public int getId() {
