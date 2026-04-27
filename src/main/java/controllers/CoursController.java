@@ -484,6 +484,8 @@ public class CoursController {
             Label summaryBody = new Label(chapitre.getAiSummary());
             summaryBody.setWrapText(true);
 
+            summaryBody.getStyleClass().add("summary-body");
+
             summaryBox.getChildren().addAll(summaryTitle, summaryBody);
             content.getChildren().add(summaryBox);
         }
@@ -518,24 +520,27 @@ public class CoursController {
             content.getChildren().addAll(linksLabel, linksBox);
         }
 
-        // 👇 --- 5. VIRTUAL TUTOR Q&A (INSERTED HERE) --- 👇
-        VBox tutorBox = new VBox(8);
-        tutorBox.setPadding(new Insets(15, 0, 0, 0));
+        // --- 5. VIRTUAL TUTOR Q&A ---
+        VBox tutorBox = new VBox(10);
+        tutorBox.getStyleClass().add("tutor-card"); // Uses your new CSS!
+        VBox.setMargin(tutorBox, new Insets(10, 0, 0, 0));
 
         Label tutorTitle = new Label("🤖 Ask the Virtual Tutor");
-        tutorTitle.setStyle("-fx-font-weight: bold; -fx-text-fill: #2a9d8f;");
+        tutorTitle.getStyleClass().add("tutor-title");
 
         TextField tfQuestion = new TextField();
         tfQuestion.setPromptText("Confused? Ask a question about this chapter...");
+        tfQuestion.getStyleClass().add("text-field"); // Uses your existing text field style
 
         Button btnAsk = new Button("Ask");
-        btnAsk.setStyle("-fx-background-color: #2a9d8f; -fx-text-fill: white; -fx-cursor: hand;");
+        btnAsk.getStyleClass().add("primary-btn"); // Uses your existing beautiful green button!
 
         TextArea taAnswer = new TextArea();
         taAnswer.setWrapText(true);
         taAnswer.setEditable(false);
         taAnswer.setPrefRowCount(4);
-        taAnswer.setVisible(false); // Hidden until they ask a question
+        taAnswer.getStyleClass().add("tutor-answer-box");
+        taAnswer.setVisible(false);
         taAnswer.setManaged(false);
 
         btnAsk.setOnAction(e -> {
@@ -546,15 +551,16 @@ public class CoursController {
             taAnswer.setManaged(true);
             taAnswer.setText("Thinking...");
 
-            // Call the AI method
             askTutorAsync(safe(chapitre.getContenu()), tfQuestion.getText().trim(), taAnswer, btnAsk);
         });
 
         HBox askBox = new HBox(10, tfQuestion, btnAsk);
+        askBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
         javafx.scene.layout.HBox.setHgrow(tfQuestion, javafx.scene.layout.Priority.ALWAYS);
 
         tutorBox.getChildren().addAll(tutorTitle, askBox, taAnswer);
         content.getChildren().add(tutorBox);
+        // ---------------------------------------------
         // 👆 --------------------------------------------- 👆
 
         // --- 4. CLEAN SCROLLPANE (No forced heights!) ---
