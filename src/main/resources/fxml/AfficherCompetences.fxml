@@ -78,6 +78,7 @@
                                     <Button fx:id="btnUpdate" maxWidth="Infinity" onAction="#handleUpdate" styleClass="primary-btn" text="💾 Save Changes" />
                                     <Button fx:id="btnDelete" maxWidth="Infinity" onAction="#handleDelete" styleClass="danger-btn" text="🗑️ Remove Skill" />
                                     <Button fx:id="btnAdd" maxWidth="Infinity" onAction="#goToAdd" styleClass="info-btn" text="➕ Create New Competence" />
+                                    <Button fx:id="btnGenerateCV" maxWidth="Infinity" onAction="#generateCV" styleClass="secondary-btn" text="📄 Generate CV (PDF)" />
                                 </VBox>
                             </VBox>
                         </ScrollPane>

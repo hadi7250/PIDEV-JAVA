@@ -58,28 +58,31 @@
                             </HBox>
 
                             <HBox spacing="20">
-                                 <VBox spacing="8" HBox.hgrow="ALWAYS" styleClass="module-card">
-                                     <Label styleClass="label-bold" text="Grading Weight (0-100)" />
-                                     <TextField fx:id="weightField" promptText="e.g. 25.0" />
-                                 </VBox>
-                                 <VBox spacing="8" HBox.hgrow="ALWAYS" styleClass="module-card">
-                                     <Label styleClass="label-bold" text="Linked Competence" />
-                                     <ComboBox fx:id="competenceComboBox" maxWidth="Infinity" promptText="Associate with a target skill" />
-                                 </VBox>
-                             </HBox>
+                                <VBox spacing="8" HBox.hgrow="ALWAYS" styleClass="module-card">
+                                    <Label styleClass="label-bold" text="Grading Weight (0-100)" />
+                                    <TextField fx:id="weightField" promptText="e.g. 25.0" />
+                                </VBox>
+                            </HBox>
 
-                            <HBox spacing="20">
-                                 <VBox spacing="8" HBox.hgrow="ALWAYS" styleClass="module-card">
-                                     <Label styleClass="label-bold" text="Programming Language" />
-                                     <ComboBox fx:id="languageComboBox" maxWidth="Infinity" promptText="Select language for coding exercises" />
-                                 </VBox>
-                             </HBox>
+                            <VBox spacing="10" styleClass="module-card">
+                                <CheckBox fx:id="codeEvalCheckBox" text="Enable Code Evaluation (MonacoFX IDE)" styleClass="label-bold" />
+                                
+                                <VBox fx:id="codeOptionsContainer" spacing="15" visible="false" managed="false">
+                                    <HBox spacing="20" alignment="CENTER_LEFT">
+                                        <VBox spacing="8" HBox.hgrow="ALWAYS">
+                                            <Label styleClass="label-bold" text="Programming Language" />
+                                            <ComboBox fx:id="languageComboBox" maxWidth="Infinity" promptText="Select language" />
+                                        </VBox>
+                                        <Button onAction="#generateExercise" styleClass="info-btn" text="✨ Auto-generate Exercise" />
+                                    </HBox>
 
-                            <VBox spacing="8" styleClass="module-card">
-                                 <Label styleClass="label-bold" text="Code Template / Exercise Content" />
-                                 <TextArea fx:id="codeContentArea" prefHeight="200" promptText="Enter code template, problem description or exercise content..." wrapText="false" style="-fx-font-family: 'Courier New'; -fx-font-size: 12px;" />
-                             </VBox>
-                         </VBox>
+                                    <VBox spacing="8">
+                                        <Label styleClass="label-bold" text="Code Template / Exercise Content" />
+                                        <TextArea fx:id="codeContentArea" prefHeight="200" promptText="Enter code template or exercise content..." wrapText="false" style="-fx-font-family: 'Courier New'; -fx-font-size: 12px;" />
+                                    </VBox>
+                                </VBox>
+                            </VBox>
+                        </VBox>
 
                          <Separator />
 

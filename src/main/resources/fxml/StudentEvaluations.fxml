@@ -64,6 +64,19 @@
                                     <Label fx:id="commentDetailLabel" styleClass="course-description" text="Select an evaluation to view detailed feedback from your instructor." wrapText="true" />
                                 </VBox>
 
+                                <VBox fx:id="answerContainer" spacing="10" styleClass="module-card" visible="false" managed="false">
+                                    <Label styleClass="label-bold" text="Submit Your Solution" />
+                                    <StackPane fx:id="monacoContainer" prefHeight="350.0" style="-fx-border-color: #ddd; -fx-border-width: 1;" />
+                                    
+                                    <HBox spacing="10" alignment="CENTER_RIGHT">
+                                        <Button fx:id="btnRun" onAction="#runCode" styleClass="info-btn" text="▶ Run Code" />
+                                    </HBox>
+                                    <TextArea fx:id="consoleOutput" editable="false" prefHeight="150" promptText="Output will appear here..." style="-fx-font-family: monospace; -fx-font-size: 12;" />
+
+                                    <TextArea fx:id="regularAnswerArea" prefHeight="200.0" promptText="Enter your answer here..." wrapText="true" />
+                                    <Button onAction="#handleSaveAnswer" maxWidth="Infinity" styleClass="primary-btn" text="💾 Commit Solution" />
+                                </VBox>
+
                                 <Separator />
                                 
                                 <VBox spacing="10.0" alignment="CENTER">

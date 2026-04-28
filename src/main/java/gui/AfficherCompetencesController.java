@@ -15,6 +15,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import services.CompetenceService;
+import services.CVGeneratorService;
 
 import java.net.URL;
 import java.sql.SQLException;
@@ -38,8 +39,10 @@ public class AfficherCompetencesController implements Initializable {
     @FXML private Button btnUpdate;
     @FXML private Button btnDelete;
     @FXML private Button btnAdd;
+    @FXML private Button btnGenerateCV;
 
     private CompetenceService service = new CompetenceService();
+    private CVGeneratorService cvService = new CVGeneratorService();
     private User loggedInUser;
     private Competence selectedCompetence;
     private ObservableList<Competence> allCompetences = FXCollections.observableArrayList();
@@ -213,6 +216,27 @@ public class AfficherCompetencesController implements Initializable {
             service.delete(selectedCompetence);
             refreshTable();
             showAlert(Alert.AlertType.INFORMATION, "Success", "Competence deleted!");
+        }
+    }
+
+    @FXML
+    private void generateCV() {
+        if (loggedInUser == null) {
+            showAlert(Alert.AlertType.WARNING, "Warning", "No user logged in.");
+            return;
+        }
+
+        if (allCompetences.isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Warning", "No competences to include in CV.");
+            return;
+        }
+
+        try {
+            String path = cvService.generateCV(loggedInUser, allCompetences);
+            showAlert(Alert.AlertType.INFORMATION, "CV Generated", "Your CV has been successfully generated and saved to:\n" + path);
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Generation Error", "Failed to generate CV: " + e.getMessage());
         }
     }
 

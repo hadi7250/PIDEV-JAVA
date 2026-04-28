@@ -415,7 +415,7 @@
     -fx-padding: 2 0 0 0;
 }
 
-.info-chip {
+.info_chip {
     -fx-background-color: #edf7f4;
     -fx-background-radius: 999;
     -fx-border-color: #d8ebe5;
@@ -426,7 +426,7 @@
     -fx-text-fill: #295e54;
 }
 
-.info-chip-favorite {
+.info_chip_favorite {
     -fx-background-color: linear-gradient(to right, #dff5ed, #eaf8f3);
     -fx-border-color: #bfe2d6;
     -fx-text-fill: #0f6659;
@@ -616,6 +616,11 @@
     -fx-text-fill: #2c5e56;
     -fx-font-size: 12px;
     -fx-font-weight: 700;
+}
+
+.label-bold {
+    -fx-font-weight: bold;
+    -fx-text-fill: #244a43;
 }
 
 .dark-mode {

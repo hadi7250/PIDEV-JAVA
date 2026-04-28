@@ -13,7 +13,9 @@ public class Evaluation {
     private String comment;
     private String codeContent;
     private String language;
+    private boolean isCodeEvaluation;
     private Competence competence;
+    private Float weight;
 
     public Evaluation() {
     }
@@ -29,7 +31,7 @@ public class Evaluation {
         this.competence = competence;
     }
 
-    public Evaluation(String title, String description, String type, LocalDateTime date, Float score, String status, String comment, String codeContent, String language, Competence competence) {
+    public Evaluation(String title, String description, String type, LocalDateTime date, Float score, String status, String comment, String codeContent, String language, boolean isCodeEvaluation, Competence competence) {
         this.title = title;
         this.description = description;
         this.type = type;
@@ -39,7 +41,23 @@ public class Evaluation {
         this.comment = comment;
         this.codeContent = codeContent;
         this.language = language;
+        this.isCodeEvaluation = isCodeEvaluation;
         this.competence = competence;
+    }
+
+    public Evaluation(String title, String description, String type, LocalDateTime date, Float score, String status, String comment, String codeContent, String language, boolean isCodeEvaluation, Competence competence, Float weight) {
+        this.title = title;
+        this.description = description;
+        this.type = type;
+        this.date = date;
+        this.score = score;
+        this.status = status;
+        this.comment = comment;
+        this.codeContent = codeContent;
+        this.language = language;
+        this.isCodeEvaluation = isCodeEvaluation;
+        this.competence = competence;
+        this.weight = weight;
     }
 
     // Getters and Setters
@@ -73,8 +91,14 @@ public class Evaluation {
     public String getLanguage() { return language; }
     public void setLanguage(String language) { this.language = language; }
 
+    public boolean isCodeEvaluation() { return isCodeEvaluation; }
+    public void setCodeEvaluation(boolean codeEvaluation) { isCodeEvaluation = codeEvaluation; }
+
     public Competence getCompetence() { return competence; }
     public void setCompetence(Competence competence) { this.competence = competence; }
+
+    public Float getWeight() { return weight; }
+    public void setWeight(Float weight) { this.weight = weight; }
 
     @Override
     public String toString() {

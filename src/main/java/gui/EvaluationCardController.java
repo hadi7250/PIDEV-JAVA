@@ -25,18 +25,25 @@ public class EvaluationCardController {
         this.parentController = parentController;
 
         titleLabel.setText(evaluation.getTitle());
-        typeLabel.setText(evaluation.getType().toUpperCase());
-        statusLabel.setText(evaluation.getStatus().toUpperCase());
-        compLabel.setText(evaluation.getCompetence().getTitle());
-        dateLabel.setText(evaluation.getDate().format(DateTimeFormatter.ofPattern("MMM dd, yyyy")));
+        typeLabel.setText(evaluation.getType() != null ? evaluation.getType().toUpperCase() : "N/A");
+        statusLabel.setText(evaluation.getStatus() != null ? evaluation.getStatus().toUpperCase() : "PENDING");
+
+        if (evaluation.getCompetence() != null) {
+            compLabel.setText(evaluation.getCompetence().getTitle());
+        } else {
+            compLabel.setText("No competence linked");
+        }
+
+        dateLabel.setText(evaluation.getDate() != null ?
+                evaluation.getDate().format(DateTimeFormatter.ofPattern("MMM dd, yyyy")) : "No date");
         scoreLabel.setText(evaluation.getScore() + "/100");
 
         // Style status
         statusLabel.getStyleClass().removeAll("badge-pending", "badge-success", "badge-rejected");
-        if (evaluation.getStatus().equalsIgnoreCase("graded")) {
+        if (evaluation.getStatus() != null && evaluation.getStatus().equalsIgnoreCase("graded")) {
             statusLabel.getStyleClass().add("badge-success");
             takeBtn.setText("View Code");
-        } else if (evaluation.getStatus().equalsIgnoreCase("rejected")) {
+        } else if (evaluation.getStatus() != null && evaluation.getStatus().equalsIgnoreCase("rejected")) {
             statusLabel.getStyleClass().add("badge-rejected");
         } else {
             statusLabel.getStyleClass().add("badge-pending");
@@ -52,4 +59,4 @@ public class EvaluationCardController {
     private void handleTakeEvaluation() {
         parentController.openEditor(evaluation);
     }
-}
+}stud
