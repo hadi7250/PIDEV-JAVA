@@ -1138,3 +1138,487 @@
 .dark-mode .notification-btn:pressed {
     -fx-background-color: #4a4a4a;
 }
+
+/* ============================================================================
+   FORUM UI POLISH - Enhanced Styles
+   ============================================================================ */
+
+/* ===== 1. GENERAL SPACING AND PADDING ===== */
+
+/* Consistent card padding */
+.admin-list-card,
+.material-card,
+.message-card {
+    -fx-padding: 16px 20px;
+}
+
+/* Spacing between cards - 12px gap */
+.discussion-cards-box,
+.messages-box {
+    -fx-spacing: 12px;
+}
+
+/* Form fields styling */
+.text-field,
+.text-area,
+.combo-box {
+    -fx-padding: 8px;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+    -fx-border-color: #d7e9e3;
+    -fx-border-width: 1px;
+}
+
+.text-field:focused,
+.text-area:focused,
+.combo-box:focused {
+    -fx-border-color: #2d6a4f;
+    -fx-effect: dropshadow(gaussian, rgba(45, 106, 79, 0.2), 4, 0, 0, 0);
+}
+
+/* Labels and fields alignment */
+.form-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #234d46;
+    -fx-padding: 0 0 4px 0;
+}
+
+/* ===== 2. DISCUSSION LIST CARDS (LEFT PANEL) ===== */
+
+.discussion-card-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e4d45;
+    -fx-wrap-text: true;
+}
+
+.discussion-card-meta {
+    -fx-font-size: 12px;
+    -fx-text-fill: #6c757d;
+}
+
+.dark-mode .discussion-card-meta {
+    -fx-text-fill: #adb5bd;
+}
+
+.discussion-card-preview {
+    -fx-font-size: 13px;
+    -fx-font-style: italic;
+    -fx-text-fill: #6c757d;
+    -fx-max-height: 40px;
+}
+
+.dark-mode .discussion-card-preview {
+    -fx-text-fill: #adb5bd;
+}
+
+/* Action buttons compact styling */
+.discussion-card-actions {
+    -fx-spacing: 8px;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.discussion-card-actions .button {
+    -fx-pref-height: 32px;
+    -fx-padding: 6px 12px;
+    -fx-font-size: 12px;
+}
+
+/* Active/selected discussion card */
+.admin-list-card-active {
+    -fx-border-width: 0 0 0 4px;
+    -fx-border-color: transparent transparent transparent #2d6a4f;
+    -fx-background-color: linear-gradient(to bottom right, #f7fffc, #e8f7f1);
+}
+
+.dark-mode .admin-list-card-active {
+    -fx-border-color: transparent transparent transparent #2d6a4f;
+    -fx-background-color: linear-gradient(to bottom right, #1e2d2f, #162020);
+}
+
+/* ===== 3. MESSAGE CARDS (RIGHT PANEL) ===== */
+
+/* Message card container */
+.message-card {
+    -fx-background-color: linear-gradient(to bottom right, #fcfffe, #f3faf7);
+    -fx-background-radius: 12px;
+    -fx-border-color: #dbeee8;
+    -fx-border-radius: 12px;
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(gaussian, rgba(20, 79, 69, 0.06), 8, 0, 0, 2);
+}
+
+.dark-mode .message-card {
+    -fx-background-color: linear-gradient(to bottom right, #1e2d2f, #162020);
+    -fx-border-color: #26433c;
+}
+
+/* Avatar styling - 40px diameter */
+.message-avatar {
+    -fx-background-color: #2d6a4f;
+    -fx-background-radius: 50%;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+    -fx-pref-width: 40px;
+    -fx-pref-height: 40px;
+    -fx-min-width: 40px;
+    -fx-min-height: 40px;
+}
+
+/* Author header row */
+.message-header {
+    -fx-spacing: 10px;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.message-author {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e4d45;
+}
+
+.dark-mode .message-author {
+    -fx-text-fill: #EAF7F3;
+}
+
+.message-date {
+    -fx-font-size: 12px;
+    -fx-text-fill: #6c757d;
+}
+
+.dark-mode .message-date {
+    -fx-text-fill: #adb5bd;
+}
+
+/* Message content */
+.message-content {
+    -fx-font-size: 14px;
+    -fx-line-spacing: 1.5;
+    -fx-text-fill: #2a544d;
+    -fx-wrap-text: true;
+}
+
+.dark-mode .message-content {
+    -fx-text-fill: #EAF7F3;
+}
+
+/* Vote counters compact styling */
+.vote-counter {
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #6c757d;
+}
+
+.dark-mode .vote-counter {
+    -fx-text-fill: #adb5bd;
+}
+
+/* Message footer with action buttons */
+.message-footer {
+    -fx-spacing: 8px;
+    -fx-alignment: CENTER_RIGHT;
+}
+
+.message-footer .button {
+    -fx-pref-height: 28px;
+    -fx-padding: 4px 10px;
+    -fx-font-size: 12px;
+}
+
+/* Inline reply box styling */
+.inline-reply-box {
+    -fx-background-color: linear-gradient(to bottom right, #f7fffc, #e8f7f1);
+    -fx-background-radius: 8px;
+    -fx-border-color: #2d6a4f;
+    -fx-border-width: 0 0 0 4px;
+    -fx-border-radius: 8px;
+    -fx-padding: 12px;
+}
+
+.dark-mode .inline-reply-box {
+    -fx-background-color: linear-gradient(to bottom right, #1e2d2f, #162020);
+    -fx-border-color: #2d6a4f;
+}
+
+/* ===== 4. FILTER BUTTONS BAR ===== */
+
+.filter-buttons-bar {
+    -fx-spacing: 8px;
+    -fx-alignment: CENTER;
+    -fx-padding: 8px 0;
+}
+
+.filter-btn {
+    -fx-pref-height: 34px;
+    -fx-pref-width: 100px;
+    -fx-background-radius: 17px;
+    -fx-border-radius: 17px;
+    -fx-border-color: #2d6a4f;
+    -fx-border-width: 1px;
+    -fx-background-color: transparent;
+    -fx-text-fill: #2d6a4f;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-cursor: hand;
+}
+
+.filter-btn:hover {
+    -fx-background-color: rgba(45, 106, 79, 0.1);
+}
+
+.filter-btn-active {
+    -fx-background-color: #2d6a4f;
+    -fx-text-fill: white;
+    -fx-border-color: transparent;
+}
+
+.dark-mode .filter-btn {
+    -fx-border-color: #4ecdc4;
+    -fx-text-fill: #4ecdc4;
+}
+
+.dark-mode .filter-btn:hover {
+    -fx-background-color: rgba(78, 205, 196, 0.1);
+}
+
+.dark-mode .filter-btn-active {
+    -fx-background-color: #4ecdc4;
+    -fx-text-fill: #0f1f1b;
+}
+
+/* ===== 5. POST A REPLY FORM (BOTTOM) ===== */
+
+.reply-form-container {
+    -fx-background-color: #f8fcfb;
+    -fx-padding: 16px;
+    -fx-spacing: 12px;
+}
+
+.dark-mode .reply-form-container {
+    -fx-background-color: #162020;
+}
+
+.reply-textarea {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-color: #d7e9e3;
+    -fx-border-width: 1px;
+    -fx-padding: 12px;
+    -fx-font-size: 14px;
+}
+
+.reply-textarea:focused {
+    -fx-border-color: #2d6a4f;
+}
+
+.dark-mode .reply-textarea {
+    -fx-background-color: #1a2e2e;
+    -fx-border-color: #26433c;
+    -fx-text-fill: #e6f5f1;
+}
+
+.dark-mode .reply-textarea:focused {
+    -fx-border-color: #4ecdc4;
+}
+
+.post-reply-btn {
+    -fx-pref-height: 40px;
+    -fx-background-color: #2d6a4f;
+    -fx-text-fill: white;
+    -fx-background-radius: 8px;
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-padding: 0 24px;
+    -fx-cursor: hand;
+}
+
+.post-reply-btn:hover {
+    -fx-background-color: #1b4332;
+}
+
+.dark-mode .post-reply-btn {
+    -fx-background-color: #4ecdc4;
+    -fx-text-fill: #0f1f1b;
+}
+
+.dark-mode .post-reply-btn:hover {
+    -fx-background-color: #3dbdb4;
+}
+
+/* ===== 6. ADMIN PANEL CARDS ===== */
+
+/* Stat cards - 160x120px with teal accent */
+.admin-stat-card {
+    -fx-pref-width: 160px;
+    -fx-pref-height: 120px;
+    -fx-background-color: linear-gradient(to bottom right, #fcfffe, #f3faf7);
+    -fx-background-radius: 12px;
+    -fx-border-color: #dbeee8;
+    -fx-border-radius: 12px;
+    -fx-border-width: 0 0 0 4px;
+    -fx-border-color: transparent transparent transparent #2d6a4f;
+    -fx-padding: 20px;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, rgba(20, 79, 69, 0.08), 8, 0, 0, 2);
+}
+
+.dark-mode .admin-stat-card {
+    -fx-background-color: linear-gradient(to bottom right, #1e2d2f, #162020);
+    -fx-border-color: transparent transparent transparent #4ecdc4;
+}
+
+.admin-stat-value {
+    -fx-font-size: 32px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #2d6a4f;
+}
+
+.dark-mode .admin-stat-value {
+    -fx-text-fill: #4ecdc4;
+}
+
+.admin-stat-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #6c757d;
+}
+
+.dark-mode .admin-stat-label {
+    -fx-text-fill: #adb5bd;
+}
+
+/* Reports table - pending rows with amber border */
+.reports-table .table-row-cell:pending {
+    -fx-border-width: 0 0 0 4px;
+    -fx-border-color: transparent transparent transparent #ff9800;
+}
+
+.reports-table .column-header {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-padding: 12px 8px;
+    -fx-background-color: #f8fcfb;
+}
+
+.dark-mode .reports-table .column-header {
+    -fx-background-color: #1a2e2e;
+}
+
+/* ===== 7. TYPOGRAPHY CONSISTENCY ===== */
+
+/* Page titles */
+.page-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e4d45;
+}
+
+.dark-mode .page-title {
+    -fx-text-fill: #EAF7F3;
+}
+
+/* Section headers */
+.section-header {
+    -fx-font-size: 16px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #234d46;
+}
+
+.dark-mode .section-header {
+    -fx-text-fill: #EAF7F3;
+}
+
+/* Body text */
+.body-text {
+    -fx-font-size: 14px;
+    -fx-text-fill: #2a544d;
+}
+
+.dark-mode .body-text {
+    -fx-text-fill: #EAF7F3;
+}
+
+/* Meta/secondary text */
+.meta-text {
+    -fx-font-size: 12px;
+    -fx-text-fill: #6c757d;
+}
+
+.dark-mode .meta-text {
+    -fx-text-fill: #adb5bd;
+}
+
+/* ===== 8. DARK MODE REFINEMENTS ===== */
+
+/* Dark mode backgrounds */
+.dark-mode .forum-panel {
+    -fx-background-color: #162020;
+}
+
+.dark-mode .forum-card {
+    -fx-background-color: #1e2d2f;
+    -fx-border-color: #26433c;
+}
+
+.dark-mode .forum-input {
+    -fx-background-color: #1a2e2e;
+    -fx-border-color: #26433c;
+    -fx-text-fill: #e6f5f1;
+}
+
+.dark-mode .forum-input:focused {
+    -fx-border-color: #4ecdc4;
+}
+
+/* Ensure no white boxes in dark mode */
+.dark-mode .scroll-pane,
+.dark-mode .scroll-pane > .viewport {
+    -fx-background-color: #162020;
+}
+
+.dark-mode .split-pane {
+    -fx-background-color: #162020;
+}
+
+/* Discussion detail panel dark mode */
+.dark-mode .detail-panel {
+    -fx-background-color: linear-gradient(to bottom right, #1e2d2f, #162020);
+}
+
+.dark-mode .selected-title {
+    -fx-text-fill: #EAF7F3;
+}
+
+.dark-mode .selected-meta {
+    -fx-text-fill: #adb5bd;
+}
+
+.dark-mode .selected-content {
+    -fx-text-fill: #EAF7F3;
+    -fx-control-inner-background: #1a2e2e;
+}
+
+/* Vote active state */
+.vote-active {
+    -fx-background-color: #2d6a4f;
+    -fx-text-fill: white;
+}
+
+.dark-mode .vote-active {
+    -fx-background-color: #4ecdc4;
+    -fx-text-fill: #0f1f1b;
+}
+
+/* Locked notice */
+.locked-notice {
+    -fx-font-size: 13px;
+    -fx-text-fill: #dc3545;
+    -fx-font-weight: 600;
+}
+
+.dark-mode .locked-notice {
+    -fx-text-fill: #ff6b6b;
+}

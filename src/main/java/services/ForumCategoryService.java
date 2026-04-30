@@ -11,6 +11,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ForumCategoryService {
 
@@ -149,16 +150,84 @@ public class ForumCategoryService {
     }
 
     public void deleteCategory(int id) {
-        String sql = "DELETE FROM forum_category WHERE id_forum_category = ?";
-
+        Connection c = null;
         try {
-            Connection c = conn();
-            try (PreparedStatement ps = c.prepareStatement(sql)) {
+            c = conn();
+            c.setAutoCommit(false); // Start transaction
+            
+            // Step 1: Get all discussion IDs in this category
+            List<Integer> discussionIds = new ArrayList<>();
+            String getDiscussionsSql = "SELECT id_forum_discussion FROM forum_discussions WHERE id_forum_category = ?";
+            try (PreparedStatement ps = c.prepareStatement(getDiscussionsSql)) {
                 ps.setInt(1, id);
-                ps.executeUpdate();
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    discussionIds.add(rs.getInt("id_forum_discussion"));
+                }
             }
+            
+            // Step 2: Delete all votes for all messages in these discussions
+            if (!discussionIds.isEmpty()) {
+                String getMessageIdsSql = "SELECT id FROM forum_messages WHERE discussion_id IN (" + 
+                    String.join(",", discussionIds.stream().map(String::valueOf).collect(Collectors.toList())) + ")";
+                List<Integer> messageIds = new ArrayList<>();
+                try (PreparedStatement ps2 = c.prepareStatement(getMessageIdsSql)) {
+                    ResultSet rs2 = ps2.executeQuery();
+                    while (rs2.next()) {
+                        messageIds.add(rs2.getInt("id"));
+                    }
+                }
+                
+                if (!messageIds.isEmpty()) {
+                    String deleteVotesSql = "DELETE FROM forum_votes WHERE message_id IN (" + 
+                        String.join(",", messageIds.stream().map(String::valueOf).collect(Collectors.toList())) + ")";
+                    try (PreparedStatement ps3 = c.prepareStatement(deleteVotesSql)) {
+                        ps3.executeUpdate();
+                    }
+                }
+                
+                // Step 3: Delete all messages in these discussions
+                String deleteMessagesSql = "DELETE FROM forum_messages WHERE discussion_id IN (" + 
+                    String.join(",", discussionIds.stream().map(String::valueOf).collect(Collectors.toList())) + ")";
+                try (PreparedStatement ps4 = c.prepareStatement(deleteMessagesSql)) {
+                    ps4.executeUpdate();
+                }
+            }
+            
+            // Step 4: Delete all discussions in this category
+            String deleteDiscussionsSql = "DELETE FROM forum_discussions WHERE id_forum_category = ?";
+            try (PreparedStatement ps5 = c.prepareStatement(deleteDiscussionsSql)) {
+                ps5.setInt(1, id);
+                ps5.executeUpdate();
+            }
+            
+            // Step 5: Delete the category itself
+            String deleteCategorySql = "DELETE FROM forum_category WHERE id_forum_category = ?";
+            try (PreparedStatement ps6 = c.prepareStatement(deleteCategorySql)) {
+                ps6.setInt(1, id);
+                ps6.executeUpdate();
+            }
+            
+            c.commit(); // Commit transaction
+            
         } catch (Exception e) {
+            if (c != null) {
+                try {
+                    c.rollback(); // Rollback on error
+                } catch (SQLException rollbackEx) {
+                    rollbackEx.printStackTrace();
+                }
+            }
             e.printStackTrace();
+        } finally {
+            if (c != null) {
+                try {
+                    c.setAutoCommit(true); // Restore auto-commit
+                    c.close();
+                } catch (SQLException closeEx) {
+                    closeEx.printStackTrace();
+                }
+            }
         }
     }
 

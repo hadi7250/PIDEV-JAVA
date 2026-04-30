@@ -37,15 +37,19 @@ public class NotificationController implements Initializable {
         // Setup scroll pane
         notificationScrollPane.setFitToWidth(true);
         notificationScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        
+
         // Setup container
         notificationContainer.setSpacing(10);
         notificationContainer.setStyle("-fx-padding: 10;");
-        
+
         // Setup empty state
         emptyStateLabel.setText("No notifications");
         emptyStateLabel.setStyle("-fx-text-fill: #666; -fx-font-size: 14px;");
-        
+
+        // Setup button actions
+        markAllReadButton.setOnAction(e -> markAllAsRead());
+        refreshButton.setOnAction(e -> refreshNotifications());
+
         // Initial load
         updateNotificationCount();
     }

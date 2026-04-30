@@ -9,6 +9,8 @@
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
@@ -137,6 +139,20 @@
                             <FlowPane fx:id="statsFlowPane" hgap="15.0" vgap="15.0" prefWrapLength="1000">
                                 <!-- Stats cards will be added here programmatically -->
                             </FlowPane>
+                        </VBox>
+                    </content>
+                </Tab>
+                
+                <Tab fx:id="reportsTab" text="🚩 Reports">
+                    <content>
+                        <VBox spacing="20.0" styleClass="module-card">
+                            <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                <Label fx:id="pendingCountLabel" styleClass="module-title" text="0 pending reports" />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Button onAction="#refreshReports" styleClass="secondary-btn" text="🔄 Refresh" />
+                            </HBox>
+                            
+                            <TableView fx:id="reportsTable" VBox.vgrow="ALWAYS" styleClass="admin-table" />
                         </VBox>
                     </content>
                 </Tab>

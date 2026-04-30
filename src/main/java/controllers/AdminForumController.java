@@ -15,10 +15,14 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -29,10 +33,13 @@ import javafx.scene.paint.Color;
 import models.ForumCategory;
 import models.ForumDiscussion;
 import models.ForumMessage;
+import models.ForumReport;
 import services.ForumCategoryService;
 import services.ForumDiscussionService;
 import services.ForumMessageService;
 import services.ForumStatsService;
+import services.ForumReportService;
+import utils.SessionManager;
 
 import java.sql.Timestamp;
 import java.time.ZoneId;
@@ -81,9 +88,16 @@ public class AdminForumController {
 
     @FXML private Label statusLabel;
 
+    // --- Reports tab ---
+    @FXML private Tab reportsTab;
+    @FXML private Label pendingCountLabel;
+    @FXML private TableView<ForumReport> reportsTable;
+
     private final ForumCategoryService categoryService = new ForumCategoryService();
     private final ForumDiscussionService discussionService = new ForumDiscussionService();
     private final ForumMessageService messageService = new ForumMessageService();
+    private final ForumStatsService statsService = ForumStatsService.getInstance();
+    private final ForumReportService reportService = ForumReportService.getInstance();
 
     private final ObservableList<ForumCategory> allCategories = FXCollections.observableArrayList();
     private final ObservableList<ForumDiscussion> allDiscussions = FXCollections.observableArrayList();
@@ -115,6 +129,7 @@ public class AdminForumController {
 
         clearCategoryDetails();
         initStatsTab();
+        initReportsTab();
         refreshAll();
     }
 
@@ -631,12 +646,11 @@ public class AdminForumController {
 
     private void deleteCategory(ForumCategory selected) {
         if (selected == null) return;
-        if (!confirm("Delete category", "Delete '" + safe(selected.getName(), "Untitled")
-                + "'? Discussions in it will be kept but unlinked.")) return;
+        if (!confirm("Delete category", "⚠ Deleting this category will permanently delete all its discussions, messages and votes. This cannot be undone. Continue?")) return;
 
         categoryService.deleteCategory(selected.getId());
         refreshAll();
-        status("Category deleted.");
+        status("Category and all its discussions deleted.");
     }
 
     private void editDiscussion(ForumDiscussion selected) {
@@ -828,7 +842,8 @@ public class AdminForumController {
         pane.getButtonTypes().addAll(ButtonType.CANCEL, ButtonType.OK);
 
         TextField tfTitle = new TextField(existing == null ? "" : safe(existing.getTitle()));
-        TextField tfAuthor = new TextField(existing == null ? "" : safe(existing.getAuthorName()));
+        // Author auto-set from SessionManager for new discussions, preserve for existing
+        String authorName = existing == null ? SessionManager.getInstance().getCurrentUserFullName() : safe(existing.getAuthorName());
         TextArea taContent = new TextArea(existing == null ? "" : safe(existing.getContent()));
         taContent.setWrapText(true);
         taContent.setPrefRowCount(7);
@@ -870,14 +885,12 @@ public class AdminForumController {
         grid.setHgap(12);
         grid.setVgap(10);
         grid.setPadding(new Insets(16));
-        grid.add(new Label("Title"), 0, 0);        grid.add(tfTitle, 1, 0);
-        grid.add(new Label("Author"), 0, 1);       grid.add(tfAuthor, 1, 1);
-        grid.add(new Label("Category"), 0, 2);     grid.add(categoryBox, 1, 2);
-        grid.add(new Label("Content"), 0, 3);      grid.add(taContent, 1, 3);
-        grid.add(new Label("Flags"), 0, 4);        grid.add(flags, 1, 4);
+        grid.add(new Label("Title*"), 0, 0);        grid.add(tfTitle, 1, 0);
+        grid.add(new Label("Category*"), 0, 1);     grid.add(categoryBox, 1, 1);
+        grid.add(new Label("Content*"), 0, 2);      grid.add(taContent, 1, 2);
+        grid.add(new Label("Flags"), 0, 3);        grid.add(flags, 1, 3);
 
         tfTitle.setPrefWidth(420);
-        tfAuthor.setPrefWidth(420);
         categoryBox.setPrefWidth(420);
 
         pane.setContent(grid);
@@ -885,7 +898,7 @@ public class AdminForumController {
         Button ok = (Button) pane.lookupButton(ButtonType.OK);
         ok.addEventFilter(javafx.event.ActionEvent.ACTION, ev -> {
             String err = validateDiscussion(tfTitle.getText(), taContent.getText(),
-                    tfAuthor.getText(), categoryBox.getValue());
+                    authorName, categoryBox.getValue());
             if (!err.isBlank()) {
                 ev.consume();
                 showWarning(err);
@@ -899,7 +912,7 @@ public class AdminForumController {
             d.setId(existing == null ? 0 : existing.getId());
             d.setTitle(tfTitle.getText().trim());
             d.setContent(taContent.getText().trim());
-            d.setAuthorName(tfAuthor.getText().trim());
+            d.setAuthorName(authorName); // Author from SessionManager
             d.setPinned(cbPinned.isSelected());
             d.setLocked(cbLocked.isSelected());
             d.setCategoryId(cat == null ? 0 : cat.getId());
@@ -1049,77 +1062,10 @@ public class AdminForumController {
                 (int) (color.getBlue() * 255));
     }
 
-    private ForumDiscussion buildAllDiscussionsOption() {
-        ForumDiscussion d = new ForumDiscussion();
-        d.setId(0);
-        d.setTitle("All discussions");
-        return d;
-    }
-
-    // ===== Stats Tab Methods =====
-    
-    private void initStatsTab() {
-        refreshStats();
-    }
-    
-    @FXML
-    public void refreshStats() {
-        if (statsFlowPane == null) return;
-        
-        ForumStatsService statsService = ForumStatsService.getInstance();
-        statsFlowPane.getChildren().clear();
-        
-        // Create stats cards
-        statsFlowPane.getChildren().add(createStatCard("Total Discussions", String.valueOf(statsService.getTotalDiscussions())));
-        statsFlowPane.getChildren().add(createStatCard("Total Messages", String.valueOf(statsService.getTotalMessages())));
-        statsFlowPane.getChildren().add(createStatCard("Most Active Category", statsService.getMostActiveCategory()));
-        statsFlowPane.getChildren().add(createStatCard("Top Author", statsService.getTopAuthor()));
-        statsFlowPane.getChildren().add(createStatCard("Total Votes", String.valueOf(statsService.getTotalVotes())));
-        
-        // Recent activity card with ListView
-        VBox recentActivityCard = createRecentActivityCard(statsService.getRecentActivityLog(5));
-        statsFlowPane.getChildren().add(recentActivityCard);
-    }
-    
-    private VBox createStatCard(String title, String value) {
-        VBox card = new VBox(8);
-        card.getStyleClass().add("stat-card");
-        card.setPrefSize(200, 120);
-        
-        Label valueLabel = new Label(value);
-        valueLabel.getStyleClass().add("stat-value");
-        
-        Label titleLabel = new Label(title);
-        titleLabel.getStyleClass().add("stat-title");
-        
-        card.getChildren().addAll(valueLabel, titleLabel);
-        return card;
-    }
-    
-    private VBox createRecentActivityCard(List<String> recentActivities) {
-        VBox card = new VBox(8);
-        card.getStyleClass().add("stat-card");
-        card.setPrefSize(250, 200);
-        
-        Label titleLabel = new Label("Recent Activity");
-        titleLabel.getStyleClass().add("stat-title");
-        
-        ListView<String> activityList = new ListView<>();
-        activityList.getStyleClass().add("activity-list");
-        activityList.setItems(FXCollections.observableArrayList(recentActivities));
-        
-        VBox.setVgrow(activityList, Priority.ALWAYS);
-        
-        card.getChildren().addAll(titleLabel, activityList);
-        return card;
-    }
-
-    // ===== Input Validation Methods =====
-    
     private void validateCategoryName(String name, Label errorLabel) {
         boolean isValid = true;
         String errorMessage = "";
-        
+
         if (name.isEmpty()) {
             isValid = false;
             errorMessage = "Category name is required.";
@@ -1133,33 +1079,298 @@ public class AdminForumController {
             isValid = false;
             errorMessage = "Category name can only contain letters, numbers, spaces, hyphens, and underscores.";
         }
-        
+
         errorLabel.setText(errorMessage);
         errorLabel.setVisible(!isValid);
         errorLabel.setManaged(!isValid);
     }
-    
+
     private void validateCategoryColor(String color, Label errorLabel) {
         boolean isValid = true;
         String errorMessage = "";
-        
+
         if (color == null || !color.matches("#[0-9A-Fa-f]{6}")) {
             isValid = false;
             errorMessage = "Please select a valid color.";
         }
-        
+
         errorLabel.setText(errorMessage);
         errorLabel.setVisible(!isValid);
         errorLabel.setManaged(!isValid);
     }
-    
-    private void updateOkButton(Dialog<?> dialog, TextField nameField, ColorPicker colorPicker, 
+
+    private void updateOkButton(Dialog<?> dialog, TextField nameField, ColorPicker colorPicker,
                               Label nameErrorLabel, Label colorErrorLabel) {
         Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
         boolean isNameValid = nameErrorLabel.getText().isEmpty();
         boolean isColorValid = colorErrorLabel.getText().isEmpty();
         boolean hasName = !nameField.getText().trim().isEmpty();
-        
+
         okButton.setDisable(!(isNameValid && isColorValid && hasName));
+    }
+
+    private ForumDiscussion buildAllDiscussionsOption() {
+        ForumDiscussion d = new ForumDiscussion();
+        d.setId(0);
+        d.setTitle("All discussions");
+        return d;
+    }
+
+    // ===== Stats Tab Methods =====
+    
+    private void initStatsTab() {
+        refreshStats();
+    }
+    
+    private void initReportsTab() {
+        setupReportsTableColumns();
+        refreshReports();
+    }
+    
+    @FXML
+    public void refreshReports() {
+        List<ForumReport> reports = reportService.getAllReports();
+        reportsTable.getItems().setAll(reports);
+        
+        int pendingCount = reportService.getPendingCount();
+        pendingCountLabel.setText(pendingCount + " pending reports");
+        
+        status("Loaded " + reports.size() + " reports.");
+    }
+    
+    private void setupReportsTableColumns() {
+    if (!reportsTable.getColumns().isEmpty()) return; // already set up, skip
+    TableColumn<ForumReport, String> typeColumn = new TableColumn<>("Type");
+    typeColumn.setCellValueFactory(data ->
+        new SimpleStringProperty(data.getValue().getType() == null ? "" : data.getValue().getType()));
+
+    TableColumn<ForumReport, String> contentColumn = new TableColumn<>("Content");
+    contentColumn.setCellValueFactory(data -> {
+        String content = data.getValue().getTargetContent();
+        if (content == null) content = "";
+        String truncated = content.length() > 50 ? content.substring(0, 50) + "..." : content;
+        return new SimpleStringProperty(truncated);
+    });
+
+    TableColumn<ForumReport, String> reporterColumn = new TableColumn<>("Reported By");
+    reporterColumn.setCellValueFactory(data ->
+        new SimpleStringProperty(data.getValue().getReporterName() == null ? "" : data.getValue().getReporterName()));
+
+    TableColumn<ForumReport, String> reasonColumn = new TableColumn<>("Reason");
+    reasonColumn.setCellValueFactory(data ->
+        new SimpleStringProperty(data.getValue().getReason() == null ? "" : data.getValue().getReason()));
+
+    TableColumn<ForumReport, String> dateColumn = new TableColumn<>("Date");
+    dateColumn.setCellValueFactory(data ->
+        new SimpleStringProperty(data.getValue().getCreatedAt() == null ? "" : data.getValue().getCreatedAt()));
+
+    TableColumn<ForumReport, String> statusColumn = new TableColumn<>("Status");
+    statusColumn.setCellValueFactory(data ->
+        new SimpleStringProperty(data.getValue().getStatus() == null ? "" : data.getValue().getStatus()));
+
+    TableColumn<ForumReport, Void> actionsColumn = new TableColumn<>("Actions");
+    actionsColumn.setCellFactory(col -> new javafx.scene.control.TableCell<ForumReport, Void>() {
+        private final Button reviewedBtn = new Button("✅ Reviewed");
+        private final Button dismissedBtn = new Button("❌ Dismiss");
+        private final HBox actionsBox = new HBox(5, reviewedBtn, dismissedBtn);
+
+        {
+            actionsBox.setAlignment(Pos.CENTER_LEFT);
+            reviewedBtn.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 12px; -fx-padding: 4 8;");
+            dismissedBtn.setStyle("-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-size: 12px; -fx-padding: 4 8;");
+
+            reviewedBtn.setOnAction(e -> {
+                ForumReport report = getTableView().getItems().get(getIndex());
+                reportService.updateStatus(report.getId(), "reviewed");
+                refreshReports();
+            });
+
+            dismissedBtn.setOnAction(e -> {
+                ForumReport report = getTableView().getItems().get(getIndex());
+                reportService.updateStatus(report.getId(), "dismissed");
+                refreshReports();
+            });
+        }
+
+        @Override
+        protected void updateItem(Void item, boolean empty) {
+            super.updateItem(item, empty);
+            if (empty || getTableRow() == null || getTableRow().getItem() == null) {
+                setGraphic(null);
+            } else {
+                ForumReport report = (ForumReport) getTableRow().getItem();
+                actionsBox.getChildren().clear();
+                if ("pending".equals(report.getStatus())) {
+                    actionsBox.getChildren().addAll(reviewedBtn, dismissedBtn);
+                }
+                setGraphic(actionsBox);
+            }
+        }
+    });
+
+    reportsTable.setRowFactory(tv -> {
+        javafx.scene.control.TableRow<ForumReport> row = new javafx.scene.control.TableRow<>();
+        row.itemProperty().addListener((obs, oldReport, newReport) -> {
+            if (newReport != null && "pending".equals(newReport.getStatus())) {
+                row.setStyle("-fx-background-color: #fff3cd; -fx-border-color: #ff9800;");
+            } else {
+                row.setStyle("");
+            }
+        });
+        return row;
+    });
+
+        reportsTable.getColumns().addAll(typeColumn, contentColumn, reporterColumn, reasonColumn, dateColumn, statusColumn, actionsColumn);
+        reportsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+    }
+    
+    @FXML
+    public void refreshStats() {
+        if (statsFlowPane == null) return;
+        
+        ForumStatsService statsService = ForumStatsService.getInstance();
+        statsFlowPane.getChildren().clear();
+        
+        // Main container VBox with transparent background
+        VBox mainContainer = new VBox(16);
+        mainContainer.setPadding(new Insets(16));
+        mainContainer.setStyle("-fx-background-color: transparent;");
+        
+        // Stat cards row in HBox with 16px spacing
+        HBox cardsRow = new HBox(16);
+        cardsRow.setStyle("-fx-background-color: transparent;");
+        cardsRow.setSpacing(16);
+        cardsRow.setPadding(new Insets(0, 0, 16, 0));
+        
+        // Create stat cards with icons
+        cardsRow.getChildren().add(createStatCard("📊", String.valueOf(statsService.getTotalDiscussions()), 
+                                                  "Total Discussions"));
+        cardsRow.getChildren().add(createStatCard("💬", String.valueOf(statsService.getTotalMessages()), 
+                                                  "Total Messages"));
+        cardsRow.getChildren().add(createStatCard("🏆", statsService.getMostActiveCategory(), 
+                                                  "Most Active Category"));
+        cardsRow.getChildren().add(createStatCard("👑", statsService.getTopAuthor(), 
+                                                  "Top Author"));
+        cardsRow.getChildren().add(createStatCard("⬆", String.valueOf(statsService.getTotalVotes()), 
+                                                  "Total Votes"));
+        
+        // Wrap cards in horizontal ScrollPane
+        ScrollPane cardsScrollPane = new ScrollPane(cardsRow);
+        cardsScrollPane.setFitToHeight(true);
+        cardsScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        cardsScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        cardsScrollPane.setStyle("-fx-background-color: transparent;");
+        
+        // Recent Activity section
+        VBox recentActivitySection = createRecentActivitySection(statsService.getRecentActivityLog(5));
+        
+        // Add all sections to main container
+        mainContainer.getChildren().addAll(cardsScrollPane, recentActivitySection);
+        
+        // Wrap everything in a ScrollPane for vertical scrolling
+        ScrollPane mainScrollPane = new ScrollPane(mainContainer);
+        mainScrollPane.setFitToWidth(true);
+        mainScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        mainScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        mainScrollPane.setStyle("-fx-background-color: transparent;");
+        
+        // Add the main scroll pane to statsFlowPane
+        statsFlowPane.getChildren().add(mainScrollPane);
+        statsFlowPane.setStyle("-fx-background-color: transparent;");
+    }
+    
+    private VBox createStatCard(String icon, String value, String description) {
+        VBox card = new VBox(6);
+        card.setPrefSize(220, 140);
+        card.setAlignment(Pos.CENTER_LEFT);
+        
+        // Card styling with dark background and teal left border
+        card.setStyle(
+            "-fx-background-color: #1e2d2f;" +
+            "-fx-border-color: #2d6a4f;" +
+            "-fx-border-width: 0 0 0 4;" +
+            "-fx-border-radius: 12;" +
+            "-fx-background-radius: 12;" +
+            "-fx-padding: 16;" +
+            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 8, 0, 0, 2);"
+        );
+        
+        // Icon at top
+        Label iconLabel = new Label(icon);
+        iconLabel.setStyle("-fx-font-size: 22px; -fx-text-fill: #4db886;");
+        
+        // Value in large bold teal text
+        Label valueLabel = new Label(value);
+        valueLabel.setWrapText(true);
+        valueLabel.setPrefWidth(190);
+        valueLabel.setMaxWidth(190);
+        valueLabel.setStyle("-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #4db886;");
+        
+        // Description at bottom in muted color
+        Label descLabel = new Label(description);
+        descLabel.setWrapText(true);
+        descLabel.setPrefWidth(190);
+        descLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #a0b8b0;");
+        
+        card.getChildren().addAll(iconLabel, valueLabel, descLabel);
+        return card;
+    }
+    
+    private VBox createRecentActivitySection(List<String> recentActivities) {
+        VBox section = new VBox(8);
+        section.setPadding(new Insets(16));
+        section.setStyle(
+            "-fx-background-color: #1e2d2f;" +
+            "-fx-border-radius: 12;" +
+            "-fx-background-radius: 12;" +
+            "-fx-padding: 16;"
+        );
+        
+        // Section header
+        Label headerLabel = new Label("📋 Recent Activity");
+        headerLabel.setStyle("-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #4db886;");
+        
+        // Container for activity rows
+        VBox rowsContainer = new VBox(4);
+        
+        // Create a row for each recent activity (last 5)
+        int index = 1;
+        for (String activity : recentActivities) {
+            HBox row = createActivityRow(index, activity);
+            rowsContainer.getChildren().add(row);
+            index++;
+        }
+        
+        section.getChildren().addAll(headerLabel, rowsContainer);
+        return section;
+    }
+    
+    private HBox createActivityRow(int index, String activityText) {
+        HBox row = new HBox(10);
+        row.setAlignment(Pos.CENTER_LEFT);
+        
+        // Alternating background
+        boolean isEven = index % 2 == 0;
+        String bgStyle = isEven ? 
+            "-fx-padding: 8 4; -fx-background-color: rgba(45,106,79,0.08); -fx-background-radius: 6;" :
+            "-fx-padding: 8 4; -fx-background-color: transparent;";
+        row.setStyle(bgStyle);
+        
+        // Index number
+        Label indexLabel = new Label(String.valueOf(index));
+        indexLabel.setStyle("-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #4db886;");
+        
+        // Teal bullet
+        Label bulletLabel = new Label("●");
+        bulletLabel.setStyle("-fx-text-fill: #2d6a4f; -fx-font-size: 10px;");
+        
+        // Activity text
+        Label activityLabel = new Label(activityText);
+        activityLabel.setWrapText(true);
+        HBox.setHgrow(activityLabel, Priority.ALWAYS);
+        activityLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #c8d8d4;");
+        
+        row.getChildren().addAll(indexLabel, bulletLabel, activityLabel);
+        return row;
     }
 }

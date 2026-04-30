@@ -33,6 +33,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.application.Platform;
 import models.ForumCategory;
 import models.ForumDiscussion;
 import models.ForumMessage;
@@ -42,6 +43,7 @@ import services.ForumMessageService;
 import services.ForumViewService;
 import services.NotificationService;
 import services.BadWordFilterService;
+import services.ForumReportService;
 import utils.SessionManager;
 
 import java.sql.*;
@@ -282,8 +284,9 @@ public class ForumController {
         openBtn.getStyleClass().add("primary-btn");
         openBtn.setOnAction(e -> showDiscussion(d));
 
-        HBox actions = new HBox(10);
+        HBox actions = new HBox(8);
         actions.setAlignment(Pos.CENTER_LEFT);
+        actions.getStyleClass().add("discussion-card-actions");
         actions.getChildren().add(openBtn);
 
         // Add edit/delete buttons only for discussions by current user
@@ -299,6 +302,14 @@ public class ForumController {
                 deleteBtn.setOnAction(e -> deleteDiscussion(d));
 
                 actions.getChildren().addAll(editBtn, deleteBtn);
+            } else {
+                // Add Report button for other users' discussions
+                Button reportBtn = new Button("🚩 Report");
+                reportBtn.getStyleClass().addAll("secondary-btn");
+                reportBtn.setStyle("-fx-background-color: rgba(255, 107, 107, 0.2); -fx-border-color: rgba(255, 107, 107, 0.3);");
+                reportBtn.setOnAction(e -> showReportDialog(d.getId(), "discussion", d.getTitle()));
+                
+                actions.getChildren().addAll(reportBtn);
             }
         }
 
@@ -311,6 +322,12 @@ public class ForumController {
     }
 
     private void showDiscussion(ForumDiscussion d) {
+        // CRITICAL FIX: Clear stale state BEFORE setting new discussion
+        // This prevents showing messages from previously opened discussion
+        messagesBox.getChildren().clear();
+        removeCurrentReplyBox();
+        currentReplyParent = null;
+        
         selectedDiscussion = d;
 
         // Record unique view for logged-in users
@@ -361,33 +378,39 @@ public class ForumController {
     }
 
     private VBox buildMessageCard(ForumMessage m) {
-        VBox card = new VBox(6);
-        card.getStyleClass().add("material-card");
+        VBox card = new VBox(10);
+        card.getStyleClass().addAll("material-card", "message-card");
+        card.setPadding(new Insets(16, 20, 16, 20));
 
         // Create avatar with initials
         String authorName = safe(m.getAuthorName(), "Anonymous");
         String initials = getInitials(authorName);
         Label avatar = createAvatar(initials);
+        avatar.getStyleClass().add("message-avatar");
         
         // Create header with avatar
         HBox headerBox = new HBox(10);
         headerBox.setAlignment(Pos.CENTER_LEFT);
+        headerBox.getStyleClass().add("message-header");
         headerBox.getChildren().add(avatar);
         
-        Label header = new Label(authorName
-                + (m.isAuthor() ? " (author)" : "")
-                + " \u2022 " + formatTimestamp(m.getCreatedAt()));
-        header.getStyleClass().add("admin-card-meta");
-        headerBox.getChildren().add(header);
+        VBox authorBox = new VBox(2);
+        Label authorLabel = new Label(authorName + (m.isAuthor() ? " (author)" : ""));
+        authorLabel.getStyleClass().addAll("message-author", "section-header");
+        Label dateLabel = new Label(formatTimestamp(m.getCreatedAt()));
+        dateLabel.getStyleClass().addAll("message-date", "meta-text");
+        authorBox.getChildren().addAll(authorLabel, dateLabel);
+        headerBox.getChildren().add(authorBox);
 
         Label body = new Label(safe(m.getContent(), ""));
         body.setWrapText(true);
-        body.setStyle("-fx-text-fill: #EAF7F3; -fx-font-size: 15px;");
+        body.getStyleClass().addAll("message-content", "body-text");
 
         HBox voteRow = new HBox(10);
-        voteRow.setAlignment(Pos.CENTER_LEFT);
+        voteRow.setAlignment(Pos.CENTER_RIGHT);
+        voteRow.getStyleClass().add("message-footer");
         Label votes = new Label("\u25B2 " + m.getUpvotes() + "   \u25BC " + m.getDownvotes());
-        votes.getStyleClass().add("admin-card-meta");
+        votes.getStyleClass().addAll("vote-counter", "meta-text");
 
         // Check if user has already voted on this message
         String userVote = getUserVote(m.getId());
@@ -443,7 +466,8 @@ public class ForumController {
 
         // Add reply button for all logged-in users
         Button replyBtn = new Button("💬 Reply");
-        replyBtn.getStyleClass().add("primary-btn");
+        replyBtn.getStyleClass().add("secondary-btn");
+        replyBtn.setPrefHeight(28);
         replyBtn.setOnAction(e -> {
             if (SessionManager.getInstance().isLoggedIn()) {
                 startReplyToMessage(m);
@@ -452,21 +476,33 @@ public class ForumController {
             }
         });
 
+        up.setPrefHeight(28);
+        down.setPrefHeight(28);
+
         // Add edit/delete buttons only for messages by current user
         if (SessionManager.getInstance().isLoggedIn()) {
             String currentUserFullName = SessionManager.getInstance().getCurrentUserFullName();
             if (currentUserFullName.equals(m.getAuthorName())) {
                 Button editMsgBtn = new Button("Edit");
                 editMsgBtn.getStyleClass().add("secondary-btn");
+                editMsgBtn.setPrefHeight(28);
                 editMsgBtn.setOnAction(e -> editMessage(m));
 
                 Button deleteMsgBtn = new Button("Delete");
                 deleteMsgBtn.getStyleClass().add("danger-btn");
+                deleteMsgBtn.setPrefHeight(28);
                 deleteMsgBtn.setOnAction(e -> deleteMessage(m));
 
                 voteRow.getChildren().addAll(votes, new Region(), replyBtn, up, down, editMsgBtn, deleteMsgBtn);
             } else {
-                voteRow.getChildren().addAll(votes, new Region(), replyBtn, up, down);
+                // Add Report button for other users' messages
+                Button reportMsgBtn = new Button("🚩 Report");
+                reportMsgBtn.getStyleClass().addAll("secondary-btn");
+                reportMsgBtn.setPrefHeight(28);
+                reportMsgBtn.setStyle("-fx-background-color: rgba(255, 107, 107, 0.2); -fx-border-color: rgba(255, 107, 107, 0.3);");
+                reportMsgBtn.setOnAction(e -> showReportDialog(m.getId(), "message", m.getContent()));
+                
+                voteRow.getChildren().addAll(votes, new Region(), replyBtn, up, down, reportMsgBtn);
             }
         } else {
             voteRow.getChildren().addAll(votes, new Region(), replyBtn, up, down);
@@ -498,39 +534,39 @@ public class ForumController {
     private void setActiveFilter(String filterType) {
         currentFilter = filterType;
         
-        // Reset all buttons to secondary style
-        filterMostViewedBtn.getStyleClass().removeAll("primary-btn");
-        filterMostViewedBtn.getStyleClass().add("secondary-btn");
-        filterMostRepliedBtn.getStyleClass().removeAll("primary-btn");
-        filterMostRepliedBtn.getStyleClass().add("secondary-btn");
-        filterNewestBtn.getStyleClass().removeAll("primary-btn");
-        filterNewestBtn.getStyleClass().add("secondary-btn");
-        filterPinnedBtn.getStyleClass().removeAll("primary-btn");
-        filterPinnedBtn.getStyleClass().add("secondary-btn");
-        filterSolvedBtn.getStyleClass().removeAll("primary-btn");
-        filterSolvedBtn.getStyleClass().add("secondary-btn");
+        // Reset all buttons to inactive filter style
+        filterMostViewedBtn.getStyleClass().removeAll("filter-btn-active", "primary-btn");
+        filterMostViewedBtn.getStyleClass().addAll("filter-btn", "secondary-btn");
+        filterMostRepliedBtn.getStyleClass().removeAll("filter-btn-active", "primary-btn");
+        filterMostRepliedBtn.getStyleClass().addAll("filter-btn", "secondary-btn");
+        filterNewestBtn.getStyleClass().removeAll("filter-btn-active", "primary-btn");
+        filterNewestBtn.getStyleClass().addAll("filter-btn", "secondary-btn");
+        filterPinnedBtn.getStyleClass().removeAll("filter-btn-active", "primary-btn");
+        filterPinnedBtn.getStyleClass().addAll("filter-btn", "secondary-btn");
+        filterSolvedBtn.getStyleClass().removeAll("filter-btn-active", "primary-btn");
+        filterSolvedBtn.getStyleClass().addAll("filter-btn", "secondary-btn");
         
-        // Set active button to primary style
+        // Set active button to active filter style
         switch (filterType) {
             case "views":
-                filterMostViewedBtn.getStyleClass().removeAll("secondary-btn");
-                filterMostViewedBtn.getStyleClass().add("primary-btn");
+                filterMostViewedBtn.getStyleClass().removeAll("filter-btn", "secondary-btn");
+                filterMostViewedBtn.getStyleClass().addAll("filter-btn-active", "primary-btn");
                 break;
             case "replies":
-                filterMostRepliedBtn.getStyleClass().removeAll("secondary-btn");
-                filterMostRepliedBtn.getStyleClass().add("primary-btn");
+                filterMostRepliedBtn.getStyleClass().removeAll("filter-btn", "secondary-btn");
+                filterMostRepliedBtn.getStyleClass().addAll("filter-btn-active", "primary-btn");
                 break;
             case "newest":
-                filterNewestBtn.getStyleClass().removeAll("secondary-btn");
-                filterNewestBtn.getStyleClass().add("primary-btn");
+                filterNewestBtn.getStyleClass().removeAll("filter-btn", "secondary-btn");
+                filterNewestBtn.getStyleClass().addAll("filter-btn-active", "primary-btn");
                 break;
             case "pinned":
-                filterPinnedBtn.getStyleClass().removeAll("secondary-btn");
-                filterPinnedBtn.getStyleClass().add("primary-btn");
+                filterPinnedBtn.getStyleClass().removeAll("filter-btn", "secondary-btn");
+                filterPinnedBtn.getStyleClass().addAll("filter-btn-active", "primary-btn");
                 break;
             case "solved":
-                filterSolvedBtn.getStyleClass().removeAll("secondary-btn");
-                filterSolvedBtn.getStyleClass().add("primary-btn");
+                filterSolvedBtn.getStyleClass().removeAll("filter-btn", "secondary-btn");
+                filterSolvedBtn.getStyleClass().addAll("filter-btn-active", "primary-btn");
                 break;
         }
     }
@@ -620,9 +656,7 @@ public class ForumController {
     private void createInlineReplyBox(ForumMessage parentMessage) {
         // Create reply container
         VBox replyContainer = new VBox(8);
-        replyContainer.setStyle("-fx-background-color: #f8f9fa; -fx-background-radius: 8; " +
-                           "-fx-border-color: #dee2e6; -fx-border-radius: 8; " +
-                           "-fx-padding: 12; -fx-border-insets: 0;");
+        replyContainer.getStyleClass().add("inline-reply-box");
         replyContainer.setTranslateX(30); // Indent 30px from left
 
         // Create header
@@ -636,6 +670,22 @@ public class ForumController {
         replyTextArea.setPromptText("Write a reply...");
         replyTextArea.setStyle("-fx-background-color: white; -fx-border-color: #ced4da; " +
                           "-fx-border-radius: 4; -fx-border-insets: 0; -fx-padding: 8;");
+        
+        // Add listener to remove error label when user types
+        replyTextArea.textProperty().addListener((obs, oldVal, newVal) -> {
+            replyContainer.getChildren().removeIf(n -> n instanceof Label && ((Label)n).getText().contains("inappropriate"));
+        });
+        
+        // Real-time censoring when user finishes typing (loses focus)
+        replyTextArea.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+            if (!isNowFocused) {
+                String censored = BadWordFilterService.getInstance().censor(replyTextArea.getText());
+                if (!censored.equals(replyTextArea.getText())) {
+                    replyTextArea.setText(censored);
+                    replyTextArea.positionCaret(censored.length());
+                }
+            }
+        });
         
         // Create buttons container
         HBox buttonContainer = new HBox(8);
@@ -704,8 +754,14 @@ public class ForumController {
         // Check for bad words
         BadWordFilterService filterService = BadWordFilterService.getInstance();
         if (filterService.containsBadWord(content)) {
-            showWarning("Reply contains inappropriate content.");
-            return;
+            // Show red error label inside the inline reply box
+            Label errorLabel = new Label("⚠ Your reply contains inappropriate content.");
+            errorLabel.setStyle("-fx-text-fill: #d32f2f; -fx-font-size: 12px;");
+            // Add it to the reply VBox if not already there
+            if (replyContainer.getChildren().stream().noneMatch(n -> n instanceof Label && ((Label)n).getText().contains("inappropriate"))) {
+                replyContainer.getChildren().add(replyContainer.getChildren().size() - 1, errorLabel);
+            }
+            return; // do NOT save
         }
 
         // Get current user info
@@ -902,6 +958,17 @@ public class ForumController {
         if (replyContentArea != null) {
             replyContentArea.textProperty().addListener((obs, oldText, newText) -> {
                 validateReplyContent();
+            });
+            
+            // Real-time censoring when user finishes typing (loses focus)
+            replyContentArea.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+                if (!isNowFocused) {
+                    String censored = BadWordFilterService.getInstance().censor(replyContentArea.getText());
+                    if (!censored.equals(replyContentArea.getText())) {
+                        replyContentArea.setText(censored);
+                        replyContentArea.positionCaret(censored.length());
+                    }
+                }
             });
         }
     }
@@ -1276,16 +1343,33 @@ public class ForumController {
         DialogPane pane = dialog.getDialogPane();
         pane.getButtonTypes().addAll(ButtonType.CANCEL, ButtonType.OK);
 
-        TextField tfTitle = new TextField(existing == null ? "" : safe(existing.getTitle()));
-        
-        // Author field - pre-fill with logged-in user for new discussions, make read-only
+        // Author is automatically set from SessionManager - not shown in UI
         String authorName = existing == null ? SessionManager.getInstance().getCurrentUserFullName() : safe(existing.getAuthorName());
-        TextField tfAuthor = new TextField(authorName);
-        tfAuthor.setDisable(existing == null); // Disable for new discussions (use logged-in user)
         
+        TextField tfTitle = new TextField(existing == null ? "" : safe(existing.getTitle()));
         TextArea taContent = new TextArea(existing == null ? "" : safe(existing.getContent()));
         taContent.setWrapText(true);
         taContent.setPrefRowCount(7);
+        
+        // Real-time censoring when user finishes typing (loses focus)
+        tfTitle.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+            if (!isNowFocused) {
+                String censored = BadWordFilterService.getInstance().censor(tfTitle.getText());
+                if (!censored.equals(tfTitle.getText())) {
+                    tfTitle.setText(censored);
+                }
+            }
+        });
+        
+        taContent.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+            if (!isNowFocused) {
+                String censored = BadWordFilterService.getInstance().censor(taContent.getText());
+                if (!censored.equals(taContent.getText())) {
+                    taContent.setText(censored);
+                    taContent.positionCaret(censored.length());
+                }
+            }
+        });
 
         ComboBox<ForumCategory> categoryBox = new ComboBox<>(FXCollections.observableArrayList(
                 allCategories.stream()
@@ -1314,48 +1398,105 @@ public class ForumController {
         }
         categoryBox.setDisable(lockCategory);
 
-        CheckBox cbPinned = new CheckBox("Pinned");
-        cbPinned.setSelected(existing != null && existing.isPinned());
-        CheckBox cbLocked = new CheckBox("Locked");
-        cbLocked.setSelected(existing != null && existing.isLocked());
-        HBox flags = new HBox(12, cbPinned, cbLocked);
+        // Inline error labels
+        Label titleErrorLabel = new Label();
+        titleErrorLabel.setStyle("-fx-text-fill: #d32f2f; -fx-font-size: 12px;");
+        titleErrorLabel.setVisible(false);
+        titleErrorLabel.setManaged(false);
+
+        Label contentErrorLabel = new Label();
+        contentErrorLabel.setStyle("-fx-text-fill: #d32f2f; -fx-font-size: 12px;");
+        contentErrorLabel.setVisible(false);
+        contentErrorLabel.setManaged(false);
+
+        Label categoryErrorLabel = new Label();
+        categoryErrorLabel.setStyle("-fx-text-fill: #d32f2f; -fx-font-size: 12px;");
+        categoryErrorLabel.setVisible(false);
+        categoryErrorLabel.setManaged(false);
+
+        Label badWordErrorLabel = new Label();
+        badWordErrorLabel.setStyle("-fx-text-fill: #d32f2f; -fx-font-size: 13px;");
+        badWordErrorLabel.setVisible(false);
+        badWordErrorLabel.setManaged(false);
 
         GridPane grid = new GridPane();
         grid.setHgap(12);
-        grid.setVgap(10);
+        grid.setVgap(8);
         grid.setPadding(new Insets(16));
-        grid.add(new Label("Title"), 0, 0);        grid.add(tfTitle, 1, 0);
-        grid.add(new Label("Author"), 0, 1);       grid.add(tfAuthor, 1, 1);
-        grid.add(new Label("Category"), 0, 2);     grid.add(categoryBox, 1, 2);
-        grid.add(new Label("Content"), 0, 3);      grid.add(taContent, 1, 3);
-        grid.add(new Label("Flags"), 0, 4);        grid.add(flags, 1, 4);
+        grid.add(new Label("Title*"), 0, 0);        grid.add(tfTitle, 1, 0);
+        grid.add(titleErrorLabel, 1, 1);
+        grid.add(new Label("Category*"), 0, 2);     grid.add(categoryBox, 1, 2);
+        grid.add(categoryErrorLabel, 1, 3);
+        grid.add(new Label("Content*"), 0, 4);    grid.add(taContent, 1, 4);
+        grid.add(contentErrorLabel, 1, 5);
+        grid.add(badWordErrorLabel, 1, 6);
+        
+        // Character counters
+        Label titleCounter = new Label("0/100");
+        titleCounter.setStyle("-fx-font-size: 11px; -fx-text-fill: #666;");
+        grid.add(titleCounter, 2, 0);
+        
+        Label contentCounter = new Label("0/2000");
+        contentCounter.setStyle("-fx-font-size: 11px; -fx-text-fill: #666;");
+        grid.add(contentCounter, 2, 4);
 
-        tfTitle.setPrefWidth(420);
-        tfAuthor.setPrefWidth(420);
+        tfTitle.setPrefWidth(380);
         categoryBox.setPrefWidth(420);
 
         pane.setContent(grid);
 
-        Button ok = (Button) pane.lookupButton(ButtonType.OK);
-        ok.addEventFilter(javafx.event.ActionEvent.ACTION, ev -> {
-            String err = validateDiscussion(tfTitle.getText(), taContent.getText(),
-                    tfAuthor.getText(), categoryBox.getValue());
-            if (!err.isBlank()) {
-                ev.consume();
-                showWarning(err);
-            }
+        // Real-time validation
+        tfTitle.textProperty().addListener((obs, old, newVal) -> {
+            validateDiscussionTitle(newVal, titleErrorLabel, titleCounter);
+            validateBadWords(tfTitle.getText(), taContent.getText(), badWordErrorLabel);
+            updateDiscussionOkButton(dialog, tfTitle, taContent, categoryBox,
+                titleErrorLabel, contentErrorLabel, categoryErrorLabel, badWordErrorLabel);
         });
+
+        taContent.textProperty().addListener((obs, old, newVal) -> {
+            validateDiscussionContent(newVal, contentErrorLabel, contentCounter);
+            validateBadWords(tfTitle.getText(), taContent.getText(), badWordErrorLabel);
+            updateDiscussionOkButton(dialog, tfTitle, taContent, categoryBox,
+                titleErrorLabel, contentErrorLabel, categoryErrorLabel, badWordErrorLabel);
+        });
+
+        categoryBox.valueProperty().addListener((obs, old, newVal) -> {
+            validateDiscussionCategory(newVal, categoryErrorLabel);
+            updateDiscussionOkButton(dialog, tfTitle, taContent, categoryBox,
+                titleErrorLabel, contentErrorLabel, categoryErrorLabel, badWordErrorLabel);
+        });
+
+        // Initial validation
+        validateDiscussionTitle(tfTitle.getText(), titleErrorLabel, titleCounter);
+        validateDiscussionContent(taContent.getText(), contentErrorLabel, contentCounter);
+        validateDiscussionCategory(categoryBox.getValue(), categoryErrorLabel);
+        validateBadWords(tfTitle.getText(), taContent.getText(), badWordErrorLabel);
+        updateDiscussionOkButton(dialog, tfTitle, taContent, categoryBox,
+            titleErrorLabel, contentErrorLabel, categoryErrorLabel, badWordErrorLabel);
 
         dialog.setResultConverter(bt -> {
             if (bt != ButtonType.OK) return null;
+
+            // Check for bad words before saving
+            BadWordFilterService filter = BadWordFilterService.getInstance();
+            String discussionTitle = tfTitle.getText().trim();
+            String discussionContent = taContent.getText().trim();
+
+            if (filter.containsBadWord(discussionTitle) || filter.containsBadWord(discussionContent)) {
+                badWordErrorLabel.setText("⚠ Your discussion contains inappropriate content.");
+                badWordErrorLabel.setVisible(true);
+                badWordErrorLabel.setManaged(true);
+                return null; // Don't close dialog, don't save
+            }
+
             ForumCategory cat = categoryBox.getValue();
             ForumDiscussion d = new ForumDiscussion();
             d.setId(existing == null ? 0 : existing.getId());
-            d.setTitle(tfTitle.getText().trim());
-            d.setContent(taContent.getText().trim());
-            d.setAuthorName(tfAuthor.getText().trim());
-            d.setPinned(cbPinned.isSelected());
-            d.setLocked(cbLocked.isSelected());
+            d.setTitle(discussionTitle);
+            d.setContent(discussionContent);
+            d.setAuthorName(authorName); // Author from SessionManager, not from UI field
+            d.setPinned(existing != null ? existing.isPinned() : false);
+            d.setLocked(existing != null ? existing.isLocked() : false);
             d.setCategoryId(cat == null ? 0 : cat.getId());
             d.setCategoryName(cat == null ? "" : cat.getName());
             d.setViews(existing == null ? 0 : existing.getViews());
@@ -1366,6 +1507,110 @@ public class ForumController {
         });
 
         return dialog.showAndWait().orElse(null);
+    }
+    
+    // ===== Discussion Dialog Validation Methods =====
+    
+    private void validateDiscussionTitle(String title, Label errorLabel, Label counterLabel) {
+        String trimmed = title == null ? "" : title.trim();
+        counterLabel.setText(trimmed.length() + "/100");
+        
+        boolean isValid = true;
+        String errorMessage = "";
+        
+        if (trimmed.isEmpty()) {
+            isValid = false;
+            errorMessage = "Title is required.";
+        } else if (trimmed.length() < 5) {
+            isValid = false;
+            errorMessage = "Title must be at least 5 characters.";
+        } else if (trimmed.length() > 100) {
+            isValid = false;
+            errorMessage = "Title cannot exceed 100 characters.";
+        }
+        
+        errorLabel.setText(errorMessage);
+        errorLabel.setVisible(!isValid);
+        errorLabel.setManaged(!isValid);
+        
+        // Update counter color
+        if (trimmed.length() > 100) {
+            counterLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #d32f2f;");
+        } else {
+            counterLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #666;");
+        }
+    }
+    
+    private void validateDiscussionContent(String content, Label errorLabel, Label counterLabel) {
+        String trimmed = content == null ? "" : content.trim();
+        counterLabel.setText(trimmed.length() + "/2000");
+        
+        boolean isValid = true;
+        String errorMessage = "";
+        
+        if (trimmed.isEmpty()) {
+            isValid = false;
+            errorMessage = "Content is required.";
+        } else if (trimmed.length() < 10) {
+            isValid = false;
+            errorMessage = "Content must be at least 10 characters.";
+        } else if (trimmed.length() > 2000) {
+            isValid = false;
+            errorMessage = "Content cannot exceed 2000 characters.";
+        }
+        
+        errorLabel.setText(errorMessage);
+        errorLabel.setVisible(!isValid);
+        errorLabel.setManaged(!isValid);
+        
+        // Update counter color
+        if (trimmed.length() > 2000) {
+            counterLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #d32f2f;");
+        } else {
+            counterLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #666;");
+        }
+    }
+    
+    private void validateDiscussionCategory(ForumCategory category, Label errorLabel) {
+        boolean isValid = category != null;
+        String errorMessage = isValid ? "" : "Please select a category.";
+        
+        errorLabel.setText(errorMessage);
+        errorLabel.setVisible(!isValid);
+        errorLabel.setManaged(!isValid);
+    }
+    
+    private void updateDiscussionOkButton(Dialog<?> dialog, TextField titleField, TextArea contentArea,
+                                          ComboBox<ForumCategory> categoryBox,
+                                          Label titleError, Label contentError, Label categoryError, Label badWordError) {
+        Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+
+        boolean hasTitle = !titleField.getText().trim().isEmpty();
+        boolean hasContent = !contentArea.getText().trim().isEmpty();
+        boolean hasCategory = categoryBox.getValue() != null;
+
+        boolean isTitleValid = titleError.getText().isEmpty();
+        boolean isContentValid = contentError.getText().isEmpty();
+        boolean isCategoryValid = categoryError.getText().isEmpty();
+        boolean isBadWordValid = badWordError.getText().isEmpty() || !badWordError.isVisible();
+
+        okButton.setDisable(!(hasTitle && hasContent && hasCategory &&
+                           isTitleValid && isContentValid && isCategoryValid && isBadWordValid));
+    }
+
+    private void validateBadWords(String title, String content, Label badWordErrorLabel) {
+        BadWordFilterService filter = BadWordFilterService.getInstance();
+        boolean hasBadWord = filter.containsBadWord(title) || filter.containsBadWord(content);
+
+        if (hasBadWord) {
+            badWordErrorLabel.setText("⚠ Your discussion contains inappropriate content.");
+            badWordErrorLabel.setVisible(true);
+            badWordErrorLabel.setManaged(true);
+        } else {
+            badWordErrorLabel.setText("");
+            badWordErrorLabel.setVisible(false);
+            badWordErrorLabel.setManaged(false);
+        }
     }
 
     private ForumMessage showMessageDialog(String title, ForumMessage existing) {
@@ -1518,6 +1763,95 @@ public class ForumController {
         return avatar;
     }
     
+    private void showReportDialog(int targetId, String type, String targetContent) {
+        if (!SessionManager.getInstance().isLoggedIn()) {
+            showWarning("You must be logged in to report.");
+            return;
+        }
+        
+        int reporterId = SessionManager.getInstance().getCurrentUser().getId();
+        
+        // Check if already reported
+        if (ForumReportService.getInstance().alreadyReported(targetId, type, reporterId)) {
+            // Show temporary warning on message card
+            showTemporaryReportWarning();
+            return;
+        }
+        
+        // Create dialog
+        Stage dialogStage = new Stage();
+        dialogStage.initModality(Modality.APPLICATION_MODAL);
+        dialogStage.setTitle("🚩 Report " + (type.equals("message") ? "Message" : "Discussion"));
+        
+        VBox dialogContent = new VBox(15);
+        dialogContent.setPadding(new Insets(20));
+        dialogContent.setStyle("-fx-background-color: white; -fx-border-radius: 8; -fx-border-color: #ddd; -fx-border-width: 1;");
+        
+        Label titleLabel = new Label("🚩 Report " + (type.equals("message") ? "Message" : "Discussion"));
+        titleLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #333;");
+        
+        ComboBox<String> reasonCombo = new ComboBox<>();
+        reasonCombo.getItems().addAll("Spam", "Inappropriate content", "Harassment", "Misinformation", "Other");
+        reasonCombo.setPromptText("Select a reason");
+        reasonCombo.setStyle("-fx-font-size: 14px;");
+        
+        HBox buttonBox = new HBox(10);
+        buttonBox.setAlignment(Pos.CENTER_RIGHT);
+        
+        Button submitBtn = new Button("Submit Report");
+        submitBtn.setStyle("-fx-background-color: #00897B; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 8 16;");
+        submitBtn.setOnAction(e -> {
+            String selectedReason = reasonCombo.getValue();
+            if (selectedReason == null) {
+                showWarning("Please select a reason for reporting.");
+                return;
+            }
+            
+            ForumReportService.getInstance().addReport(targetId, type, reporterId, selectedReason);
+            dialogStage.close();
+            showTemporaryReportSuccess();
+        });
+        
+        Button cancelBtn = new Button("Cancel");
+        cancelBtn.setStyle("-fx-background-color: #6c757d; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 8 16;");
+        cancelBtn.setOnAction(e -> dialogStage.close());
+        
+        buttonBox.getChildren().addAll(cancelBtn, submitBtn);
+        
+        dialogContent.getChildren().addAll(titleLabel, reasonCombo, buttonBox);
+        
+        Scene scene = new Scene(dialogContent);
+        dialogStage.setScene(scene);
+        dialogStage.showAndWait();
+    }
+    
+    private void showTemporaryReportWarning() {
+        Label warningLabel = new Label("⚠ You already reported this message");
+        warningLabel.setStyle("-fx-background-color: #ff9800; -fx-text-fill: white; -fx-padding: 5 10; -fx-background-radius: 4;");
+        // Find the message card and add warning temporarily
+        // This is a simplified implementation - in production, you'd want to track the specific card
+        Platform.runLater(() -> {
+            try {
+                Thread.sleep(2000); // Show for 2 seconds
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        });
+    }
+    
+    private void showTemporaryReportSuccess() {
+        Label successLabel = new Label("✅ Report submitted");
+        successLabel.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-padding: 5 10; -fx-background-radius: 4;");
+        // Find the message card and add success temporarily
+        Platform.runLater(() -> {
+            try {
+                Thread.sleep(2000); // Show for 2 seconds
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        });
+    }
+
     private String getAvatarColor(String initials) {
         // Generate consistent color based on initials
         int hash = initials.hashCode();

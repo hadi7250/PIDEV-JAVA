@@ -16,6 +16,7 @@ C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAV
 C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\models\ForumCategory.java
 C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\models\ForumDiscussion.java
 C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\models\ForumMessage.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\models\ForumReport.java
 C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\BadWordFilterService.java
 C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\ChapitreService.java
 C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\CourseModuleSchemaService.java
@@ -24,6 +25,7 @@ C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAV
 C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\ForumDataPopulator.java
 C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\ForumDiscussionService.java
 C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\ForumMessageService.java
+C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\ForumReportService.java
 C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\ForumSchemaService.java
 C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\ForumStatsService.java
 C:\Users\LordKiller\Desktop\Ghost\New folder (2)\PIDEV-JAVA-with-forum\PIDEV-JAVA-gestion-cours\src\main\java\services\ForumViewService.java

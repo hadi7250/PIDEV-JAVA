@@ -160,6 +160,26 @@ public final class ForumSchemaService {
                                 ON DELETE CASCADE
                         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
                         """);
+
+                st.executeUpdate("""
+                        CREATE TABLE IF NOT EXISTS forum_report (
+                          id INT AUTO_INCREMENT PRIMARY KEY,
+                          type ENUM('message', 'discussion') NOT NULL,
+                          target_id INT NOT NULL,
+                          reporter_id INT NOT NULL,
+                          reason VARCHAR(255) NOT NULL,
+                          status ENUM('pending', 'reviewed', 'dismissed') DEFAULT 'pending',
+                          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                          INDEX idx_report_target (target_id, type),
+                          INDEX idx_report_reporter (reporter_id),
+                          INDEX idx_report_status (status),
+                          INDEX idx_report_created (created_at),
+                          CONSTRAINT fk_report_reporter
+                            FOREIGN KEY (reporter_id)
+                            REFERENCES user(id)
+                            ON DELETE CASCADE
+                        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+                        """);
             }
 
             initialized = true;
