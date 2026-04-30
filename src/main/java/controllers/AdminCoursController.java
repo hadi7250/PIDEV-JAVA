@@ -956,56 +956,72 @@ public class AdminCoursController {
         return DATE_FORMAT.format(timestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
     }
     private void generateAiSummaryAsync(String content, TextArea taSummary, Button btnGenerateAI) {
-        // TODO: Replace with your actual Google Gemini API Key
-        String apiKey = "AIzaSyDoL0C90Kg4xYmkP5nFp1G6tV8X5PzNkRg";
+        String apiKey = "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";
+        String url = "https://api.groq.com/openai/v1/chat/completions";
 
-        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + apiKey;
-
-        // Run network request on a background thread so the app doesn't freeze
         new Thread(() -> {
             try {
-                // Escape quotes and newlines for JSON
-                String safeContent = content.replace("\"", "\\\"").replace("\n", " ");
-                String prompt = "Summarize the following educational chapter content in 2 or 3 short, clear sentences: " + safeContent;
+                // Smart Truncation
+                String safeContent = content;
+                if (safeContent.length() > 5000) {
+                    safeContent = safeContent.substring(0, 5000);
+                    javafx.application.Platform.runLater(() ->
+                            showWarning("Chapter is very long. The AI will summarize the first 5000 characters.")
+                    );
+                }
 
-                String requestBody = "{ \"contents\": [{ \"parts\": [{\"text\": \"" + prompt + "\"}] }] }";
+                String prompt = "Summarize the following educational chapter content in 2 or 3 short, clear sentences:\n\n" + safeContent;
 
-                HttpClient client = HttpClient.newHttpClient();
-                HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create(url))
-                        .header("Content-Type", "application/json")
-                        .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                // 👇 THE FIX: Use Gson to build a bulletproof JSON request 👇
+                com.google.gson.JsonObject requestJson = new com.google.gson.JsonObject();
+                requestJson.addProperty("model", "llama-3.1-8b-instant");
+
+                com.google.gson.JsonArray messages = new com.google.gson.JsonArray();
+                com.google.gson.JsonObject userMessage = new com.google.gson.JsonObject();
+                userMessage.addProperty("role", "user");
+                userMessage.addProperty("content", prompt); // Gson perfectly handles all text escaping!
+                messages.add(userMessage);
+
+                requestJson.add("messages", messages);
+                String requestBody = requestJson.toString();
+                // 👆 ---------------------------------------------------- 👆
+
+                java.net.http.HttpClient client = java.net.http.HttpClient.newBuilder()
+                        .connectTimeout(java.time.Duration.ofSeconds(20))
                         .build();
 
-                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
+                        .uri(java.net.URI.create(url))
+                        .timeout(java.time.Duration.ofSeconds(60))
+                        .header("Content-Type", "application/json")
+                        .header("Authorization", "Bearer " + apiKey)
+                        .POST(java.net.http.HttpRequest.BodyPublishers.ofString(requestBody))
+                        .build();
+
+                java.net.http.HttpResponse<String> response = client.send(request, java.net.http.HttpResponse.BodyHandlers.ofString());
 
                 if (response.statusCode() == 200) {
-                    JsonObject jsonObject = JsonParser.parseString(response.body()).getAsJsonObject();
-                    JsonArray candidates = jsonObject.getAsJsonArray("candidates");
-                    JsonObject contentObj = candidates.get(0).getAsJsonObject().getAsJsonObject("content");
-                    String summary = contentObj.getAsJsonArray("parts").get(0).getAsJsonObject().get("text").getAsString();
+                    com.google.gson.JsonObject jsonObject = com.google.gson.JsonParser.parseString(response.body()).getAsJsonObject();
+                    String summary = jsonObject.getAsJsonArray("choices").get(0).getAsJsonObject()
+                            .getAsJsonObject("message").get("content").getAsString();
 
-                    // Update UI on the JavaFX Application Thread
-                    Platform.runLater(() -> {
+                    javafx.application.Platform.runLater(() -> {
                         taSummary.setText(summary.trim());
                         btnGenerateAI.setText("✨ Generate AI Summary");
                         btnGenerateAI.setDisable(false);
                     });
                 } else {
                     String errorMessage = response.body();
-                    System.out.println("GOOGLE API ERROR: " + errorMessage);
-
-                    Platform.runLater(() -> {
-                        // 👇 NEW: Show the actual message in the popup
-                        showWarning("AI Request failed (" + response.statusCode() + ").\nGoogle says: " + errorMessage);
+                    javafx.application.Platform.runLater(() -> {
+                        showWarning("Groq API Request failed (" + response.statusCode() + ").\n" + errorMessage);
                         btnGenerateAI.setText("✨ Generate AI Summary");
                         btnGenerateAI.setDisable(false);
                     });
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                Platform.runLater(() -> {
-                    showWarning("Could not connect to AI service. Check your internet connection.");
+                javafx.application.Platform.runLater(() -> {
+                    showWarning("Could not connect to Groq. Check your internet connection.");
                     btnGenerateAI.setText("✨ Generate AI Summary");
                     btnGenerateAI.setDisable(false);
                 });
@@ -1013,53 +1029,67 @@ public class AdminCoursController {
         }).start();
     }
     private void generateChapterContentAsync(String title, TextArea taContent, TextField tfLink, Button btnAutoGenerate) {
-        // 👇 PASTE YOUR API KEY HERE 👇
-        String apiKey = "AIzaSyDoL0C90Kg4xYmkP5nFp1G6tV8X5PzNkRg";
-
-        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + apiKey;
+        String apiKey = "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";
+        String url = "https://api.groq.com/openai/v1/chat/completions";
 
         new Thread(() -> {
             try {
-                String safeTitle = title.replace("\"", "\\\"").replace("\n", " ");
-                String prompt = "Write a comprehensive educational lesson about '" + safeTitle + "'. Also, find a highly relevant educational YouTube video URL about this topic. Return the response STRICTLY as a valid JSON object with exactly two keys: 'content' (the lesson text) and 'youtube_url' (the video link).";
+                String prompt = "Write a comprehensive educational lesson about '" + title + "'. Also, find a highly relevant educational YouTube video URL about this topic. Return the response STRICTLY as a valid JSON object with exactly two keys: 'content' (the lesson text) and 'youtube_url' (the video link).";
 
-                // We force Gemini to output perfect JSON using responseMimeType
-                String requestBody = "{\n" +
-                        "  \"contents\": [\n" +
-                        "    {\n" +
-                        "      \"parts\": [\n" +
-                        "        {\n" +
-                        "          \"text\": \"" + prompt + "\"\n" +
-                        "        }\n" +
-                        "      ]\n" +
-                        "    }\n" +
-                        "  ],\n" +
-                        "  \"generationConfig\": {\n" +
-                        "    \"responseMimeType\": \"application/json\"\n" +
-                        "  }\n" +
-                        "}";
+                // 👇 THE FIX: Use Gson to build a bulletproof JSON request 👇
+                com.google.gson.JsonObject requestJson = new com.google.gson.JsonObject();
+                requestJson.addProperty("model", "llama-3.1-8b-instant");
 
-                HttpClient client = HttpClient.newHttpClient();
-                HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create(url))
+                com.google.gson.JsonObject responseFormat = new com.google.gson.JsonObject();
+                responseFormat.addProperty("type", "json_object");
+                requestJson.add("response_format", responseFormat);
+
+                com.google.gson.JsonArray messages = new com.google.gson.JsonArray();
+                com.google.gson.JsonObject userMessage = new com.google.gson.JsonObject();
+                userMessage.addProperty("role", "user");
+                userMessage.addProperty("content", prompt);
+                messages.add(userMessage);
+
+                requestJson.add("messages", messages);
+                String requestBody = requestJson.toString();
+                // 👆 ---------------------------------------------------- 👆
+
+                java.net.http.HttpClient client = java.net.http.HttpClient.newHttpClient();
+                java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
+                        .uri(java.net.URI.create(url))
                         .header("Content-Type", "application/json")
-                        .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                        .header("Authorization", "Bearer " + apiKey)
+                        .POST(java.net.http.HttpRequest.BodyPublishers.ofString(requestBody))
                         .build();
 
-                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                java.net.http.HttpResponse<String> response = client.send(request, java.net.http.HttpResponse.BodyHandlers.ofString());
 
                 if (response.statusCode() == 200) {
-                    JsonObject jsonObject = JsonParser.parseString(response.body()).getAsJsonObject();
-                    JsonArray candidates = jsonObject.getAsJsonArray("candidates");
-                    JsonObject contentObj = candidates.get(0).getAsJsonObject().getAsJsonObject("content");
-                    String rawText = contentObj.getAsJsonArray("parts").get(0).getAsJsonObject().get("text").getAsString();
+                    com.google.gson.JsonObject jsonObject = com.google.gson.JsonParser.parseString(response.body()).getAsJsonObject();
+                    String rawText = jsonObject.getAsJsonArray("choices").get(0).getAsJsonObject()
+                            .getAsJsonObject("message").get("content").getAsString();
 
-                    // Read the JSON generated by Gemini
-                    JsonObject aiResult = JsonParser.parseString(rawText).getAsJsonObject();
-                    String generatedContent = aiResult.has("content") ? aiResult.get("content").getAsString() : "";
-                    String generatedUrl = aiResult.has("youtube_url") ? aiResult.get("youtube_url").getAsString() : "";
+                    com.google.gson.JsonObject aiResult = com.google.gson.JsonParser.parseString(rawText).getAsJsonObject();
 
-                    Platform.runLater(() -> {
+                    // 👇 BULLETPROOF EXTRACTION 👇
+                    String tempContent = "";
+                    if (aiResult.has("content")) {
+                        com.google.gson.JsonElement contentElem = aiResult.get("content");
+                        tempContent = contentElem.isJsonPrimitive() ? contentElem.getAsString() : contentElem.toString();
+                    }
+                    // Create a final copy for the UI thread
+                    final String generatedContent = tempContent;
+
+                    String tempUrl = "";
+                    if (aiResult.has("youtube_url")) {
+                        com.google.gson.JsonElement urlElem = aiResult.get("youtube_url");
+                        tempUrl = urlElem.isJsonPrimitive() ? urlElem.getAsString() : urlElem.toString();
+                    }
+                    // Create a final copy for the UI thread
+                    final String generatedUrl = tempUrl;
+                    // 👆 ---------------------- 👆
+
+                    javafx.application.Platform.runLater(() -> {
                         taContent.setText(generatedContent.trim());
                         tfLink.setText(generatedUrl.trim());
                         btnAutoGenerate.setText("✨ Auto-Generate Lesson");
@@ -1067,16 +1097,16 @@ public class AdminCoursController {
                     });
                 } else {
                     String errorMessage = response.body();
-                    Platform.runLater(() -> {
-                        showWarning("AI Request failed (" + response.statusCode() + ").\n" + errorMessage);
+                    javafx.application.Platform.runLater(() -> {
+                        showWarning("Groq API Request failed (" + response.statusCode() + ").\n" + errorMessage);
                         btnAutoGenerate.setText("✨ Auto-Generate Lesson");
                         btnAutoGenerate.setDisable(false);
                     });
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                Platform.runLater(() -> {
-                    showWarning("Could not connect to AI service. Check your internet connection.");
+                javafx.application.Platform.runLater(() -> {
+                    showWarning("Could not connect to Groq.");
                     btnAutoGenerate.setText("✨ Auto-Generate Lesson");
                     btnAutoGenerate.setDisable(false);
                 });

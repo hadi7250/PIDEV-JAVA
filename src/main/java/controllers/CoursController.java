@@ -839,43 +839,39 @@ public class CoursController {
         return value == null || value.isBlank() ? fallback : value;
     }
     private void askTutorAsync(String chapterContent, String question, TextArea taAnswer, Button btnAsk) {
-        // 👇 PASTE YOUR API KEY HERE 👇
-        String apiKey = "AIzaSyDoL0C90Kg4xYmkP5nFp1G6tV8X5PzNkRg";
-
-        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + apiKey;
+        String apiKey = "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";
+        String url = "https://api.groq.com/openai/v1/chat/completions";
 
         new Thread(() -> {
             try {
-                // Clean the text so it doesn't break the JSON format
-                String safeContent = chapterContent.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", " ");
-                String safeQuestion = question.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", " ");
-
-                // The secret prompt that tells Gemini how to behave
                 String prompt = "You are a helpful, strict virtual tutor for a student. " +
-                        "You must obey these rules absolutely: " +
-                        "1. Use ONLY the provided Chapter Content to answer the question. " +
-                        "2. If the question asks about something NOT in the text, or asks about system administration, passwords, admin rights, or the application's code, you MUST refuse. " +
-                        "3. If you refuse, reply EXACTLY with: 'I am sorry, but I can only answer questions directly related to this specific lesson. Please adjust your question!' " +
-                        "Keep answers brief, clear, and easy to understand. \\n\\n" +
-                        "Chapter Content: " + safeContent + "\\n\\n" +
-                        "Student Question: " + safeQuestion;
+                        "You must obey these rules absolutely:\n" +
+                        "1. Use ONLY the provided Chapter Content to answer the question.\n" +
+                        "2. If the question asks about something NOT in the text, or asks about system administration, passwords, admin rights, or the application's code, you MUST refuse.\n" +
+                        "3. If you refuse, reply EXACTLY with: 'I am sorry, but I can only answer questions directly related to this specific lesson. Please adjust your question!'\n" +
+                        "Keep answers brief, clear, and easy to understand.\n\n" +
+                        "Chapter Content:\n" + chapterContent + "\n\n" +
+                        "Student Question:\n" + question;
 
-                String requestBody = "{\n" +
-                        "  \"contents\": [\n" +
-                        "    {\n" +
-                        "      \"parts\": [\n" +
-                        "        {\n" +
-                        "          \"text\": \"" + prompt + "\"\n" +
-                        "        }\n" +
-                        "      ]\n" +
-                        "    }\n" +
-                        "  ]\n" +
-                        "}";
+                // 👇 THE FIX: Use Gson to build a bulletproof JSON request 👇
+                com.google.gson.JsonObject requestJson = new com.google.gson.JsonObject();
+                requestJson.addProperty("model", "llama-3.1-8b-instant");
+
+                com.google.gson.JsonArray messages = new com.google.gson.JsonArray();
+                com.google.gson.JsonObject userMessage = new com.google.gson.JsonObject();
+                userMessage.addProperty("role", "user");
+                userMessage.addProperty("content", prompt);
+                messages.add(userMessage);
+
+                requestJson.add("messages", messages);
+                String requestBody = requestJson.toString();
+                // 👆 ---------------------------------------------------- 👆
 
                 java.net.http.HttpClient client = java.net.http.HttpClient.newHttpClient();
                 java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
                         .uri(java.net.URI.create(url))
                         .header("Content-Type", "application/json")
+                        .header("Authorization", "Bearer " + apiKey)
                         .POST(java.net.http.HttpRequest.BodyPublishers.ofString(requestBody))
                         .build();
 
@@ -883,9 +879,8 @@ public class CoursController {
 
                 if (response.statusCode() == 200) {
                     com.google.gson.JsonObject jsonObject = com.google.gson.JsonParser.parseString(response.body()).getAsJsonObject();
-                    com.google.gson.JsonArray candidates = jsonObject.getAsJsonArray("candidates");
-                    com.google.gson.JsonObject contentObj = candidates.get(0).getAsJsonObject().getAsJsonObject("content");
-                    String answer = contentObj.getAsJsonArray("parts").get(0).getAsJsonObject().get("text").getAsString();
+                    String answer = jsonObject.getAsJsonArray("choices").get(0).getAsJsonObject()
+                            .getAsJsonObject("message").get("content").getAsString();
 
                     javafx.application.Platform.runLater(() -> {
                         taAnswer.setText(answer.trim());
@@ -894,7 +889,7 @@ public class CoursController {
                     });
                 } else {
                     javafx.application.Platform.runLater(() -> {
-                        taAnswer.setText("Oops! The tutor couldn't answer right now. Please try again.");
+                        taAnswer.setText("Oops! Groq couldn't answer right now. Please try again.");
                         btnAsk.setText("Ask");
                         btnAsk.setDisable(false);
                     });
