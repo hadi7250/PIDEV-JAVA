@@ -4,14 +4,21 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import services.CourseModuleSchemaService;
+import services.ForumSchemaService;
+import services.UserSchemaService;
 
 public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EduConnectLayout.fxml"));
+        UserSchemaService.ensureSchema();
+        ForumSchemaService.ensureSchema();
+        CourseModuleSchemaService.ensureSchema();
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SignIn.fxml"));
         stage.setScene(new Scene(loader.load()));
-        stage.setTitle("EduConnect");
+        stage.setTitle("EduConnect - Sign In");
         stage.show();
     }
 

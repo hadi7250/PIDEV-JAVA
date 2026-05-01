@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="15" styleClass="main-container" stylesheets="@../css/courses-module.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.SignUpController">
+    <padding>
+        <Insets bottom="30" left="30" right="30" top="30"/>
+    </padding>
+
+    <!-- Title -->
+    <Label text="📝 Create Account" styleClass="title-label" />
+    <Label text="Join us today!" style="-fx-text-fill: #666; -fx-font-size: 14px;" />
+
+    <!-- Registration Card -->
+    <VBox spacing="12" styleClass="input-card">
+
+        <HBox spacing="15">
+            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                <Label text="First Name" styleClass="label-bold" />
+                <TextField fx:id="firstNameField" promptText="First name" />
+            </VBox>
+            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                <Label text="Last Name" styleClass="label-bold" />
+                <TextField fx:id="lastNameField" promptText="Last name" />
+            </VBox>
+        </HBox>
+
+        <VBox spacing="5">
+            <Label text="Age" styleClass="label-bold" />
+            <TextField fx:id="ageField" promptText="Age" />
+        </VBox>
+
+        <VBox spacing="5">
+            <Label text="Email" styleClass="label-bold" />
+            <TextField fx:id="emailField" promptText="Email address" />
+        </VBox>
+
+        <VBox spacing="5">
+            <Label text="Password" styleClass="label-bold" />
+            <PasswordField fx:id="passwordField" promptText="Choose a password" />
+        </VBox>
+
+        <VBox spacing="5">
+            <Label text="Confirm Password" styleClass="label-bold" />
+            <PasswordField fx:id="confirmPasswordField" promptText="Confirm your password" />
+        </VBox>
+
+    </VBox>
+
+    <!-- Buttons -->
+    <HBox spacing="20" alignment="CENTER">
+        <Button onAction="#handleSignUp" text="✅ Sign Up" styleClass="btn-primary" />
+        <Button onAction="#goToSignIn" text="← Back to Login" styleClass="btn-info" />
+    </HBox>
+</VBox>

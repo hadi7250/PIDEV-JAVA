@@ -5,15 +5,29 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class MyDB {
-
-    private static final String URL = "jdbc:mysql://localhost:3306/educonnect"
+    private static final String HOST = System.getProperty("educonnect.db.host", "localhost");
+    private static final String PORT = System.getProperty("educonnect.db.port", "3306");
+    private static final String DATABASE = firstNonBlank(
+            System.getProperty("educonnect.db.name"),
+            System.getenv("EDUCONNECT_DB_NAME"),
+            "educonnect"
+    );
+    private static final String USERNAME = firstNonBlank(
+            System.getProperty("educonnect.db.user"),
+            System.getenv("EDUCONNECT_DB_USER"),
+            "root"
+    );
+    private static final String PASSWORD = firstNonBlank(
+            System.getProperty("educonnect.db.password"),
+            System.getenv("EDUCONNECT_DB_PASSWORD"),
+            ""
+    );
+    private static final String URL = "jdbc:mysql://" + HOST + ":" + PORT + "/" + DATABASE
             + "?useSSL=false"
             + "&serverTimezone=UTC"
             + "&allowPublicKeyRetrieval=true"
             + "&autoReconnect=true"
             + "&failOverReadOnly=false";
-    private static final String USERNAME = "root";
-    private static final String PASSWORD = "";
 
     private Connection connection;
     private static MyDB instance;
@@ -26,7 +40,7 @@ public class MyDB {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-            System.out.println("Connected to database");
+            System.out.println("Connected to database " + DATABASE);
         } catch (ClassNotFoundException e) {
             System.err.println("MySQL Driver not found");
             e.printStackTrace();
@@ -37,20 +51,16 @@ public class MyDB {
     }
 
     public static MyDB getInstance() {
-        if (instance == null)
+        if (instance == null) {
             instance = new MyDB();
+        }
         return instance;
     }
 
-    /**
-     * Returns a live connection.
-     * If the connection was closed or timed out by MySQL, it reconnects automatically.
-     * This fixes the "No operations allowed after connection closed" error.
-     */
     public Connection getConnection() {
         try {
             if (connection == null || connection.isClosed() || !connection.isValid(3)) {
-                System.out.println("[DB] Connection was closed — reconnecting...");
+                System.out.println("[DB] Connection was closed - reconnecting...");
                 connect();
             }
         } catch (SQLException e) {
@@ -58,5 +68,14 @@ public class MyDB {
             connect();
         }
         return connection;
+    }
+
+    private static String firstNonBlank(String... values) {
+        for (String value : values) {
+            if (value != null && !value.isBlank()) {
+                return value;
+            }
+        }
+        return "";
     }
 }

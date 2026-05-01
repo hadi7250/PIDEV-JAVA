@@ -1,14 +1,4 @@
-
 package controllers;
-
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import javafx.application.Platform;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonArray;
-
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -687,30 +677,11 @@ public class AdminCoursController {
         pane.getButtonTypes().addAll(ButtonType.CANCEL, ButtonType.OK);
 
         TextField tfTitle = new TextField(existing == null ? "" : safe(existing.getTitre()));
-        tfTitle.setPromptText("Enter a topic (e.g., 'Java Loops')");
-        tfTitle.setPrefWidth(260);
-
         TextArea taContent = new TextArea(existing == null ? "" : safe(existing.getContenu()));
         taContent.setWrapText(true);
         taContent.setPrefRowCount(7);
         TextField tfLink = new TextField(existing == null ? "" : safe(existing.getResourceUrl()));
         tfLink.setPromptText("https://example.com/material");
-
-        // --- NEW: AI AUTO-GENERATE BUTTON ---
-        Button btnAutoGenerate = new Button("✨ Auto-Generate Lesson");
-        btnAutoGenerate.getStyleClass().add("primary-btn");
-        btnAutoGenerate.setOnAction(e -> {
-            if (tfTitle.getText().trim().isEmpty()) {
-                showWarning("Please type a chapter title or topic first!");
-                return;
-            }
-            btnAutoGenerate.setDisable(true);
-            btnAutoGenerate.setText("Generating...");
-            generateChapterContentAsync(tfTitle.getText(), taContent, tfLink, btnAutoGenerate);
-        });
-
-        HBox titleBox = new HBox(10, tfTitle, btnAutoGenerate);
-        // ------------------------------------
 
         ComboBox<Cours> courseBox = new ComboBox<>(FXCollections.observableArrayList(
                 allCours.stream()
@@ -743,35 +714,16 @@ public class AdminCoursController {
         taSummary.setWrapText(true);
         taSummary.setPrefRowCount(4);
 
-        // --- EXISTING: AI SUMMARY BUTTON ---
-        Button btnGenerateAI = new Button("✨ Generate AI Summary");
-        btnGenerateAI.getStyleClass().add("primary-btn");
-        btnGenerateAI.setOnAction(e -> {
-            if (taContent.getText().trim().isEmpty()) {
-                showWarning("Please enter chapter content first so the AI has something to summarize.");
-                return;
-            }
-            btnGenerateAI.setDisable(true);
-            btnGenerateAI.setText("Generating...");
-            generateAiSummaryAsync(taContent.getText(), taSummary, btnGenerateAI);
-        });
-
-        VBox summaryHeaderBox = new VBox(5, new Label("Saved summary"), btnGenerateAI);
-        // -----------------------------------
-
         GridPane grid = new GridPane();
         grid.setHgap(12);
         grid.setVgap(10);
         grid.setPadding(new Insets(16));
-        grid.add(new Label("Title/Topic"), 0, 0);
-        grid.add(titleBox, 1, 0); // Put our combined Title + Button box here
         grid.add(new Label("Course"), 0, 1);
         grid.add(courseBox, 1, 1);
         grid.add(new Label("Content"), 0, 2);
         grid.add(taContent, 1, 2);
         grid.add(new Label("Material link"), 0, 3);
         grid.add(tfLink, 1, 3);
-        grid.add(summaryHeaderBox, 0, 4);
         grid.add(taSummary, 1, 4);
 
         courseBox.setPrefWidth(420);
@@ -954,163 +906,5 @@ public class AdminCoursController {
             return "Date unavailable";
         }
         return DATE_FORMAT.format(timestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-    }
-    private void generateAiSummaryAsync(String content, TextArea taSummary, Button btnGenerateAI) {
-        String apiKey = "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";
-        String url = "https://api.groq.com/openai/v1/chat/completions";
-
-        new Thread(() -> {
-            try {
-                // Smart Truncation
-                String safeContent = content;
-                if (safeContent.length() > 5000) {
-                    safeContent = safeContent.substring(0, 5000);
-                    javafx.application.Platform.runLater(() ->
-                            showWarning("Chapter is very long. The AI will summarize the first 5000 characters.")
-                    );
-                }
-
-                String prompt = "Summarize the following educational chapter content in 2 or 3 short, clear sentences:\n\n" + safeContent;
-
-                // 👇 THE FIX: Use Gson to build a bulletproof JSON request 👇
-                com.google.gson.JsonObject requestJson = new com.google.gson.JsonObject();
-                requestJson.addProperty("model", "llama-3.1-8b-instant");
-
-                com.google.gson.JsonArray messages = new com.google.gson.JsonArray();
-                com.google.gson.JsonObject userMessage = new com.google.gson.JsonObject();
-                userMessage.addProperty("role", "user");
-                userMessage.addProperty("content", prompt); // Gson perfectly handles all text escaping!
-                messages.add(userMessage);
-
-                requestJson.add("messages", messages);
-                String requestBody = requestJson.toString();
-                // 👆 ---------------------------------------------------- 👆
-
-                java.net.http.HttpClient client = java.net.http.HttpClient.newBuilder()
-                        .connectTimeout(java.time.Duration.ofSeconds(20))
-                        .build();
-
-                java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
-                        .uri(java.net.URI.create(url))
-                        .timeout(java.time.Duration.ofSeconds(60))
-                        .header("Content-Type", "application/json")
-                        .header("Authorization", "Bearer " + apiKey)
-                        .POST(java.net.http.HttpRequest.BodyPublishers.ofString(requestBody))
-                        .build();
-
-                java.net.http.HttpResponse<String> response = client.send(request, java.net.http.HttpResponse.BodyHandlers.ofString());
-
-                if (response.statusCode() == 200) {
-                    com.google.gson.JsonObject jsonObject = com.google.gson.JsonParser.parseString(response.body()).getAsJsonObject();
-                    String summary = jsonObject.getAsJsonArray("choices").get(0).getAsJsonObject()
-                            .getAsJsonObject("message").get("content").getAsString();
-
-                    javafx.application.Platform.runLater(() -> {
-                        taSummary.setText(summary.trim());
-                        btnGenerateAI.setText("✨ Generate AI Summary");
-                        btnGenerateAI.setDisable(false);
-                    });
-                } else {
-                    String errorMessage = response.body();
-                    javafx.application.Platform.runLater(() -> {
-                        showWarning("Groq API Request failed (" + response.statusCode() + ").\n" + errorMessage);
-                        btnGenerateAI.setText("✨ Generate AI Summary");
-                        btnGenerateAI.setDisable(false);
-                    });
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                javafx.application.Platform.runLater(() -> {
-                    showWarning("Could not connect to Groq. Check your internet connection.");
-                    btnGenerateAI.setText("✨ Generate AI Summary");
-                    btnGenerateAI.setDisable(false);
-                });
-            }
-        }).start();
-    }
-    private void generateChapterContentAsync(String title, TextArea taContent, TextField tfLink, Button btnAutoGenerate) {
-        String apiKey = "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";
-        String url = "https://api.groq.com/openai/v1/chat/completions";
-
-        new Thread(() -> {
-            try {
-                String prompt = "Write a comprehensive educational lesson about '" + title + "'. Also, find a highly relevant educational YouTube video URL about this topic. Return the response STRICTLY as a valid JSON object with exactly two keys: 'content' (the lesson text) and 'youtube_url' (the video link).";
-
-                // 👇 THE FIX: Use Gson to build a bulletproof JSON request 👇
-                com.google.gson.JsonObject requestJson = new com.google.gson.JsonObject();
-                requestJson.addProperty("model", "llama-3.1-8b-instant");
-
-                com.google.gson.JsonObject responseFormat = new com.google.gson.JsonObject();
-                responseFormat.addProperty("type", "json_object");
-                requestJson.add("response_format", responseFormat);
-
-                com.google.gson.JsonArray messages = new com.google.gson.JsonArray();
-                com.google.gson.JsonObject userMessage = new com.google.gson.JsonObject();
-                userMessage.addProperty("role", "user");
-                userMessage.addProperty("content", prompt);
-                messages.add(userMessage);
-
-                requestJson.add("messages", messages);
-                String requestBody = requestJson.toString();
-                // 👆 ---------------------------------------------------- 👆
-
-                java.net.http.HttpClient client = java.net.http.HttpClient.newHttpClient();
-                java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
-                        .uri(java.net.URI.create(url))
-                        .header("Content-Type", "application/json")
-                        .header("Authorization", "Bearer " + apiKey)
-                        .POST(java.net.http.HttpRequest.BodyPublishers.ofString(requestBody))
-                        .build();
-
-                java.net.http.HttpResponse<String> response = client.send(request, java.net.http.HttpResponse.BodyHandlers.ofString());
-
-                if (response.statusCode() == 200) {
-                    com.google.gson.JsonObject jsonObject = com.google.gson.JsonParser.parseString(response.body()).getAsJsonObject();
-                    String rawText = jsonObject.getAsJsonArray("choices").get(0).getAsJsonObject()
-                            .getAsJsonObject("message").get("content").getAsString();
-
-                    com.google.gson.JsonObject aiResult = com.google.gson.JsonParser.parseString(rawText).getAsJsonObject();
-
-                    // 👇 BULLETPROOF EXTRACTION 👇
-                    String tempContent = "";
-                    if (aiResult.has("content")) {
-                        com.google.gson.JsonElement contentElem = aiResult.get("content");
-                        tempContent = contentElem.isJsonPrimitive() ? contentElem.getAsString() : contentElem.toString();
-                    }
-                    // Create a final copy for the UI thread
-                    final String generatedContent = tempContent;
-
-                    String tempUrl = "";
-                    if (aiResult.has("youtube_url")) {
-                        com.google.gson.JsonElement urlElem = aiResult.get("youtube_url");
-                        tempUrl = urlElem.isJsonPrimitive() ? urlElem.getAsString() : urlElem.toString();
-                    }
-                    // Create a final copy for the UI thread
-                    final String generatedUrl = tempUrl;
-                    // 👆 ---------------------- 👆
-
-                    javafx.application.Platform.runLater(() -> {
-                        taContent.setText(generatedContent.trim());
-                        tfLink.setText(generatedUrl.trim());
-                        btnAutoGenerate.setText("✨ Auto-Generate Lesson");
-                        btnAutoGenerate.setDisable(false);
-                    });
-                } else {
-                    String errorMessage = response.body();
-                    javafx.application.Platform.runLater(() -> {
-                        showWarning("Groq API Request failed (" + response.statusCode() + ").\n" + errorMessage);
-                        btnAutoGenerate.setText("✨ Auto-Generate Lesson");
-                        btnAutoGenerate.setDisable(false);
-                    });
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                javafx.application.Platform.runLater(() -> {
-                    showWarning("Could not connect to Groq.");
-                    btnAutoGenerate.setText("✨ Auto-Generate Lesson");
-                    btnAutoGenerate.setDisable(false);
-                });
-            }
-        }).start();
     }
 }

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="20" styleClass="main-container" stylesheets="@../css/courses-module.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.SignInController">
+    <padding>
+        <Insets bottom="40" left="40" right="40" top="40"/>
+    </padding>
+
+    <!-- Title -->
+    <Label text="🔐 Welcome Back!" styleClass="title-label" />
+    <Label text="Please sign in to continue" style="-fx-text-fill: #666; -fx-font-size: 14px;" />
+
+    <!-- Login Card -->
+    <VBox spacing="15" styleClass="input-card">
+
+        <!-- Email Field -->
+        <VBox spacing="5">
+            <Label text="Email" styleClass="label-bold" />
+            <TextField fx:id="emailField" promptText="Enter your email" />
+        </VBox>
+
+        <!-- Password Field -->
+        <VBox spacing="5">
+            <Label text="Password" styleClass="label-bold" />
+            <PasswordField fx:id="passwordField" promptText="Enter your password" />
+        </VBox>
+
+    </VBox>
+
+    <!-- Buttons -->
+    <HBox spacing="20" alignment="CENTER">
+        <Button onAction="#handleLogin" text="🔓 Sign In" styleClass="btn-primary" />
+        <Button onAction="#goToSignUp" text="📝 Create Account" styleClass="btn-info" />
+    </HBox>
+</VBox>

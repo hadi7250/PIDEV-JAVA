@@ -473,24 +473,21 @@ public class CoursController {
         VBox content = new VBox(12);
         content.setPadding(new Insets(10, 0, 0, 0));
 
-        // --- 1. AI SUMMARY AT THE TOP ---
         if (!safe(chapitre.getAiSummary()).isBlank()) {
             VBox summaryBox = new VBox(6);
             summaryBox.getStyleClass().add("summary-card");
 
-            Label summaryTitle = new Label("✨ AI Summary");
+            Label summaryTitle = new Label("AI Summary");
             summaryTitle.getStyleClass().add("summary-title");
 
             Label summaryBody = new Label(chapitre.getAiSummary());
             summaryBody.setWrapText(true);
-
             summaryBody.getStyleClass().add("summary-body");
 
             summaryBox.getChildren().addAll(summaryTitle, summaryBody);
             content.getChildren().add(summaryBox);
         }
 
-        // --- 2. MAIN CONTENT ---
         Label contentLabel = new Label("Content");
         contentLabel.getStyleClass().add("chapter-section-title");
 
@@ -503,7 +500,6 @@ public class CoursController {
 
         content.getChildren().addAll(contentLabel, contentArea);
 
-        // --- 3. WEBSITE RESOURCES ---
         List<String> links = extractLinks(chapitre);
         if (!links.isEmpty()) {
             Label linksLabel = new Label("Website resources");
@@ -520,20 +516,19 @@ public class CoursController {
             content.getChildren().addAll(linksLabel, linksBox);
         }
 
-        // --- 5. VIRTUAL TUTOR Q&A ---
         VBox tutorBox = new VBox(10);
-        tutorBox.getStyleClass().add("tutor-card"); // Uses your new CSS!
+        tutorBox.getStyleClass().add("tutor-card");
         VBox.setMargin(tutorBox, new Insets(10, 0, 0, 0));
 
-        Label tutorTitle = new Label("🤖 Ask the Virtual Tutor");
+        Label tutorTitle = new Label("Ask the Virtual Tutor");
         tutorTitle.getStyleClass().add("tutor-title");
 
         TextField tfQuestion = new TextField();
         tfQuestion.setPromptText("Confused? Ask a question about this chapter...");
-        tfQuestion.getStyleClass().add("text-field"); // Uses your existing text field style
+        tfQuestion.getStyleClass().add("text-field");
 
         Button btnAsk = new Button("Ask");
-        btnAsk.getStyleClass().add("primary-btn"); // Uses your existing beautiful green button!
+        btnAsk.getStyleClass().add("primary-btn");
 
         TextArea taAnswer = new TextArea();
         taAnswer.setWrapText(true);
@@ -544,7 +539,9 @@ public class CoursController {
         taAnswer.setManaged(false);
 
         btnAsk.setOnAction(e -> {
-            if (tfQuestion.getText().trim().isEmpty()) return;
+            if (tfQuestion.getText().trim().isEmpty()) {
+                return;
+            }
             btnAsk.setText("Thinking...");
             btnAsk.setDisable(true);
             taAnswer.setVisible(true);
@@ -555,26 +552,19 @@ public class CoursController {
         });
 
         HBox askBox = new HBox(10, tfQuestion, btnAsk);
-        askBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-        javafx.scene.layout.HBox.setHgrow(tfQuestion, javafx.scene.layout.Priority.ALWAYS);
+        askBox.setAlignment(Pos.CENTER_LEFT);
+        HBox.setHgrow(tfQuestion, javafx.scene.layout.Priority.ALWAYS);
 
         tutorBox.getChildren().addAll(tutorTitle, askBox, taAnswer);
         content.getChildren().add(tutorBox);
-        // ---------------------------------------------
-        // 👆 --------------------------------------------- 👆
 
-        // --- 4. CLEAN SCROLLPANE (No forced heights!) ---
         javafx.scene.control.ScrollPane scrollContent = new javafx.scene.control.ScrollPane(content);
         scrollContent.setFitToWidth(true);
         scrollContent.setHbarPolicy(javafx.scene.control.ScrollPane.ScrollBarPolicy.NEVER);
         scrollContent.setStyle("-fx-background-color: transparent; -fx-background: transparent; -fx-padding: 0;");
 
         TitledPane pane = new TitledPane(safe(chapitre.getTitre(), "Untitled chapter"), scrollContent);
-
-        // --- 1. TURN OFF JAVAFX ANIMATION BUG ---
         pane.setAnimated(false);
-
-        // --- 2. FORCE SCROLLPANE TO ALWAYS STAY AT THE TOP ---
         pane.expandedProperty().addListener((obs, wasExpanded, isExpanded) -> {
             if (isExpanded) {
                 javafx.application.Platform.runLater(() -> scrollContent.setVvalue(0.0));
@@ -838,22 +828,22 @@ public class CoursController {
     private String safe(String value, String fallback) {
         return value == null || value.isBlank() ? fallback : value;
     }
+
     private void askTutorAsync(String chapterContent, String question, TextArea taAnswer, Button btnAsk) {
         String apiKey = "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";
         String url = "https://api.groq.com/openai/v1/chat/completions";
 
         new Thread(() -> {
             try {
-                String prompt = "You are a helpful, strict virtual tutor for a student. " +
-                        "You must obey these rules absolutely:\n" +
-                        "1. Use ONLY the provided Chapter Content to answer the question.\n" +
-                        "2. If the question asks about something NOT in the text, or asks about system administration, passwords, admin rights, or the application's code, you MUST refuse.\n" +
-                        "3. If you refuse, reply EXACTLY with: 'I am sorry, but I can only answer questions directly related to this specific lesson. Please adjust your question!'\n" +
-                        "Keep answers brief, clear, and easy to understand.\n\n" +
-                        "Chapter Content:\n" + chapterContent + "\n\n" +
-                        "Student Question:\n" + question;
+                String prompt = "You are a helpful, strict virtual tutor for a student. "
+                        + "You must obey these rules absolutely:\n"
+                        + "1. Use ONLY the provided Chapter Content to answer the question.\n"
+                        + "2. If the question asks about something NOT in the text, or asks about system administration, passwords, admin rights, or the application's code, you MUST refuse.\n"
+                        + "3. If you refuse, reply EXACTLY with: 'I am sorry, but I can only answer questions directly related to this specific lesson. Please adjust your question!'\n"
+                        + "Keep answers brief, clear, and easy to understand.\n\n"
+                        + "Chapter Content:\n" + chapterContent + "\n\n"
+                        + "Student Question:\n" + question;
 
-                // 👇 THE FIX: Use Gson to build a bulletproof JSON request 👇
                 com.google.gson.JsonObject requestJson = new com.google.gson.JsonObject();
                 requestJson.addProperty("model", "llama-3.1-8b-instant");
 
@@ -865,7 +855,6 @@ public class CoursController {
 
                 requestJson.add("messages", messages);
                 String requestBody = requestJson.toString();
-                // 👆 ---------------------------------------------------- 👆
 
                 java.net.http.HttpClient client = java.net.http.HttpClient.newHttpClient();
                 java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
@@ -875,10 +864,12 @@ public class CoursController {
                         .POST(java.net.http.HttpRequest.BodyPublishers.ofString(requestBody))
                         .build();
 
-                java.net.http.HttpResponse<String> response = client.send(request, java.net.http.HttpResponse.BodyHandlers.ofString());
+                java.net.http.HttpResponse<String> response =
+                        client.send(request, java.net.http.HttpResponse.BodyHandlers.ofString());
 
                 if (response.statusCode() == 200) {
-                    com.google.gson.JsonObject jsonObject = com.google.gson.JsonParser.parseString(response.body()).getAsJsonObject();
+                    com.google.gson.JsonObject jsonObject =
+                            com.google.gson.JsonParser.parseString(response.body()).getAsJsonObject();
                     String answer = jsonObject.getAsJsonArray("choices").get(0).getAsJsonObject()
                             .getAsJsonObject("message").get("content").getAsString();
 
