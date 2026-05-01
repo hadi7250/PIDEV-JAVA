@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox fx:id="mainContainer" spacing="20" styleClass="light-theme" stylesheets="@../css/courses-module.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AjouterPersonne">
+    <padding>
+        <Insets bottom="30" left="30" right="30" top="30"/>
+    </padding>
+
+    <HBox alignment="CENTER_RIGHT" spacing="10">
+        <Label styleClass="title-label" text="➕ Add User" HBox.hgrow="ALWAYS" />
+        <Button onAction="#toggleTheme" text="🌙 Dark Mode" styleClass="theme-toggle-btn" />
+    </HBox>
+
+    <VBox spacing="15" styleClass="input-card">
+        <Label styleClass="subtitle-label" text="User Information" />
+
+        <HBox spacing="15">
+            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                <Label text="Last Name" styleClass="label-bold" />
+                <TextField fx:id="TFNom" promptText="Enter last name" />
+            </VBox>
+            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                <Label text="First Name" styleClass="label-bold" />
+                <TextField fx:id="TFPrenom" promptText="Enter first name" />
+            </VBox>
+        </HBox>
+
+        <VBox spacing="5">
+            <Label text="Age" styleClass="label-bold" />
+            <TextField fx:id="TFAge" promptText="Enter age" />
+        </VBox>
+
+        <VBox spacing="5">
+            <Label text="Email" styleClass="label-bold" />
+            <TextField fx:id="TFEmail" promptText="Enter email" />
+        </VBox>
+
+        <VBox spacing="5">
+            <Label text="Password" styleClass="label-bold" />
+            <PasswordField fx:id="TFPassword" promptText="Enter password" />
+        </VBox>
+    </VBox>
+
+    <HBox spacing="20" alignment="CENTER">
+        <Button onAction="#ajouter" text="✅ Add" styleClass="btn-primary" />
+        <Button onAction="#afficher" text="📋 Manage Users" styleClass="btn-info" />
+    </HBox>
+</VBox>

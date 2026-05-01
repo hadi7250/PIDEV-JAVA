@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.QuizUserController"
+            stylesheets="@../../css/courses-module.css"
+            styleClass="shell-root">
+
+    <!-- TOP BAR -->
+    <top>
+        <VBox styleClass="shell-topbar" style="-fx-padding: 16 24 12 24;" spacing="4">
+            <HBox alignment="CENTER_LEFT" spacing="16">
+                <Label text="📚  Quiz Center" styleClass="hero-title"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <TextField fx:id="searchField"
+                           promptText="Search quizzes…"
+                           prefWidth="240"
+                           onAction="#handleSearch"
+                           style="-fx-background-radius: 999; -fx-padding: 6 14;"/>
+                <Button text="🔍 Search" onAction="#handleSearch"
+                        styleClass="theme-toggle-btn"/>
+                <Button text="↺ Refresh" onAction="#handleRefresh"
+                        styleClass="theme-toggle-btn"/>
+            </HBox>
+            <Label fx:id="lblCount" styleClass="hero-subtitle" text="Loading…"/>
+        </VBox>
+    </top>
+
+    <!-- CARDS AREA -->
+    <center>
+        <ScrollPane fitToWidth="true"
+                    style="-fx-background-color: transparent; -fx-border-color: transparent;">
+            <VBox style="-fx-padding: 24 28;">
+                <FlowPane fx:id="quizCardsPane"
+                          hgap="20" vgap="20"
+                          style="-fx-background-color: transparent;"/>
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>
