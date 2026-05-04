@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="15" styleClass="light-theme" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ChatbotController">
+    <padding>
+        <Insets bottom="20" left="20" right="20" top="20"/>
+    </padding>
+
+    <!-- HEADER -->
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <Label text="🤖" style="-fx-font-size: 28px;" />
+        <Label text="AI Assistant" styleClass="page-title" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Button onAction="#closeChat" text="✕" styleClass="logout-btn" />
+    </HBox>
+
+    <Label text="Ask me anything about your users!" style="-fx-text-fill: #64748b; -fx-font-size: 12px;" />
+
+    <!-- CHAT AREA -->
+    <VBox spacing="12" styleClass="form-card" VBox.vgrow="ALWAYS">
+        <TextArea fx:id="chatArea" editable="false" wrapText="true"
+                  styleClass="chat-area" prefHeight="350"
+                  promptText="💬 Conversation will appear here..." />
+
+        <Separator />
+
+        <Label text="Quick Questions:" style="-fx-font-weight: bold; -fx-font-size: 12px; -fx-text-fill: #6366f1;" />
+
+        <FlowPane hgap="8" vgap="8">
+            <Button text="📊 Total users?" onAction="#askExample1" styleClass="chip-btn" />
+            <Button text="📈 Average age?" onAction="#askExample2" styleClass="chip-btn" />
+            <Button text="👑 Who is admin?" onAction="#askExample3" styleClass="chip-btn" />
+            <Button text="📋 Show all users" onAction="#askExample4" styleClass="chip-btn" />
+            <Button text="🔍 Search user" onAction="#askExample5" styleClass="chip-btn" />
+            <Button text="📊 Statistics" onAction="#askExample6" styleClass="chip-btn" />
+        </FlowPane>
+
+        <HBox spacing="10">
+            <TextField fx:id="questionField" promptText="Type your question..." styleClass="auth-input" HBox.hgrow="ALWAYS" />
+            <Button onAction="#sendQuestion" text="Send →" styleClass="primary-btn" />
+        </HBox>
+    </VBox>
+</VBox>

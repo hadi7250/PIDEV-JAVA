@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx/22"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.TakeQuizController"
+            styleClass="shell-root"
+            stylesheets="@../../css/courses-module.css"
+            prefWidth="820" prefHeight="620">
+
+    <!-- TOP BAR -->
+    <top>
+        <VBox styleClass="shell-topbar" style="-fx-padding: 14 20 10 20;" spacing="4">
+            <HBox alignment="CENTER_LEFT" spacing="16">
+                <Label fx:id="quizTitleLabel" styleClass="hero-title"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label text="⏱ Time Left:" styleClass="hero-subtitle"/>
+                <Label fx:id="timerLabel"
+                       style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"/>
+            </HBox>
+            <Label fx:id="progressLabel" styleClass="hero-subtitle"/>
+        </VBox>
+    </top>
+
+    <!-- CENTER: question only (chat is a floating Stage opened from controller) -->
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="cards-scroll">
+            <VBox spacing="20" alignment="TOP_CENTER" style="-fx-padding: 32 60;">
+                <VBox styleClass="module-card" spacing="16">
+                    <Label fx:id="questionLabel" wrapText="true"
+                           styleClass="module-title" maxWidth="640"/>
+                    <Separator/>
+                    <VBox fx:id="optionsBox" spacing="8"/>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+    <!-- BOTTOM -->
+    <bottom>
+        <HBox spacing="12" alignment="CENTER" styleClass="status-bar"
+              style="-fx-padding: 14 24; -fx-border-color: #e1efea; -fx-border-width: 1 0 0 0;">
+            <Button fx:id="btnPrev"   text="◀  Previous" onAction="#handlePrev"   styleClass="secondary-btn"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <!-- Floating chat button — always visible -->
+            <Button fx:id="btnChat" text="💬  AI Hint"
+                    onAction="#handleToggleChat"
+                    style="-fx-background-color: linear-gradient(to right,#6a1b9a,#4a148c);
+                           -fx-text-fill: white; -fx-background-radius: 999;
+                           -fx-padding: 10 20; -fx-font-weight: 700; -fx-cursor: hand;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button fx:id="btnNext"   text="Next  ▶"     onAction="#handleNext"   styleClass="primary-btn"/>
+            <Button fx:id="btnSubmit" text="✔  Submit Quiz" onAction="#handleSubmit" visible="false"
+                    style="-fx-background-color: linear-gradient(to right,#2E7D32,#1B5E20);
+                           -fx-text-fill: white; -fx-background-radius: 14;
+                           -fx-padding: 10 22; -fx-font-weight: 700; -fx-cursor: hand;"/>
+        </HBox>
+    </bottom>
+</BorderPane>

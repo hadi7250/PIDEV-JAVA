@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox fx:id="mainContainer"
+      spacing="16"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="gui.AfficherPersonne"
+      style="-fx-background-color: #f8fafb;"
+      prefWidth="1100"
+      prefHeight="1050"
+      maxWidth="Infinity"
+      maxHeight="Infinity"
+      VBox.vgrow="ALWAYS">
+
+    <padding>
+        <Insets bottom="20" left="24" right="24" top="20"/>
+    </padding>
+
+    <!-- HEADER -->
+    <HBox alignment="CENTER_LEFT" spacing="12"
+          style="-fx-background-color: white; -fx-background-radius: 14; -fx-padding: 14 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);">
+        <Label text="&#128101;" style="-fx-font-size: 22px;" />
+        <Label text="User Management" style="-fx-font-size: 20px; -fx-font-weight: 800; -fx-text-fill: #1a3c34;" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Label fx:id="adminInfoLabel" text=""
+               style="-fx-background-color: #e6f4f0; -fx-text-fill: #1a7d73; -fx-padding: 6 14; -fx-background-radius: 30; -fx-font-size: 12px; -fx-font-weight: 700;" />
+    </HBox>
+
+    <!-- STATISTICS CARDS -->
+    <HBox spacing="14" alignment="CENTER">
+        <VBox spacing="6" alignment="CENTER"
+              style="-fx-background-color: #6366f1; -fx-background-radius: 16; -fx-padding: 16 24;"
+              HBox.hgrow="ALWAYS" maxWidth="Infinity">
+            <Label text="Total Users" style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.8); -fx-font-weight: 600;" />
+            <Label fx:id="totalUsersLabel" text="0" style="-fx-font-size: 26px; -fx-font-weight: 800; -fx-text-fill: white;" />
+        </VBox>
+        <VBox spacing="6" alignment="CENTER"
+              style="-fx-background-color: #10b981; -fx-background-radius: 16; -fx-padding: 16 24;"
+              HBox.hgrow="ALWAYS" maxWidth="Infinity">
+            <Label text="Admins" style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.8); -fx-font-weight: 600;" />
+            <Label fx:id="adminCountLabel" text="0" style="-fx-font-size: 26px; -fx-font-weight: 800; -fx-text-fill: white;" />
+        </VBox>
+        <VBox spacing="6" alignment="CENTER"
+              style="-fx-background-color: #f59e0b; -fx-background-radius: 16; -fx-padding: 16 24;"
+              HBox.hgrow="ALWAYS" maxWidth="Infinity">
+            <Label text="Users" style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.8); -fx-font-weight: 600;" />
+            <Label fx:id="userCountLabel" text="0" style="-fx-font-size: 26px; -fx-font-weight: 800; -fx-text-fill: white;" />
+        </VBox>
+        <VBox spacing="6" alignment="CENTER"
+              style="-fx-background-color: #8b5cf6; -fx-background-radius: 16; -fx-padding: 16 24;"
+              HBox.hgrow="ALWAYS" maxWidth="Infinity">
+            <Label text="Avg Age" style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.8); -fx-font-weight: 600;" />
+            <Label fx:id="averageAgeLabel" text="0" style="-fx-font-size: 26px; -fx-font-weight: 800; -fx-text-fill: white;" />
+        </VBox>
+    </HBox>
+
+    <!-- SEARCH BAR -->
+    <HBox spacing="10" alignment="CENTER_LEFT"
+          style="-fx-background-color: white; -fx-background-radius: 50; -fx-padding: 6 16; -fx-border-color: #e2e8f0; -fx-border-width: 1.5; -fx-border-radius: 50;">
+        <TextField fx:id="searchField" promptText="Search by name, email or role..."
+                   HBox.hgrow="ALWAYS"
+                   style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-font-size: 13px; -fx-text-fill: #1e293b; -fx-prompt-text-fill: #94a3b8;" />
+        <Button onAction="#searchUsers" text="Search"
+                style="-fx-background-color: #1a7d73; -fx-text-fill: white; -fx-padding: 8 20; -fx-background-radius: 30; -fx-font-weight: 700; -fx-cursor: hand;" />
+        <Button onAction="#resetSearch" text="Reset"
+                style="-fx-background-color: #f1f5f9; -fx-text-fill: #64748b; -fx-padding: 8 20; -fx-background-radius: 30; -fx-cursor: hand;" />
+    </HBox>
+
+    <!-- USER TABLE -->
+    <VBox spacing="8" VBox.vgrow="ALWAYS" prefHeight="500"
+          style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 16; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);">
+        <Label text="All Users" style="-fx-font-size: 14px; -fx-font-weight: 700; -fx-text-fill: #64748b;" />
+        <TableView fx:id="tableView"
+                   VBox.vgrow="ALWAYS"
+                   prefHeight="460"
+                   maxHeight="Infinity"
+                   maxWidth="Infinity"
+                   style="-fx-background-color: transparent; -fx-border-color: transparent;">
+            <columns>
+                <TableColumn fx:id="idCol" prefWidth="60" text="ID" />
+                <TableColumn fx:id="nomCol" prefWidth="150" text="Full Name" />
+                <TableColumn fx:id="prenomCol" prefWidth="0" visible="false" />
+                <TableColumn fx:id="ageCol" prefWidth="80" text="Age" />
+                <TableColumn fx:id="emailCol" prefWidth="220" text="Email" />
+                <TableColumn fx:id="roleCol" prefWidth="120" text="Role" />
+                <TableColumn text="Actions" prefWidth="100" />
+            </columns>
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+            </columnResizePolicy>
+        </TableView>
+    </VBox>
+
+    <!-- EDIT SECTION -->
+    <VBox spacing="12"
+          style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 16; -fx-border-color: #e2e8f0; -fx-border-width: 1.5; -fx-border-radius: 16;">
+        <Label text="Edit User" style="-fx-font-size: 15px; -fx-font-weight: 800; -fx-text-fill: #1a3c34;" />
+        <HBox spacing="10">
+            <TextField fx:id="editNomField" promptText="Last Name" HBox.hgrow="ALWAYS"
+                       style="-fx-background-color: #f8fafb; -fx-border-color: #e2e8f0; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10 12; -fx-font-size: 13px;" />
+            <TextField fx:id="editPrenomField" promptText="First Name" HBox.hgrow="ALWAYS"
+                       style="-fx-background-color: #f8fafb; -fx-border-color: #e2e8f0; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10 12; -fx-font-size: 13px;" />
+            <TextField fx:id="editAgeField" promptText="Age" prefWidth="80"
+                       style="-fx-background-color: #f8fafb; -fx-border-color: #e2e8f0; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10 12; -fx-font-size: 13px;" />
+            <TextField fx:id="editEmailField" promptText="Email" HBox.hgrow="ALWAYS"
+                       style="-fx-background-color: #f8fafb; -fx-border-color: #e2e8f0; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10 12; -fx-font-size: 13px;" />
+            <ComboBox fx:id="editRoleCombo" promptText="Role" prefWidth="120" />
+        </HBox>
+        <HBox spacing="10">
+            <PasswordField fx:id="editPasswordField" promptText="New password (optional)" HBox.hgrow="ALWAYS"
+                           style="-fx-background-color: #f8fafb; -fx-border-color: #e2e8f0; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10 12; -fx-font-size: 13px;" />
+        </HBox>
+        <HBox spacing="12" alignment="CENTER_RIGHT">
+            <Button onAction="#updateUser" text="Update"
+                    style="-fx-background-color: linear-gradient(to right, #f59e0b, #fbbf24); -fx-text-fill: white; -fx-padding: 9 22; -fx-background-radius: 30; -fx-font-weight: bold; -fx-cursor: hand;" />
+            <Button onAction="#deleteUser" text="Delete"
+                    style="-fx-background-color: linear-gradient(to right, #ef4444, #f87171); -fx-text-fill: white; -fx-padding: 9 22; -fx-background-radius: 30; -fx-font-weight: bold; -fx-cursor: hand;" />
+            <Button onAction="#refreshTable" text="Refresh"
+                    style="-fx-background-color: #f1f5f9; -fx-text-fill: #64748b; -fx-padding: 9 22; -fx-background-radius: 30; -fx-cursor: hand;" />
+        </HBox>
+    </VBox>
+
+    <!-- ACTION BUTTONS -->
+    <HBox spacing="12" alignment="CENTER">
+        <Button onAction="#goToAddUser" text="Add New User"
+                style="-fx-background-color: linear-gradient(to right, #1a7d73, #0f5f5a); -fx-text-fill: white; -fx-padding: 10 22; -fx-background-radius: 30; -fx-font-weight: 700; -fx-cursor: hand;" />
+        <Button onAction="#openChatbot" text="AI Assistant"
+                style="-fx-background-color: linear-gradient(to right, #8b5cf6, #c084fc); -fx-text-fill: white; -fx-padding: 10 22; -fx-background-radius: 30; -fx-font-weight: 700; -fx-cursor: hand;" />
+        <Button onAction="#exportToCSV" text="Export CSV"
+                style="-fx-background-color: white; -fx-text-fill: #475569; -fx-padding: 10 22; -fx-background-radius: 30; -fx-border-color: #e2e8f0; -fx-border-width: 1.5; -fx-cursor: hand;" />
+        <Button onAction="#showAgeChart" text="Age Chart"
+                style="-fx-background-color: white; -fx-text-fill: #475569; -fx-padding: 10 22; -fx-background-radius: 30; -fx-border-color: #e2e8f0; -fx-border-width: 1.5; -fx-cursor: hand;" />
+    </HBox>
+
+</VBox>

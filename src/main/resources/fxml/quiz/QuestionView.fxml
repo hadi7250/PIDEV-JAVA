@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/22"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.QuestionController"
+            styleClass="shell-root"
+            stylesheets="@../../css/courses-module.css"
+            prefWidth="1000" prefHeight="600">
+
+    <!-- TOP BAR -->
+    <top>
+        <HBox spacing="16" alignment="CENTER_LEFT" styleClass="shell-topbar" style="-fx-padding: 14 20;">
+            <Label fx:id="quizTitleLabel" text="Questions" styleClass="hero-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <TextField fx:id="searchField" promptText="Search questions..." onAction="#handleSearch" prefWidth="220"/>
+            <Button text="🔍 Search" onAction="#handleSearch" styleClass="secondary-btn"/>
+        </HBox>
+    </top>
+
+    <!-- SIDEBAR -->
+    <left>
+        <VBox spacing="10" styleClass="shell-sidebar" style="-fx-padding: 20;">
+            <Label text="QUESTION ACTIONS" styleClass="meta-label" style="-fx-padding: 0 0 4 2;"/>
+            <Button text="➕  Add Question"    onAction="#handleAdd"    styleClass="primary-btn"   maxWidth="Infinity"/>
+            <Button text="✏️  Edit Question"    onAction="#handleEdit"   styleClass="secondary-btn" maxWidth="Infinity"/>
+            <Button text="🗑️  Delete Question"  onAction="#handleDelete" styleClass="danger-btn"    maxWidth="Infinity"/>
+            <Button text="🔄  Refresh"          onAction="#handleRefresh" styleClass="secondary-btn" maxWidth="Infinity"/>
+        </VBox>
+    </left>
+
+    <!-- MAIN CONTENT -->
+    <center>
+        <VBox spacing="14" style="-fx-padding: 20;" styleClass="shell-content">
+            <Label text="Questions" styleClass="module-title"/>
+
+            <TableView fx:id="questionTable" VBox.vgrow="ALWAYS" styleClass="course-list">
+                <columns>
+                    <TableColumn fx:id="colId"      text="ID"             prefWidth="55"/>
+                    <TableColumn fx:id="colText"    text="Question"       prefWidth="310"/>
+                    <TableColumn fx:id="colOptions" text="Options"        prefWidth="220"/>
+                    <TableColumn fx:id="colAnswer"  text="Correct Answer" prefWidth="150"/>
+                    <TableColumn fx:id="colPoints"  text="Points"         prefWidth="80"/>
+                </columns>
+                <placeholder>
+                    <Label text="No questions yet — click ➕ Add Question to create one." styleClass="empty-note"/>
+                </placeholder>
+            </TableView>
+        </VBox>
+    </center>
+</BorderPane>
