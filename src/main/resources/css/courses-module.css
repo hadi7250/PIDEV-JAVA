@@ -79,6 +79,7 @@
 }
 
 .module-subtitle {
+    -fx-font-size: 12px;
     -fx-text-fill: #6a8d86;
 }
 
@@ -91,6 +92,7 @@
     -fx-border-color: #d7e9e3;
     -fx-border-radius: 14;
     -fx-padding: 10 12;
+    -fx-text-fill: #244a43;
     -fx-highlight-fill: #d9f0e8;
     -fx-highlight-text-fill: #163f39;
 }
@@ -172,11 +174,13 @@
 }
 
 .section-title {
+    -fx-font-size: 15px;
     -fx-font-weight: 700;
     -fx-text-fill: #28574f;
 }
 
 .meta-label {
+    -fx-font-size: 12px;
     -fx-text-fill: #6f8f88;
 }
 
@@ -187,7 +191,9 @@
 }
 
 .course-description {
+    -fx-font-size: 13px;
     -fx-text-fill: #365d57;
+    -fx-line-spacing: 3px;
 }
 
 .course-list {
@@ -215,15 +221,18 @@
 }
 
 .course-cell-title {
+    -fx-font-size: 14px;
     -fx-font-weight: 700;
     -fx-text-fill: #214842;
 }
 
 .course-cell-desc {
+    -fx-font-size: 12px;
     -fx-text-fill: #5f8078;
 }
 
 .course-cell-meta {
+    -fx-font-size: 11px;
     -fx-text-fill: #7f9d96;
 }
 
@@ -301,6 +310,7 @@
     -fx-border-width: 0 1.5 1.5 1.5;
     -fx-border-radius: 0 0 16 16;
     -fx-background-radius: 0 0 16 16;
+    -fx-padding: 14;
 }
 
 .chapter-section-title {
@@ -396,7 +406,9 @@
 
 .course-card-desc,
 .admin-card-desc {
+    -fx-font-size: 12px;
     -fx-text-fill: #5f8078;
+    -fx-line-spacing: 2px;
 }
 
 .chip-row {
@@ -426,6 +438,7 @@
 }
 
 .admin-card-meta {
+    -fx-font-size: 12px;
     -fx-font-weight: 700;
     -fx-text-fill: #6c9088;
 }
@@ -772,213 +785,4 @@
 .dark-mode .theme-toggle-btn {
     -fx-background-color: rgba(255, 255, 255, 0.08);
     -fx-border-color: rgba(255, 255, 255, 0.14);
-    -fx-background-color: #ffffff;
-    -fx-border-radius: 12;
-    -fx-background-radius: 12;
-    -fx-font-size: 14px;
-
-}
-
-
-/* ── Fix: dark mode on shell-root itself (quiz/admin views loaded as root) ── */
-.dark-mode.shell-root {
-    -fx-background-color: #0d1f1a;
-}
-.dark-mode .shell-sidebar {
-    -fx-background-color: #0f1d19;
-    -fx-border-color: #1f3832;
-}
-
-/* ── Quiz module dark mode ──────────────────────────────────────────────────── */
-.dark-mode .shell-root,
-.dark-mode {
-    -fx-background-color: #0d1f1a;
-}
-
-/* TableView dark */
-.dark-mode .table-view {
-    -fx-background-color: #12211d;
-    -fx-border-color: #1f3832;
-}
-.dark-mode .table-view .column-header-background {
-    -fx-background-color: #1a2e29;
-}
-.dark-mode .table-view .column-header,
-.dark-mode .table-view .filler {
-    -fx-background-color: #1a2e29;
-    -fx-border-color: #1f3832;
-}
-.dark-mode .table-view .column-header .label {
-    -fx-text-fill: #9adece;
-    -fx-font-weight: bold;
-}
-.dark-mode .table-row-cell {
-    -fx-background-color: #12211d;
-    -fx-border-color: #1a2e29;
-    -fx-text-fill: #d0ece6;
-}
-.dark-mode .table-row-cell:odd {
-    -fx-background-color: #0f1d19;
-}
-.dark-mode .table-row-cell:selected {
-    -fx-background-color: #1a7d73;
-}
-.dark-mode .table-row-cell:hover {
-    -fx-background-color: #1f3832;
-}
-.dark-mode .table-row-cell .table-cell {
-    -fx-text-fill: #d0ece6;
-    -fx-border-color: transparent;
-}
-.dark-mode .table-row-cell:selected .table-cell {
-    -fx-text-fill: white;
-}
-
-/* ScrollPane dark */
-.dark-mode .scroll-pane,
-.dark-mode .scroll-pane > .viewport {
-    -fx-background-color: #0d1f1a;
-}
-.dark-mode .scroll-bar {
-    -fx-background-color: #12211d;
-}
-.dark-mode .scroll-bar .thumb {
-    -fx-background-color: #1a7d73;
-    -fx-background-radius: 999;
-}
-.dark-mode .scroll-bar .track {
-    -fx-background-color: #1a2e29;
-}
-
-/* Sidebar/panel dark */
-.dark-mode .quiz-sidebar,
-.dark-mode VBox {
-    -fx-background-color: transparent;
-}
-
-/* Label dark */
-.dark-mode Label {
-    -fx-text-fill: #d0ece6;
-}
-
-/* Button general dark */
-.dark-mode .button:hover {
-    -fx-opacity: 0.88;
-}
-
-/* TextField / TextArea dark */
-.dark-mode .text-field,
-.dark-mode .text-area,
-.dark-mode .spinner .text-field {
-    -fx-background-color: #1a2e29;
-    -fx-text-fill: #d0ece6;
-    -fx-border-color: #1f3832;
-    -fx-border-radius: 6;
-    -fx-background-radius: 6;
-    -fx-prompt-text-fill: #5a8a80;
-}
-
-/* ComboBox dark */
-.dark-mode .combo-box-base {
-    -fx-background-color: #1a2e29;
-    -fx-border-color: #1f3832;
-}
-.dark-mode .combo-box-base .list-cell,
-.dark-mode .combo-box-base .arrow-button {
-    -fx-background-color: transparent;
-    -fx-text-fill: #d0ece6;
-}
-.dark-mode .combo-box-popup .list-view {
-    -fx-background-color: #12211d;
-    -fx-border-color: #1a7d73;
-}
-.dark-mode .combo-box-popup .list-cell {
-    -fx-background-color: #12211d;
-    -fx-text-fill: #d0ece6;
-}
-.dark-mode .combo-box-popup .list-cell:hover {
-    -fx-background-color: #1a2e29;
-}
-
-/* Spinner dark */
-.dark-mode .spinner {
-    -fx-background-color: #1a2e29;
-    -fx-border-color: #1f3832;
-    -fx-border-radius: 6;
-}
-.dark-mode .spinner .increment-arrow-button,
-.dark-mode .spinner .decrement-arrow-button {
-    -fx-background-color: #1f3832;
-}
-
-/* RadioButton dark */
-.dark-mode .radio-button {
-    -fx-text-fill: #d0ece6;
-}
-.dark-mode .radio-button .radio {
-    -fx-border-color: #1a7d73;
-    -fx-background-color: #12211d;
-}
-.dark-mode .radio-button:selected .radio {
-    -fx-background-color: #1a7d73;
-}
-
-/* Separator dark */
-.dark-mode .separator .line {
-    -fx-border-color: #1f3832;
-}
-
-/* FlowPane quiz cards dark */
-.dark-mode .flow-pane {
-    -fx-background-color: transparent;
-}
-
-/* Quiz user cards dark mode */
-.dark-mode .quiz-user-card {
-    -fx-background-color: #12211d !important;
-    -fx-border-color: #1f3832 !important;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0.2, 0, 3);
-}
-.dark-mode .quiz-user-card:hover {
-    -fx-background-color: #1a2e29 !important;
-    -fx-border-color: #1a7d73 !important;
-}
-
-/* ── Take Quiz window dark mode ──────────────────────────────────────────── */
-.dark-mode .option-card {
-    -fx-background-color: #1a2e29;
-    -fx-border-color: #1f3832;
-    -fx-border-radius: 10;
-    -fx-background-radius: 10;
-}
-.dark-mode .option-card:hover {
-    -fx-background-color: #1f3832;
-    -fx-border-color: #1a7d73;
-}
-.dark-mode .option-card-selected {
-    -fx-background-color: #1a3d35;
-    -fx-border-color: #1a7d73;
-    -fx-border-width: 2;
-}
-.dark-mode .quiz-option {
-    -fx-text-fill: #d0ece6;
-}
-.dark-mode .status-bar {
-    -fx-background-color: #0d1f1a;
-    -fx-border-color: #1f3832;
-}
-.dark-mode .cards-scroll {
-    -fx-background-color: #0d1f1a;
-}
-.dark-mode .cards-scroll > .viewport {
-    -fx-background-color: #0d1f1a;
-}
-.dark-mode .module-card {
-    -fx-background-color: #12211d;
-    -fx-border-color: #1f3832;
-    -fx-border-radius: 14;
-    -fx-background-radius: 14;
-}
-.dark-mode .module-title {
-    -fx-text-fill: #d0ece6;
 }

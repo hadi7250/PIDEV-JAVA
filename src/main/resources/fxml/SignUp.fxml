@@ -3,146 +3,71 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import java.net.URL?>
 
-<StackPane stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.SignUpController" styleClass="auth-root">
+<StackPane prefHeight="750.0" prefWidth="900.0" styleClass="course-module-root" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.SignUpController">
+    <stylesheets>
+        <URL value="@../modern.css" />
+    </stylesheets>
+    
+    <padding>
+        <Insets bottom="30" left="30" right="30" top="30" />
+    </padding>
 
-    <!-- MAIN CARD -->
-    <HBox alignment="CENTER" spacing="0" styleClass="auth-card" maxWidth="980" maxHeight="680">
-
-        <!-- LEFT PANEL — BRAND / HERO -->
-        <VBox spacing="0" styleClass="auth-left-panel" prefWidth="340" minWidth="320">
-            <padding>
-                <Insets top="56" right="44" bottom="56" left="52"/>
-            </padding>
-
-            <!-- Logo -->
-            <HBox spacing="10" alignment="CENTER_LEFT">
-                <StackPane styleClass="logo-mark">
-                    <Label text="◈" styleClass="logo-icon" />
-                </StackPane>
-                <Label text="NEXUS" styleClass="brand-name" />
-            </HBox>
-
-            <Region VBox.vgrow="ALWAYS" minHeight="40" />
-
-            <Label text="Start" styleClass="hero-display-line1" wrapText="true" />
-            <Label text="Your" styleClass="hero-display-line2" wrapText="true" />
-            <Label text="Journey." styleClass="hero-display-line3" wrapText="true" />
-
-            <Region minHeight="20" />
-
-            <Label text="Create your free account in seconds" styleClass="hero-body" wrapText="true" />
-
-            <Region VBox.vgrow="ALWAYS" minHeight="40" />
-
-            <!-- Features -->
-            <VBox spacing="12">
-                <HBox spacing="10" alignment="CENTER_LEFT">
-                    <Label text="✓" styleClass="feature-check" />
-                    <Label text="Free forever on basic plan" styleClass="feature-text" />
-                </HBox>
-                <HBox spacing="10" alignment="CENTER_LEFT">
-                    <Label text="✓" styleClass="feature-check" />
-                    <Label text="No credit card required" styleClass="feature-text" />
-                </HBox>
-                <HBox spacing="10" alignment="CENTER_LEFT">
-                    <Label text="✓" styleClass="feature-check" />
-                    <Label text="Secure and encrypted data" styleClass="feature-text" />
-                </HBox>
+    <VBox alignment="CENTER" spacing="20.0">
+        <VBox maxWidth="550.0" spacing="20.0" styleClass="module-card" style="-fx-padding: 35;">
+            <VBox alignment="CENTER" spacing="5.0">
+                <Label styleClass="hero-title" text="Join EduConnect" style="-fx-text-fill: #1a7d73; -fx-font-size: 28px;" />
+                <Label styleClass="module-subtitle" text="Create your account to start managing your journey." />
             </VBox>
+            
+            <GridPane hgap="15.0" vgap="15.0">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                </columnConstraints>
+                
+                <children>
+                    <VBox spacing="5.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                        <Label styleClass="label-bold" text="First Name" />
+                        <TextField fx:id="firstNameField" promptText="First name" />
+                    </VBox>
+                    <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                        <Label styleClass="label-bold" text="Last Name" />
+                        <TextField fx:id="lastNameField" promptText="Last name" />
+                    </VBox>
+                    
+                    <VBox spacing="5.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                        <Label styleClass="label-bold" text="Age" />
+                        <TextField fx:id="ageField" promptText="Your age" />
+                    </VBox>
+                    <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <Label styleClass="label-bold" text="Desired Role" />
+                        <ComboBox fx:id="roleComboBox" maxWidth="Infinity" />
+                    </VBox>
+                    
+                    <VBox spacing="5.0" GridPane.columnSpan="2" GridPane.rowIndex="2">
+                        <Label styleClass="label-bold" text="Email Address" />
+                        <TextField fx:id="emailField" promptText="example@domain.com" />
+                    </VBox>
+                    
+                    <VBox spacing="5.0" GridPane.columnIndex="0" GridPane.rowIndex="3">
+                        <Label styleClass="label-bold" text="Password" />
+                        <PasswordField fx:id="passwordField" promptText="Strong password" />
+                    </VBox>
+                    <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                        <Label styleClass="label-bold" text="Confirm Password" />
+                        <PasswordField fx:id="confirmPasswordField" promptText="Repeat password" />
+                    </VBox>
+                </children>
+            </GridPane>
 
-            <Region minHeight="36" />
-
-            <!-- Bottom nav -->
-            <HBox spacing="6" alignment="CENTER_LEFT">
-                <Label text="Have an account?" styleClass="switch-label-muted" />
-                <Button text="Sign in →" styleClass="switch-link-btn" onAction="#goToSignIn" />
+            <Button maxWidth="Infinity" onAction="#handleSignUp" styleClass="primary-btn" text="✅ Create Account" style="-fx-pref-height: 45; -fx-font-size: 15px;" />
+            
+            <HBox alignment="CENTER" spacing="10.0">
+                <Label text="Already have an account?" styleClass="meta-label" />
+                <Button onAction="#goToSignIn" styleClass="secondary-btn" text="Sign In Instead" />
             </HBox>
         </VBox>
-
-        <!-- DIVIDER -->
-        <Region styleClass="auth-divider" prefWidth="1" />
-
-        <!-- RIGHT PANEL — FORM -->
-        <VBox spacing="0" styleClass="auth-right-panel" HBox.hgrow="ALWAYS">
-            <padding>
-                <Insets top="48" right="56" bottom="48" left="52"/>
-            </padding>
-
-            <Label text="Create Account" styleClass="form-heading" />
-            <Label text="Fill in the details to get started" styleClass="form-subheading" />
-
-            <Region minHeight="28" />
-
-            <!-- First Name + Last Name -->
-            <HBox spacing="16">
-                <VBox spacing="6" HBox.hgrow="ALWAYS">
-                    <Label text="First Name" styleClass="field-label-new" />
-                    <TextField fx:id="firstNameField" promptText="John" styleClass="auth-input" />
-                    <Label fx:id="firstNameErrorLabel" styleClass="auth-error" text="" />
-                </VBox>
-                <VBox spacing="6" HBox.hgrow="ALWAYS">
-                    <Label text="Last Name" styleClass="field-label-new" />
-                    <TextField fx:id="lastNameField" promptText="Doe" styleClass="auth-input" />
-                    <Label fx:id="lastNameErrorLabel" styleClass="auth-error" text="" />
-                </VBox>
-            </HBox>
-
-            <Region minHeight="16" />
-
-            <!-- Age + Email -->
-            <HBox spacing="16">
-                <VBox spacing="6" prefWidth="120">
-                    <Label text="Age" styleClass="field-label-new" />
-                    <TextField fx:id="ageField" promptText="25" styleClass="auth-input" />
-                    <Label fx:id="ageErrorLabel" styleClass="auth-error" text="" />
-                </VBox>
-                <VBox spacing="6" HBox.hgrow="ALWAYS">
-                    <Label text="Email Address" styleClass="field-label-new" />
-                    <TextField fx:id="emailField" promptText="you@example.com" styleClass="auth-input" />
-                    <Label fx:id="emailErrorLabel" styleClass="auth-error" text="" />
-                </VBox>
-            </HBox>
-
-            <Region minHeight="16" />
-
-            <!-- Password + Confirm -->
-            <HBox spacing="16">
-                <VBox spacing="6" HBox.hgrow="ALWAYS">
-                    <Label text="Password" styleClass="field-label-new" />
-                    <PasswordField fx:id="passwordField" promptText="••••••••" styleClass="auth-input" />
-                    <Label fx:id="passwordErrorLabel" styleClass="auth-error" text="" />
-                </VBox>
-                <VBox spacing="6" HBox.hgrow="ALWAYS">
-                    <Label text="Confirm Password" styleClass="field-label-new" />
-                    <PasswordField fx:id="confirmPasswordField" promptText="••••••••" styleClass="auth-input" />
-                    <Label fx:id="confirmPasswordErrorLabel" styleClass="auth-error" text="" />
-                </VBox>
-            </HBox>
-
-            <Region minHeight="18" />
-
-            <!-- Terms (le & a été supprimé, remplacé par "and") -->
-            <HBox spacing="10" alignment="CENTER_LEFT">
-                <CheckBox fx:id="termsCheckbox" styleClass="auth-checkbox" />
-                <Label text="I agree to the" styleClass="terms-text" />
-                <Button text="Terms and Conditions" styleClass="terms-link" onAction="#showTerms" />
-            </HBox>
-
-            <Region minHeight="24" />
-
-            <!-- Submit -->
-            <Button onAction="#handleSignUp" text="Create My Account  →" styleClass="auth-submit-btn" prefHeight="50" maxWidth="Infinity" />
-
-            <Region minHeight="20" />
-
-            <!-- Divider -->
-            <HBox alignment="CENTER" spacing="14">
-                <Region HBox.hgrow="ALWAYS" styleClass="hr-line" />
-                <Label text="secure and encrypted" styleClass="hr-label" />
-                <Region HBox.hgrow="ALWAYS" styleClass="hr-line" />
-            </HBox>
-
-        </VBox>
-    </HBox>
+    </VBox>
 </StackPane>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+
+<StackPane fx:id="mainContainer" prefHeight="750.0" prefWidth="1100.0" styleClass="course-module-root" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AfficherCompetencesController">
+    <stylesheets>
+        <URL value="@../modern.css" />
+    </stylesheets>
+
+    <BorderPane styleClass="client-dashboard-shell">
+        <padding>
+            <Insets bottom="18.0" left="18.0" right="18.0" top="18.0" />
+        </padding>
+
+        <top>
+            <HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="module-toolbar client-toolbar">
+                <padding>
+                    <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+                </padding>
+                <VBox spacing="4.0">
+                    <Label styleClass="module-title client-page-title" text="Competence Studio" />
+                    <Label styleClass="module-subtitle" text="Manage your professional skills, track levels, and view certifications." />
+                </VBox>
+                <Region HBox.hgrow="ALWAYS" />
+                <TextField fx:id="searchField" prefWidth="280.0" promptText="Search competences..." styleClass="search-field" />
+                <Button onAction="#refreshTable" styleClass="secondary-btn" text="Refresh" />
+            </HBox>
+        </top>
+
+        <center>
+            <SplitPane dividerPositions="0.65" style="-fx-padding: 20 0 0 0;">
+                <items>
+                    <!-- Left Side: Table -->
+                    <VBox spacing="16.0" styleClass="module-card client-sidebar-card">
+                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                            <Label styleClass="section-title" text="Skill Inventory" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="totalLabel" styleClass="meta-label" text="Showing all records" />
+                        </HBox>
+                        <TableView fx:id="tableView" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="nameCol" prefWidth="150" text="Competence Name" />
+                                <TableColumn fx:id="categoryCol" prefWidth="120" text="Category" />
+                                <TableColumn fx:id="levelCol" prefWidth="80" text="Level" />
+                                <TableColumn fx:id="descCol" prefWidth="250" text="Description" />
+                            </columns>
+                        </TableView>
+                    </VBox>
+
+                    <!-- Right Side: Edit Form -->
+                    <VBox spacing="16.0" styleClass="module-card client-workspace">
+                        <Label styleClass="section-title" text="Skill Details &amp; Editor" />
+                        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="cards-scroll" VBox.vgrow="ALWAYS">
+                            <VBox spacing="15.0">
+                                <VBox spacing="5" styleClass="module-card">
+                                    <Label styleClass="label-bold" text="Name" />
+                                    <TextField fx:id="editNameField" promptText="e.g. Java Development" />
+                                </VBox>
+                                <VBox spacing="5" styleClass="module-card">
+                                    <Label styleClass="label-bold" text="Description" />
+                                    <TextArea fx:id="editDescriptionArea" prefHeight="100" promptText="Describe the scope of this skill..." wrapText="true" />
+                                </VBox>
+                                <VBox spacing="5" styleClass="module-card">
+                                    <Label styleClass="label-bold" text="Category" />
+                                    <ComboBox fx:id="editCategoryCombo" maxWidth="Infinity" promptText="Select category" />
+                                </VBox>
+                                <VBox spacing="5" styleClass="module-card">
+                                    <Label styleClass="label-bold" text="Mastery Level (1-10)" />
+                                    <Slider fx:id="editLevelSlider" max="10" min="1" showTickLabels="true" />
+                                </VBox>
+                                
+                                <Separator />
+                                
+                                <VBox spacing="10.0" alignment="CENTER">
+                                    <Button fx:id="btnUpdate" maxWidth="Infinity" onAction="#handleUpdate" styleClass="primary-btn" text="💾 Save Changes" />
+                                    <Button fx:id="btnDelete" maxWidth="Infinity" onAction="#handleDelete" styleClass="danger-btn" text="🗑️ Remove Skill" />
+                                    <Button fx:id="btnAdd" maxWidth="Infinity" onAction="#goToAdd" styleClass="info-btn" text="➕ Create New Competence" />
+                                    <Button fx:id="btnGenerateCV" maxWidth="Infinity" onAction="#generateCV" styleClass="secondary-btn" text="📄 Generate CV (PDF)" />
+                                </VBox>
+                            </VBox>
+                        </ScrollPane>
+                    </VBox>
+                </items>
+            </SplitPane>
+        </center>
+    </BorderPane>
+</StackPane>

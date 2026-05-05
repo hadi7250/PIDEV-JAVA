@@ -10,22 +10,17 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import services.UserService;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
-
-import java.io.File;
-import java.io.PrintWriter;
-import javafx.stage.FileChooser;
-import javafx.scene.chart.PieChart;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
 public class AfficherPersonne implements Initializable {
 
@@ -38,7 +33,7 @@ public class AfficherPersonne implements Initializable {
 
     // FXML Components
     @FXML
-    private VBox mainContainer;
+    private StackPane mainContainer;
     @FXML
     private Label adminInfoLabel;
     @FXML
@@ -70,46 +65,6 @@ public class AfficherPersonne implements Initializable {
     @FXML
     private TextField searchField;
 
-    // Statistics Labels
-    @FXML
-    private Label totalUsersLabel;
-    @FXML
-    private Label adminCountLabel;
-    @FXML
-    private Label userCountLabel;
-    @FXML
-    private Label averageAgeLabel;
-
-    // Helper method to validate name
-    private boolean isValidName(String name) {
-        return name != null && name.matches("^[a-zA-ZÀ-ÖØ-öø-ÿ\\s-]+$");
-    }
-
-    // Helper method to validate email
-    private boolean isValidEmail(String email) {
-        return email != null && email.contains("@") && email.contains(".");
-    }
-
-    // Update statistics dashboard
-    private void updateStatistics() {
-        if (allUsersList != null && !allUsersList.isEmpty()) {
-            int total = allUsersList.size();
-            long adminCount = allUsersList.stream().filter(User::isAdmin).count();
-            long userCount = total - adminCount;
-            double avgAge = allUsersList.stream().mapToInt(User::getAge).average().orElse(0);
-
-            totalUsersLabel.setText(String.valueOf(total));
-            adminCountLabel.setText(String.valueOf(adminCount));
-            userCountLabel.setText(String.valueOf(userCount));
-            averageAgeLabel.setText(String.format("%.1f", avgAge));
-        } else {
-            totalUsersLabel.setText("0");
-            adminCountLabel.setText("0");
-            userCountLabel.setText("0");
-            averageAgeLabel.setText("0");
-        }
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Configure table columns
@@ -126,7 +81,7 @@ public class AfficherPersonne implements Initializable {
         // Load data into table
         refreshTable();
 
-        // Add selection listener
+        // Add selection listener - when a row is clicked, load data into edit fields
         tableView.getSelectionModel().selectedItemProperty().addListener(
                 (obs, oldSelection, newSelection) -> {
                     if (newSelection != null) {
@@ -141,16 +96,17 @@ public class AfficherPersonne implements Initializable {
                 }
         );
 
-        // Real-time search
+        // Real-time search as you type
         searchField.textProperty().addListener((obs, oldText, newText) -> {
             searchUsers();
         });
     }
 
+    // Set the logged-in admin user
     public void setLoggedInUser(User admin) {
         this.loggedInAdmin = admin;
         if (adminInfoLabel != null) {
-            adminInfoLabel.setText("👑 Connecté en tant que: " + admin.getFirstName() + " " + admin.getLastName() + " (Administrateur)");
+            adminInfoLabel.setText("👑 Logged in as: " + admin.getFirstName() + " " + admin.getLastName() + " (Admin)");
         }
     }
 
@@ -161,12 +117,12 @@ public class AfficherPersonne implements Initializable {
         if (isDarkMode) {
             mainContainer.getStyleClass().remove("dark-theme");
             mainContainer.getStyleClass().add("light-theme");
-            if (themeButton != null) themeButton.setText("🌙 Mode Sombre");
+            if (themeButton != null) themeButton.setText("🌙 Dark Mode");
             isDarkMode = false;
         } else {
             mainContainer.getStyleClass().remove("light-theme");
             mainContainer.getStyleClass().add("dark-theme");
-            if (themeButton != null) themeButton.setText("☀️ Mode Clair");
+            if (themeButton != null) themeButton.setText("☀️ Light Mode");
             isDarkMode = true;
         }
     }
@@ -178,7 +134,6 @@ public class AfficherPersonne implements Initializable {
             allUsersList = FXCollections.observableArrayList(users);
             observableList = FXCollections.observableArrayList(users);
             tableView.setItems(observableList);
-            updateStatistics(); // Update statistics after loading data
         } catch (Exception e) {
             showAlert("Erreur", "Impossible de charger les données: " + e.getMessage(), Alert.AlertType.ERROR);
         }
@@ -216,29 +171,16 @@ public class AfficherPersonne implements Initializable {
 
     @FXML
     void updateUser() {
+        // Check if a user is selected
         if (selectedUser == null) {
             showAlert("Attention", "Veuillez sélectionner un utilisateur à modifier", Alert.AlertType.WARNING);
             return;
         }
 
-        String nom = editNomField.getText().trim();
-        String prenom = editPrenomField.getText().trim();
-        String email = editEmailField.getText().trim();
-
         // Validate inputs
-        if (nom.isEmpty() || prenom.isEmpty() || editAgeField.getText().isEmpty() || email.isEmpty()) {
+        if (editNomField.getText().isEmpty() || editPrenomField.getText().isEmpty() ||
+                editAgeField.getText().isEmpty() || editEmailField.getText().isEmpty()) {
             showAlert("Erreur", "Veuillez remplir tous les champs obligatoires", Alert.AlertType.ERROR);
-            return;
-        }
-
-        // Validate name contains only letters
-        if (!isValidName(nom)) {
-            showAlert("Erreur", "Le nom ne doit contenir que des lettres", Alert.AlertType.ERROR);
-            return;
-        }
-
-        if (!isValidName(prenom)) {
-            showAlert("Erreur", "Le prénom ne doit contenir que des lettres", Alert.AlertType.ERROR);
             return;
         }
 
@@ -256,14 +198,16 @@ public class AfficherPersonne implements Initializable {
         }
 
         // Validate email
-        if (!isValidEmail(email)) {
-            showAlert("Erreur", "Veuillez entrer un email valide (ex: nom@domaine.com)", Alert.AlertType.ERROR);
+        String email = editEmailField.getText().trim();
+        if (!email.contains("@") || !email.contains(".")) {
+            showAlert("Erreur", "Veuillez entrer un email valide", Alert.AlertType.ERROR);
             return;
         }
 
         try {
-            selectedUser.setLastName(nom);
-            selectedUser.setFirstName(prenom);
+            // Update the selected user with new values
+            selectedUser.setLastName(editNomField.getText());
+            selectedUser.setFirstName(editPrenomField.getText());
             selectedUser.setAge(age);
             selectedUser.setEmail(email);
             selectedUser.setRole(editRoleCombo.getValue());
@@ -278,9 +222,11 @@ public class AfficherPersonne implements Initializable {
                 selectedUser.setPassword(newPassword);
             }
 
+            // Save to database
             boolean success = userService.updateProfile(selectedUser);
 
             if (success) {
+                // Refresh the table
                 refreshTable();
                 resetSearch();
                 clearSelection();
@@ -296,16 +242,19 @@ public class AfficherPersonne implements Initializable {
 
     @FXML
     void deleteUser() {
+        // Check if a user is selected
         if (selectedUser == null) {
             showAlert("Attention", "Veuillez sélectionner un utilisateur à supprimer", Alert.AlertType.WARNING);
             return;
         }
 
+        // Prevent admin from deleting themselves
         if (loggedInAdmin != null && selectedUser.getId() == loggedInAdmin.getId()) {
             showAlert("Attention", "Vous ne pouvez pas supprimer votre propre compte!", Alert.AlertType.WARNING);
             return;
         }
 
+        // Confirmation dialog
         Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
         confirmation.setTitle("Confirmation de suppression");
         confirmation.setHeaderText("Supprimer un utilisateur");
@@ -313,9 +262,11 @@ public class AfficherPersonne implements Initializable {
 
         if (confirmation.showAndWait().get() == ButtonType.OK) {
             try {
+                // Delete from database
                 boolean success = userService.deleteUser(selectedUser.getId());
 
                 if (success) {
+                    // Refresh the table
                     refreshTable();
                     resetSearch();
                     clearSelection();
@@ -333,17 +284,21 @@ public class AfficherPersonne implements Initializable {
     @FXML
     void goToAddUser() {
         try {
-            // Load AjouterPersonne inside the EduConnect shell's contentHost
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/AjouterPersonne.fxml"));
             Parent root = loader.load();
-            // Replace only the content inside the shell, not the whole scene
-            tableView.getScene().getRoot().lookup("#contentHost")
-                    .getParent().getChildrenUnmodifiable();
-            // Use the parent StackPane (contentHost)
-            javafx.scene.layout.StackPane contentHost =
-                    (javafx.scene.layout.StackPane) tableView.getScene().getRoot().lookup("#contentHost");
-            contentHost.getChildren().setAll(root);
+
+            AjouterPersonne controller = loader.getController();
+            controller.setLoggedInUser(loggedInAdmin);
+
+            StackPane contentHost = (StackPane) mainContainer.getScene().lookup("#contentHost");
+            if (contentHost != null) {
+                contentHost.getChildren().setAll(root);
+            } else {
+                Stage stage = (Stage) tableView.getScene().getWindow();
+                stage.setScene(new Scene(root));
+            }
         } catch (IOException e) {
+            e.printStackTrace();
             showAlert("Erreur", "Impossible de charger la page d'ajout", Alert.AlertType.ERROR);
         }
     }
@@ -360,7 +315,7 @@ public class AfficherPersonne implements Initializable {
                 Parent root = FXMLLoader.load(getClass().getResource("/fxml/SignIn.fxml"));
                 Stage stage = (Stage) tableView.getScene().getWindow();
                 stage.setScene(new Scene(root));
-                stage.setTitle("Connexion - Gestion des Utilisateurs");
+                stage.setTitle("Connexion - User Management System");
                 stage.show();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -369,27 +324,12 @@ public class AfficherPersonne implements Initializable {
         }
     }
 
-    @FXML
-    void openChatbot() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Chatbot.fxml"));
-            Parent root = loader.load();
-            Stage chatStage = new Stage();
-            chatStage.setTitle("🤖 Assistant IA - Gestion des Utilisateurs");
-            chatStage.setScene(new Scene(root, 600, 550));
-            chatStage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            showAlert("Erreur", "Impossible d'ouvrir l'assistant", Alert.AlertType.ERROR);
-        }
-    }
-
     private void clearSelection() {
         selectedUser = null;
         editNomField.clear();
         editPrenomField.clear();
         editAgeField.clear();
-        editEmailField      .clear();
+        editEmailField.clear();
         editRoleCombo.setValue(null);
         editPasswordField.clear();
         tableView.getSelectionModel().clearSelection();
@@ -400,88 +340,5 @@ public class AfficherPersonne implements Initializable {
         alert.setTitle(title);
         alert.setContentText(message);
         alert.showAndWait();
-    }
-
-    // ==================== EXPORT TO CSV ====================
-
-    @FXML
-    void exportToCSV() {
-        try {
-            // Create file chooser
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Exporter la liste des utilisateurs");
-            fileChooser.getExtensionFilters().add(
-                    new FileChooser.ExtensionFilter("CSV Files", "*.csv")
-            );
-            fileChooser.setInitialFileName("utilisateurs_" + java.time.LocalDate.now() + ".csv");
-
-            File file = fileChooser.showSaveDialog(tableView.getScene().getWindow());
-
-            if (file != null) {
-                try (PrintWriter writer = new PrintWriter(file)) {
-                    // Write header (French)
-                    writer.println("ID,Prénom,Nom,Âge,Email,Rôle");
-
-                    // Write data
-                    for (User user : allUsersList) {
-                        writer.printf("%d,%s,%s,%d,%s,%s%n",
-                                user.getId(),
-                                user.getFirstName(),
-                                user.getLastName(),
-                                user.getAge(),
-                                user.getEmail(),
-                                user.getRole()
-                        );
-                    }
-
-                    showAlert("Succès", "Export réussi! Fichier: " + file.getName(), Alert.AlertType.INFORMATION);
-                }
-            }
-        } catch (Exception e) {
-            showAlert("Erreur", "Erreur lors de l'export: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
-    }
-
-// ==================== AGE CHART ====================
-
-    @FXML
-    void showAgeChart() {
-        // Create age groups
-        int under18 = 0;
-        int under30 = 0;
-        int under50 = 0;
-        int over50 = 0;
-
-        for (User user : allUsersList) {
-            int age = user.getAge();
-            if (age < 18) under18++;
-            else if (age < 30) under30++;
-            else if (age < 50) under50++;
-            else over50++;
-        }
-
-        // Create pie chart data (only include non-zero groups)
-        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
-
-        if (under18 > 0) pieChartData.add(new PieChart.Data("Moins de 18 ans (" + under18 + ")", under18));
-        if (under30 > 0) pieChartData.add(new PieChart.Data("18-29 ans (" + under30 + ")", under30));
-        if (under50 > 0) pieChartData.add(new PieChart.Data("30-49 ans (" + under50 + ")", under50));
-        if (over50 > 0) pieChartData.add(new PieChart.Data("50+ ans (" + over50 + ")", over50));
-
-        // Create chart
-        PieChart chart = new PieChart(pieChartData);
-        chart.setTitle("Répartition par âge des utilisateurs");
-        chart.setLabelsVisible(true);
-        chart.setLegendVisible(true);
-        chart.setClockwise(true);
-
-        // Style the chart
-        chart.setStyle("-fx-font-size: 13px;");
-
-        // Create popup window
-        Stage chartStage = new Stage();
-        chartStage.setTitle("📊 Statistiques d'âge");
-        chartStage.setScene(new Scene(chart, 600, 450));
-        chartStage.show();
     }
 }

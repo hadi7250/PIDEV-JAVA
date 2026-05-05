@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox prefHeight="700.0" prefWidth="1000.0" spacing="15.0" styleClass="module-card" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.EvaluationEditorController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="20.0">
+        <Button onAction="#handleBack" styleClass="secondary-btn" text="← Back" />
+        <VBox>
+            <Label fx:id="titleLabel" styleClass="module-title" text="Evaluation: Java Basics" />
+        </VBox>
+        <Region HBox.hgrow="ALWAYS" />
+        <Button onAction="#handleSubmit" styleClass="primary-btn" text="Submit Solution" />
+    </HBox>
+
+    <SplitPane dividerPositions="0.3" VBox.vgrow="ALWAYS">
+        <items>
+            <!-- Problem Statement -->
+            <VBox spacing="10.0" styleClass="client-sidebar-card">
+                <padding>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                </padding>
+                <Label styleClass="section-title" text="Problem Statement" />
+                <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+                    <Label fx:id="descriptionLabel" text="Loading description..." wrapText="true" />
+                </ScrollPane>
+            </VBox>
+
+            <!-- Code Editor -->
+            <VBox spacing="5.0">
+                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                     <Label styleClass="label-bold" text="Solution Editor" />
+                     <Region HBox.hgrow="ALWAYS" />
+                     <Label fx:id="langLabel" styleClass="badge-info" text="Java" />
+                </HBox>
+                <TextArea fx:id="codeEditor" VBox.vgrow="ALWAYS" promptText="Write your solution here..." wrapText="true" />
+            </VBox>
+        </items>
+    </SplitPane>
+</VBox>

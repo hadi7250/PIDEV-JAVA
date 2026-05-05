@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.0.final using JasperReports Library version 6.20.0-2bc7ab61c56f459e8176eb05c7705e145cd400ad  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cv_template" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7a66f272-463d-4c31-9a7c-502a5c88562d">
+	<parameter name="studentName" class="java.lang.String"/>
+	<parameter name="studentEmail" class="java.lang.String"/>
+	<field name="title" class="java.lang.String"/>
+	<field name="category" class="java.lang.String"/>
+	<field name="maxLevel" class="java.lang.Integer"/>
+	<field name="description" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="90" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="80" backcolor="#008080" uuid="9c8f2b7a-8f6a-4b6e-9f3d-7c6d5e4b3a2a"/>
+				<graphicElement>
+					<pen lineWidth="0.0"/>
+				</graphicElement>
+			</rectangle>
+			<textField>
+				<reportElement x="20" y="10" width="515" height="40" forecolor="#FFFFFF" uuid="d9e8f7a6-b5c4-d3e2-f1a0-9876543210ab"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="24" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{studentName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="20" y="50" width="515" height="20" forecolor="#FFFFFF" uuid="e0d1c2b3-a495-8677-1234-56789abcdef0"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{studentEmail}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="40" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="10" width="555" height="30" forecolor="#008080" uuid="f1e2d3c4-b5a6-9788-2345-678901234567"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="18" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Professional Skills Portfolio]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="39" width="555" height="1" forecolor="#008080" uuid="a1b2c3d4-e5f6-a7b8-c9d0-e1f2a3b4c5d6"/>
+			</line>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="30" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="5" width="150" height="20" uuid="b2c3d4e5-f6a7-b8c9-d0e1-f2a3b4c5d6e7"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Skill Title]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="150" y="5" width="100" height="20" uuid="c3d4e5f6-a7b8-c9d0-e1f2-a3b4c5d6e7f8"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Category]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="250" y="5" width="50" height="20" uuid="d4e5f6a7-b8c9-d0e1-f2a3b4c5d6e7f8g9"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Level]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="300" y="5" width="255" height="20" uuid="e5f6a7b8-c9d0-e1f2-a3b4-c5d6e7f8g9h0"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Description]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="45" splitType="Stretch">
+			<textField textAdjust="StretchHeight">
+				<reportElement x="0" y="5" width="140" height="30" uuid="f6a7b8c9-d0e1-f2a3-b4c5-d6e7f8g9h0i1"/>
+				<textElement verticalAlignment="Top">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="150" y="5" width="100" height="30" uuid="g7b8c9d0-e1f2-a3b4-c5d6-e7f8g9h0i1j2"/>
+				<textElement verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[$F{category}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="250" y="5" width="50" height="30" uuid="h8c9d0e1-f2a3-b4c5-d6e7f8g9h0i1j2k3"/>
+				<textElement verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[$F{maxLevel} + "/10"]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="300" y="5" width="255" height="30" uuid="i9d0e1f2-a3b4-c5d6-e7f8-g9h0i1j2k3l4"/>
+				<textElement verticalAlignment="Top">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="40" width="555" height="1" forecolor="#E0E0E0" uuid="j0e1f2a3-b4c5-d6e7-f8g9-h0i1j2k3l4m5"/>
+			</line>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="30" splitType="Stretch">
+			<textField>
+				<reportElement x="435" y="10" width="80" height="20" uuid="k1f2a3b4-c5d6-e7f8-g9h0-i1j2k3l4m5n6"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="515" y="10" width="40" height="20" uuid="l2f3a4b5-c6d7-e8f9-g0h1-i2j3k4l5m6n7"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="0" y="10" width="100" height="20" uuid="m3f4a5b6-c7d8-e9f0-g1h2-i3j4k5l6m7n8"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

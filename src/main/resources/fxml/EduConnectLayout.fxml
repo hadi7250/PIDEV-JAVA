@@ -3,7 +3,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
@@ -13,11 +12,11 @@
 <BorderPane fx:id="shellRoot"
             xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="controllers.EduConnectController"
+            fx:controller="gui.EduConnectController"
             prefHeight="760.0"
             prefWidth="1280.0"
             styleClass="shell-root"
-            stylesheets="@../css/courses-module.css">
+            stylesheets="@../modern.css">
 
     <top>
         <HBox alignment="CENTER_LEFT" spacing="14.0" styleClass="shell-topbar">
@@ -26,7 +25,7 @@
             </padding>
             <VBox spacing="4.0">
                 <Label styleClass="hero-title" text="EduConnect" />
-                <Label styleClass="hero-subtitle" text="Standalone Java manager for courses, chapters and community forum." />
+                <Label styleClass="hero-subtitle" text="Standalone Java course manager for cours and chapter modules." />
             </VBox>
             <Region HBox.hgrow="ALWAYS" />
             <Button fx:id="themeToggleBtn" onAction="#toggleTheme" styleClass="theme-toggle-btn" text="Dark mode" />
@@ -38,35 +37,14 @@
             <padding>
                 <Insets bottom="18.0" left="18.0" right="18.0" top="18.0" />
             </padding>
-            <Label styleClass="section-title" text="Courses" />
-            <Button fx:id="btnCourses" maxWidth="1.7976931348623157E308" onAction="#openCourses" styleClass="nav-btn" text="Courses" />
-
-            <Separator />
-
-            <Label styleClass="section-title" text="Forum" />
-            <Button fx:id="btnForum" maxWidth="1.7976931348623157E308" onAction="#openForum" styleClass="nav-btn" text="Forum" />
-
-            <Separator />
-
-            <Label styleClass="section-title" text="Quiz" />
-            <Button fx:id="btnQuiz" maxWidth="1.7976931348623157E308" onAction="#openQuiz" styleClass="nav-btn" text="Quiz" />
-
-            <Separator />
-
-            <Label styleClass="section-title" text="Admin" />
-            <Button fx:id="btnAdmin" maxWidth="1.7976931348623157E308" onAction="#openAdminCours" styleClass="nav-btn" text="Admin Cours" />
-            <Button fx:id="btnAdminForum" maxWidth="1.7976931348623157E308" onAction="#openAdminForum" styleClass="nav-btn" text="Admin Forum" />
-            <Button fx:id="btnAdminUsers" maxWidth="1.7976931348623157E308" onAction="#openAdminUsers" styleClass="nav-btn" text="Admin users" />
-            <Button fx:id="btnAdminQuiz" maxWidth="1.7976931348623157E308" onAction="#openAdminQuiz" styleClass="nav-btn" text="Admin Quiz" />
-
+            <Label styleClass="section-title" text="Navigation" />
+            <Button fx:id="btnHome" maxWidth="1.7976931348623157E308" onAction="#openHome" styleClass="nav-btn" text="Home" />
+            <Button fx:id="btnCompetences" maxWidth="1.7976931348623157E308" onAction="#openCompetences" styleClass="nav-btn" text="Competences" />
+            <Button fx:id="btnEvaluations" maxWidth="1.7976931348623157E308" onAction="#openEvaluationManagement" styleClass="nav-btn" text="Evaluations (Teacher)" />
+            <Button fx:id="btnStudentEvaluations" maxWidth="1.7976931348623157E308" onAction="#openMyEvaluations" styleClass="nav-btn" text="My Evaluations" />
+            <Button fx:id="btnAdmin" maxWidth="1.7976931348623157E308" onAction="#openUserManagement" styleClass="nav-btn" text="Admin Users" />
+            <Button fx:id="btnLogout" maxWidth="1.7976931348623157E308" onAction="#handleLogout" styleClass="nav-btn" text="Logout" />
             <Region VBox.vgrow="ALWAYS" />
-
-            <Separator />
-            <VBox spacing="10.0" styleClass="user-section">
-                <Label fx:id="userProfileLabel" styleClass="section-title" text="Guest" />
-                <Button fx:id="btnMyProfile" maxWidth="1.7976931348623157E308" onAction="#openMyProfile" styleClass="nav-btn" text="My profile" />
-                <Button fx:id="btnLogout" maxWidth="1.7976931348623157E308" onAction="#logout" styleClass="nav-btn" text="Logout" />
-            </VBox>
         </VBox>
     </left>
 

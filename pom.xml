@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.educonnect</groupId>
-    <artifactId>educonnect-javafx</artifactId>
+    <groupId>tn.esprit</groupId>
+    <artifactId>Project3A2</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
@@ -13,176 +13,121 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <javafx.version>21.0.2</javafx.version>
+        <javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
     </properties>
 
+
     <dependencies>
-        <dependency>
-            <groupId>com.mysql</groupId>
-            <artifactId>mysql-connector-j</artifactId>
-            <version>9.6.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.13.2</version>
-        </dependency>
-
-        <!-- JavaMail for ForgotPassword email feature -->
-        <dependency>
-            <groupId>com.sun.mail</groupId>
-            <artifactId>javax.mail</artifactId>
-            <version>1.6.2</version>
-        </dependency>
-
-        <!-- Google OAuth (for Google Login) -->
-        <dependency>
-            <groupId>com.google.oauth-client</groupId>
-            <artifactId>google-oauth-client</artifactId>
-            <version>1.34.1</version>
-        </dependency>
-
-        <!-- Google HTTP Client -->
-        <dependency>
-            <groupId>com.google.http-client</groupId>
-            <artifactId>google-http-client-jackson2</artifactId>
-            <version>1.42.0</version>
-        </dependency>
-
-        <!-- Apache HTTP Client (for Gemini AI chatbot) -->
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.14</version>
-        </dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.33</version>
         </dependency>
         <dependency>
-            <groupId>com.stripe</groupId>
-            <artifactId>stripe-java</artifactId>
-            <version>24.0.0</version>
-        </dependency>
-        <!-- BCrypt for password hashing -->
-        <dependency>
-            <groupId>org.mindrot</groupId>
-            <artifactId>jbcrypt</artifactId>
-            <version>0.4</version>
-        </dependency>
-        <!-- JavaFX Dependencies -->
-        <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
             <version>${javafx.version}</version>
-            <classifier>${javafx.platform}</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-graphics</artifactId>
-            <version>${javafx.version}</version>
-            <classifier>${javafx.platform}</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-base</artifactId>
-            <version>${javafx.version}</version>
-            <classifier>${javafx.platform}</classifier>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
             <version>${javafx.version}</version>
-            <classifier>${javafx.platform}</classifier>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
-            <artifactId>javafx-web</artifactId>
+            <artifactId>javafx-graphics</artifactId>
             <version>${javafx.version}</version>
-            <classifier>${javafx.platform}</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-media</artifactId>
-            <version>${javafx.version}</version>
-            <classifier>${javafx.platform}</classifier>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-swing</artifactId>
             <version>${javafx.version}</version>
-            <classifier>${javafx.platform}</classifier>
-        </dependency>
-
-        <!-- ControlsFX (for additional JavaFX controls) -->
-        <dependency>
-            <groupId>org.controlsfx</groupId>
-            <artifactId>controlsfx</artifactId>
-            <version>11.1.2</version>
-        </dependency>
-
-        <!-- ZXing for QR Code -->
-        <dependency>
-            <groupId>com.google.zxing</groupId>
-            <artifactId>core</artifactId>
-            <version>3.5.1</version>
         </dependency>
         <dependency>
-            <groupId>com.google.zxing</groupId>
-            <artifactId>javase</artifactId>
-            <version>3.5.1</version>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>${javafx.version}</version>
         </dependency>
 
-        <!-- JSON parsing -->
+        <!-- JPA / Hibernate -->
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>6.3.1.Final</version>
+        </dependency>
+
+        <!-- CSV Export -->
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>5.9</version>
+        </dependency>
+
+        <!-- Validation -->
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>8.0.1.Final</version>
+        </dependency>
+        <!-- Source: https://mvnrepository.com/artifact/eu.mihosoft.monacofx/monacofx -->
+        <dependency>
+            <groupId>eu.mihosoft.monacofx</groupId>
+            <artifactId>monacofx</artifactId>
+            <version>0.0.8</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- Testing Dependencies -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.10.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.10.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testfx</groupId>
+            <artifactId>testfx-junit5</artifactId>
+            <version>4.0.18</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testfx</groupId>
+            <artifactId>testfx-core</artifactId>
+            <version>4.0.18</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.8.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>2.2.224</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports</artifactId>
+            <version>6.20.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>5.2.3</version>
+        </dependency>
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20231013</version>
-        </dependency>
-
-        <!-- Excel Export (POI) -->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>5.2.3</version>
-        </dependency>
-
-        <!-- PDF Export (iText 7 : modules nécessaires au classpath, pas seulement le BOM itext7-core) -->
-        <dependency>
-            <groupId>com.itextpdf</groupId>
-            <artifactId>kernel</artifactId>
-            <version>7.2.5</version>
-        </dependency>
-        <dependency>
-            <groupId>com.itextpdf</groupId>
-            <artifactId>layout</artifactId>
-            <version>7.2.5</version>
-        </dependency>
-        <dependency>
-            <groupId>com.itextpdf</groupId>
-            <artifactId>io</artifactId>
-            <version>7.2.5</version>
-        </dependency>
-
-        <!-- Tests -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>5.10.2</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- mockito-inline is not released for every mockito-core version; keep both aligned. -->
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>5.2.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-inline</artifactId>
-            <version>5.2.0</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -191,70 +136,34 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
+                <version>3.11.0</version>
                 <configuration>
+                    <source>17</source>
+                    <target>17</target>
                     <release>17</release>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
-                <version>0.0.8</version>
+                <version>${javafx.maven.plugin.version}</version>
                 <configuration>
-                    <mainClass>app.Main</mainClass>
+                    <mainClass>main.TestFX</mainClass>
+                    <options>
+                        <option>--add-exports</option>
+                        <option>javafx.graphics/com.sun.javafx.sg.prism=ALL-UNNAMED</option>
+                        <option>--add-exports</option>
+                        <option>javafx.graphics/com.sun.javafx.scene=ALL-UNNAMED</option>
+                        <option>--add-exports</option>
+                        <option>javafx.graphics/com.sun.javafx.util=ALL-UNNAMED</option>
+                        <option>--add-exports</option>
+                        <option>javafx.base/com.sun.javafx.event=ALL-UNNAMED</option>
+                        <option>--add-exports</option>
+                        <option>javafx.web/com.sun.webkit=ALL-UNNAMED</option>
+                    </options>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-
-    <!-- OpenJFX nécessite un classifier natif (win, linux, mac, mac-aarch64). -->
-    <profiles>
-        <profile>
-            <id>javafx-windows</id>
-            <activation>
-                <os>
-                    <family>windows</family>
-                </os>
-            </activation>
-            <properties>
-                <javafx.platform>win</javafx.platform>
-            </properties>
-        </profile>
-        <profile>
-            <id>javafx-linux</id>
-            <activation>
-                <os>
-                    <name>Linux</name>
-                </os>
-            </activation>
-            <properties>
-                <javafx.platform>linux</javafx.platform>
-            </properties>
-        </profile>
-        <profile>
-            <id>javafx-mac-aarch64</id>
-            <activation>
-                <os>
-                    <family>mac</family>
-                    <arch>aarch64</arch>
-                </os>
-            </activation>
-            <properties>
-                <javafx.platform>mac-aarch64</javafx.platform>
-            </properties>
-        </profile>
-        <profile>
-            <id>javafx-mac-x64</id>
-            <activation>
-                <os>
-                    <family>mac</family>
-                    <arch>x86_64</arch>
-                </os>
-            </activation>
-            <properties>
-                <javafx.platform>mac</javafx.platform>
-            </properties>
-        </profile>
-    </profiles>
 
 </project>

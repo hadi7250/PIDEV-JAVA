@@ -1,0 +1,21 @@
+# Compiled files
+target/
+
+# IDE files
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Project specific folders
+jdk_portable/
+maven_portable/
+tmp_friend/
+tmp_forum_css.css

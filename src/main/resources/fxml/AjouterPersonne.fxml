@@ -3,90 +3,74 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import java.net.URL?>
 
-<VBox fx:id="mainContainer"
-      spacing="16"
-      xmlns="http://javafx.com/javafx/21"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="gui.AjouterPersonne"
-      style="-fx-background-color: #f8fafb;"
-      prefWidth="700"
-      prefHeight="600"
-      maxWidth="Infinity"
-      maxHeight="Infinity"
-      VBox.vgrow="ALWAYS">
-
+<StackPane fx:id="mainContainer" prefHeight="650.0" prefWidth="850.0" styleClass="course-module-root" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AjouterPersonne">
+    <stylesheets>
+        <URL value="@../modern.css" />
+    </stylesheets>
+    
     <padding>
-        <Insets bottom="20" left="24" right="24" top="20"/>
+        <Insets bottom="20" left="20" right="20" top="20" />
     </padding>
 
-    <!-- HEADER -->
-    <HBox alignment="CENTER_LEFT" spacing="12"
-          style="-fx-background-color: white; -fx-background-radius: 14; -fx-padding: 14 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);">
-        <Label text="&#10133;" style="-fx-font-size: 22px;" />
-        <Label text="Add New User" style="-fx-font-size: 20px; -fx-font-weight: 800; -fx-text-fill: #1a3c34;" />
-        <Region HBox.hgrow="ALWAYS" />
-        <Button onAction="#afficher" text="← Back to List"
-                style="-fx-background-color: #f1f5f9; -fx-text-fill: #64748b; -fx-padding: 8 18; -fx-background-radius: 30; -fx-cursor: hand; -fx-font-size: 12px;" />
-    </HBox>
+    <BorderPane>
+        <top>
+            <HBox alignment="CENTER_LEFT" spacing="15.0" styleClass="module-toolbar">
+                <padding>
+                    <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+                </padding>
+                <VBox spacing="4.0">
+                    <Label styleClass="module-title" text="User Registration" />
+                    <Label styleClass="module-subtitle" text="Create a new user account in the system." />
+                </VBox>
+                <Region HBox.hgrow="ALWAYS" />
+                <Button onAction="#toggleTheme" styleClass="secondary-btn" text="🌓 Theme" />
+            </HBox>
+        </top>
 
-    <!-- FORM CARD -->
-    <VBox spacing="16" VBox.vgrow="ALWAYS"
-          style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2); -fx-border-color: #e2e8f0; -fx-border-width: 1.5; -fx-border-radius: 16;">
+        <center>
+            <VBox alignment="CENTER" style="-fx-padding: 30 0 0 0;">
+                <VBox maxWidth="600.0" spacing="20.0" styleClass="module-card">
+                    <Label styleClass="section-title" text="👤 Account Details" />
+                    
+                    <VBox spacing="15.0">
+                        <HBox spacing="15">
+                            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                <Label styleClass="label-bold" text="First Name" />
+                                <TextField fx:id="TFPrenom" promptText="Enter first name" />
+                            </VBox>
+                            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                <Label styleClass="label-bold" text="Last Name" />
+                                <TextField fx:id="TFNom" promptText="Enter last name" />
+                            </VBox>
+                        </HBox>
 
-        <Label text="User Details" style="-fx-font-size: 14px; -fx-font-weight: 700; -fx-text-fill: #64748b;" />
+                        <HBox spacing="15">
+                            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                <Label styleClass="label-bold" text="Age" />
+                                <TextField fx:id="TFAge" promptText="User age" />
+                            </VBox>
+                            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                <Label styleClass="label-bold" text="Email" />
+                                <TextField fx:id="TFEmail" promptText="example@domain.com" />
+                            </VBox>
+                        </HBox>
 
-        <!-- Name Row -->
-        <HBox spacing="14">
-            <VBox spacing="5" HBox.hgrow="ALWAYS">
-                <Label text="Last Name" style="-fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: #475569;" />
-                <TextField fx:id="TFNom" promptText="Dupont"
-                           style="-fx-background-color: #f8fafb; -fx-border-color: #e2e8f0; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10 12; -fx-font-size: 13px; -fx-text-fill: #1e293b; -fx-prompt-text-fill: #94a3b8;" />
-                <Label fx:id="nomErrorLabel" text=""
-                       style="-fx-text-fill: #ef4444; -fx-font-size: 11px;" />
+                        <VBox spacing="5">
+                            <Label styleClass="label-bold" text="Password" />
+                            <PasswordField fx:id="TFPassword" promptText="Choose a strong password" />
+                        </VBox>
+                    </VBox>
+
+                    <Separator />
+
+                    <HBox alignment="CENTER" spacing="20">
+                        <Button onAction="#afficher" prefWidth="180.0" styleClass="secondary-btn" text="📋 View Users List" />
+                        <Button onAction="#ajouter" prefWidth="180.0" styleClass="primary-btn" text="✅ Register User" />
+                    </HBox>
+                </VBox>
             </VBox>
-            <VBox spacing="5" HBox.hgrow="ALWAYS">
-                <Label text="First Name" style="-fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: #475569;" />
-                <TextField fx:id="TFPrenom" promptText="Jean"
-                           style="-fx-background-color: #f8fafb; -fx-border-color: #e2e8f0; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10 12; -fx-font-size: 13px; -fx-text-fill: #1e293b; -fx-prompt-text-fill: #94a3b8;" />
-                <Label fx:id="prenomErrorLabel" text=""
-                       style="-fx-text-fill: #ef4444; -fx-font-size: 11px;" />
-            </VBox>
-        </HBox>
-
-        <!-- Age + Email Row -->
-        <HBox spacing="14">
-            <VBox spacing="5" prefWidth="130">
-                <Label text="Age" style="-fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: #475569;" />
-                <TextField fx:id="TFAge" promptText="25"
-                           style="-fx-background-color: #f8fafb; -fx-border-color: #e2e8f0; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10 12; -fx-font-size: 13px; -fx-text-fill: #1e293b; -fx-prompt-text-fill: #94a3b8;" />
-                <Label fx:id="ageErrorLabel" text=""
-                       style="-fx-text-fill: #ef4444; -fx-font-size: 11px;" />
-            </VBox>
-            <VBox spacing="5" HBox.hgrow="ALWAYS">
-                <Label text="Email" style="-fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: #475569;" />
-                <TextField fx:id="TFEmail" promptText="jean.dupont@email.com"
-                           style="-fx-background-color: #f8fafb; -fx-border-color: #e2e8f0; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10 12; -fx-font-size: 13px; -fx-text-fill: #1e293b; -fx-prompt-text-fill: #94a3b8;" />
-                <Label fx:id="emailErrorLabel" text=""
-                       style="-fx-text-fill: #ef4444; -fx-font-size: 11px;" />
-            </VBox>
-        </HBox>
-
-        <!-- Password Row -->
-        <VBox spacing="5">
-            <Label text="Password" style="-fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: #475569;" />
-            <PasswordField fx:id="TFPassword" promptText="Minimum 4 characters"
-                           style="-fx-background-color: #f8fafb; -fx-border-color: #e2e8f0; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10 12; -fx-font-size: 13px; -fx-text-fill: #1e293b; -fx-prompt-text-fill: #94a3b8;" />
-            <Label fx:id="passwordErrorLabel" text=""
-                   style="-fx-text-fill: #ef4444; -fx-font-size: 11px;" />
-        </VBox>
-
-    </VBox>
-
-    <!-- ACTION BUTTONS -->
-    <HBox spacing="12" alignment="CENTER_RIGHT">
-        <Button onAction="#ajouter" text="Add User →"
-                style="-fx-background-color: linear-gradient(to right, #1a7d73, #0f5f5a); -fx-text-fill: white; -fx-padding: 10 22; -fx-background-radius: 30; -fx-font-weight: 700; -fx-cursor: hand;" />
-    </HBox>
-
-</VBox>
+        </center>
+    </BorderPane>
+</StackPane>
