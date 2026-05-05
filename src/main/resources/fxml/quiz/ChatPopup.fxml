@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/22"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.ChatController"
+      styleClass="shell-root"
+      stylesheets="@../../css/courses-module.css"
+      prefWidth="360" prefHeight="500"
+      style="-fx-background-radius: 16; -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.25),20,0.3,0,6);">
+
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="10"
+          style="-fx-padding: 14 16; -fx-background-color: linear-gradient(to right,#6a1b9a,#4a148c);
+                 -fx-background-radius: 16 16 0 0;">
+        <Label text="🤖  AI Quiz Assistant" styleClass="hero-title" style="-fx-font-size: 15px;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="✕" onAction="#handleClose"
+                style="-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white;
+                       -fx-background-radius: 999; -fx-padding: 2 8; -fx-cursor: hand;
+                       -fx-font-weight: bold;"/>
+    </HBox>
+
+    <!-- Topic + question context badge -->
+    <VBox style="-fx-padding: 8 14 4 14;" spacing="4">
+        <Label fx:id="lblTopic"
+               style="-fx-background-color: #ede7f6; -fx-text-fill: #4a148c;
+                      -fx-background-radius: 999; -fx-padding: 4 12;
+                      -fx-font-size: 11px; -fx-font-weight: bold;"/>
+        <Label fx:id="lblCurrentQ" wrapText="true"
+               style="-fx-text-fill: #666; -fx-font-size: 11px; -fx-font-style: italic;"
+               maxWidth="330"/>
+    </VBox>
+
+    <Separator/>
+
+    <!-- Messages scroll area -->
+    <ScrollPane fx:id="chatScroll" fitToWidth="true" VBox.vgrow="ALWAYS"
+                style="-fx-background-color: transparent; -fx-border-color: transparent;
+                       -fx-background-insets: 0; -fx-padding: 0;">
+        <VBox fx:id="chatMessages" spacing="10" style="-fx-padding: 12 14;"/>
+    </ScrollPane>
+
+    <Separator/>
+
+    <!-- Input area -->
+    <VBox style="-fx-padding: 10 14 14 14;" spacing="8">
+        <TextArea fx:id="chatInput"
+                  promptText="Ask for a hint or topic question…"
+                  wrapText="true" prefRowCount="2"
+                  style="-fx-font-size: 12px; -fx-background-radius: 10;"/>
+        <HBox spacing="8">
+            <Button text="💡 Hint for this question" onAction="#handleHint"
+                    styleClass="secondary-btn"
+                    style="-fx-font-size: 11px; -fx-padding: 7 12;"
+                    HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+            <Button text="Send ➤" onAction="#handleSend"
+                    styleClass="primary-btn"
+                    style="-fx-background-color: linear-gradient(to right,#6a1b9a,#4a148c);
+                           -fx-font-size: 12px; -fx-padding: 8 16;"/>
+        </HBox>
+    </VBox>
+</VBox>

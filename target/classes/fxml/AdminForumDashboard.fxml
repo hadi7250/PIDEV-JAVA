@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.SplitPane?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.AdminForumController"
+            prefHeight="720.0"
+            prefWidth="1180.0"
+            styleClass="course-module-root"
+            stylesheets="@../css/courses-module.css">
+
+    <padding>
+        <Insets bottom="18.0" left="18.0" right="18.0" top="18.0" />
+    </padding>
+
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="module-toolbar">
+            <VBox spacing="4.0">
+                <Label styleClass="module-title" text="Manage forum categories and discussions" />
+                <Label styleClass="module-subtitle" text="Admin cards with direct access to discussions and their messages." />
+            </VBox>
+            <Region HBox.hgrow="ALWAYS" />
+            <Button onAction="#refreshAll" styleClass="secondary-btn" text="Refresh" />
+        </HBox>
+    </top>
+
+    <center>
+        <TabPane fx:id="adminTabPane" tabClosingPolicy="UNAVAILABLE">
+            <tabs>
+                <Tab fx:id="categoriesTab" text="Categories">
+                    <content>
+                        <SplitPane dividerPositions="0.52">
+                            <items>
+                                <VBox spacing="14.0" styleClass="module-card">
+                                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                        <TextField fx:id="categorySearchField" promptText="Search categories..." HBox.hgrow="ALWAYS" />
+                                        <ComboBox fx:id="categorySortComboBox" prefWidth="140.0" promptText="Sort by" />
+                                        <Button onAction="#addCategory" styleClass="primary-btn" text="Add category" />
+                                        <Label fx:id="categoryCountLabel" styleClass="meta-label" text="0 category cards" />
+                                    </HBox>
+
+                                    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="cards-scroll" VBox.vgrow="ALWAYS">
+                                        <content>
+                                            <VBox fx:id="categoryCardsBox" spacing="14.0" styleClass="cards-list" />
+                                        </content>
+                                    </ScrollPane>
+                                </VBox>
+
+                                <VBox spacing="14.0" styleClass="module-card detail-panel">
+                                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                        <VBox spacing="4.0">
+                                            <Label fx:id="detailCategoryTitle" styleClass="detail-title" text="Select a category" />
+                                            <Label fx:id="detailCategoryMeta" styleClass="meta-label" text="Use a category card's Details button to inspect discussions." />
+                                        </VBox>
+                                        <Region HBox.hgrow="ALWAYS" />
+                                        <Button fx:id="detailAddDiscussionBtn" disable="true" onAction="#addDiscussionForSelectedCategory" styleClass="primary-btn" text="Add discussion" />
+                                        <Button fx:id="detailEditBtn" disable="true" onAction="#editSelectedCategory" styleClass="secondary-btn" text="Edit" />
+                                        <Button fx:id="detailDeleteBtn" disable="true" onAction="#deleteSelectedCategory" styleClass="danger-btn" text="Delete" />
+                                    </HBox>
+
+                                    <Label fx:id="detailCategoryDescription" styleClass="course-description" text="" wrapText="true" />
+                                    <Separator />
+                                    <Label styleClass="section-title" text="Discussions in this category" />
+                                    <Label fx:id="detailEmptyLabel" styleClass="empty-note" text="No category selected." wrapText="true" />
+                                    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="cards-scroll" VBox.vgrow="ALWAYS">
+                                        <content>
+                                            <VBox fx:id="detailDiscussionsBox" spacing="12.0" styleClass="cards-list" />
+                                        </content>
+                                    </ScrollPane>
+                                </VBox>
+                            </items>
+                        </SplitPane>
+                    </content>
+                </Tab>
+
+                <Tab fx:id="discussionsTab" text="Discussions">
+                    <content>
+                        <VBox spacing="14.0" styleClass="module-card">
+                            <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                <TextField fx:id="discussionSearchField" promptText="Search discussions..." HBox.hgrow="ALWAYS" />
+                                <ComboBox fx:id="discussionCategoryFilter" prefWidth="220.0" />
+                                <Button onAction="#addDiscussion" styleClass="primary-btn" text="Add discussion" />
+                                <Label fx:id="discussionCountLabel" styleClass="meta-label" text="0 discussion cards" />
+                            </HBox>
+
+                            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="cards-scroll" VBox.vgrow="ALWAYS">
+                                <content>
+                                    <VBox fx:id="discussionCardsBox" spacing="14.0" styleClass="cards-list" />
+                                </content>
+                            </ScrollPane>
+                        </VBox>
+                    </content>
+                </Tab>
+
+                <Tab fx:id="messagesTab" text="Messages">
+                    <content>
+                        <VBox spacing="14.0" styleClass="module-card">
+                            <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                <TextField fx:id="messageSearchField" promptText="Search messages..." HBox.hgrow="ALWAYS" />
+                                <ComboBox fx:id="messageDiscussionFilter" prefWidth="260.0" />
+                                <Label fx:id="messageCountLabel" styleClass="meta-label" text="0 message cards" />
+                            </HBox>
+
+                            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="cards-scroll" VBox.vgrow="ALWAYS">
+                                <content>
+                                    <VBox fx:id="messageCardsBox" spacing="14.0" styleClass="cards-list" />
+                                </content>
+                            </ScrollPane>
+                        </VBox>
+                    </content>
+                </Tab>
+
+                <Tab fx:id="statsTab" text="📊 Stats">
+                    <content>
+                        <VBox spacing="20.0" styleClass="module-card">
+                            <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                <Label styleClass="module-title" text="Forum Statistics Dashboard" />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Button onAction="#refreshStats" styleClass="secondary-btn" text="🔄 Refresh" />
+                            </HBox>
+                            
+                            <FlowPane fx:id="statsFlowPane" hgap="15.0" vgap="15.0" prefWrapLength="1000">
+                                <!-- Stats cards will be added here programmatically -->
+                            </FlowPane>
+                        </VBox>
+                    </content>
+                </Tab>
+                
+                <Tab fx:id="reportsTab" text="🚩 Reports">
+                    <content>
+                        <VBox spacing="20.0" styleClass="module-card">
+                            <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                <Label fx:id="pendingCountLabel" styleClass="module-title" text="0 pending reports" />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Button onAction="#refreshReports" styleClass="secondary-btn" text="🔄 Refresh" />
+                            </HBox>
+                            
+                            <TableView fx:id="reportsTable" VBox.vgrow="ALWAYS" styleClass="admin-table" />
+                        </VBox>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER_LEFT" styleClass="status-bar">
+            <Label fx:id="statusLabel" styleClass="meta-label" text="" />
+        </HBox>
+    </bottom>
+</BorderPane>
