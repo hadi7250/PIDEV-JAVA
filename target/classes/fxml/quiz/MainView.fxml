@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/22"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.QuizController"
+            styleClass="shell-root"
+            stylesheets="@../../css/courses-module.css"
+            prefWidth="1200" prefHeight="700">
+
+    <!-- TOP BAR -->
+    <top>
+        <HBox spacing="16" alignment="CENTER_LEFT" styleClass="shell-topbar" style="-fx-padding: 14 20;">
+            <Label text="📚 EduConnect — Quiz Manager" styleClass="hero-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <TextField fx:id="searchField" promptText="Search quizzes..."
+                       onAction="#handleSearch" prefWidth="240"/>
+            <Button text="🔍 Search" onAction="#handleSearch" styleClass="secondary-btn"/>
+            
+        </HBox>
+    </top>
+
+    <!-- SIDEBAR -->
+    <left>
+        <VBox spacing="10" styleClass="shell-sidebar" style="-fx-padding: 20;">
+            <Label text="QUIZ ACTIONS" styleClass="meta-label" style="-fx-padding: 0 0 4 2;"/>
+            <Button text="➕  Add Quiz"       onAction="#handleAdd"           styleClass="primary-btn"   maxWidth="Infinity"/>
+            <Button text="✏️  Edit Quiz"       onAction="#handleEdit"          styleClass="secondary-btn" maxWidth="Infinity"/>
+            <Button text="🗑️  Delete Quiz"     onAction="#handleDelete"        styleClass="danger-btn"    maxWidth="Infinity"/>
+            <Button text="🔄  Refresh"         onAction="#handleRefresh"       styleClass="secondary-btn" maxWidth="Infinity"/>
+            <Separator style="-fx-padding: 4 0;"/>
+            <Label text="NAVIGATION" styleClass="meta-label" style="-fx-padding: 4 0 4 2;"/>
+            <Button text="❓  View Questions"  onAction="#handleViewQuestions" styleClass="primary-btn"   maxWidth="Infinity"/>
+            <Button text="🤖  Generate Quiz (AI)"  onAction="#handleGenerateQuiz" maxWidth="Infinity"
+                    style="-fx-background-color: linear-gradient(to right,#6a1b9a,#4a148c);
+                           -fx-text-fill: white; -fx-background-radius: 14; -fx-padding: 10 18;
+                           -fx-font-weight: 700; -fx-cursor: hand;"/>
+            <Label text="Tip: double-click a row to manage questions"
+                   styleClass="meta-label" style="-fx-wrap-text:true; -fx-font-size:10px; -fx-padding: 4 2;"/>
+        </VBox>
+    </left>
+
+    <!-- MAIN CONTENT -->
+    <center>
+        <VBox spacing="14" style="-fx-padding: 20;" styleClass="shell-content">
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="All Quizzes" styleClass="module-title"/>
+                <Label text="— select one then use the sidebar buttons"
+                       styleClass="meta-label" style="-fx-padding: 4 0 0 0;"/>
+            </HBox>
+            <TableView fx:id="quizTable" VBox.vgrow="ALWAYS" styleClass="course-list">
+                <columns>
+                    <TableColumn fx:id="colId"         text="ID"          prefWidth="60"/>
+                    <TableColumn fx:id="colTitle"      text="Title"       prefWidth="220"/>
+                    <TableColumn fx:id="colDesc"       text="Description" prefWidth="390"/>
+                    <TableColumn fx:id="colTimeLimit"  text="Time (s)"    prefWidth="90"/>
+                    <TableColumn fx:id="colTotalScore" text="Total Score" prefWidth="110"/>
+                </columns>
+                <placeholder>
+                    <Label text="No quizzes yet — click ➕ Add Quiz to create one." styleClass="empty-note"/>
+                </placeholder>
+            </TableView>
+        </VBox>
+    </center>
+</BorderPane>

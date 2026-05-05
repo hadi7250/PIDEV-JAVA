@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.AdminDashboardController"
+            stylesheets="@../../styles/modern.css"
+            prefWidth="1100" prefHeight="700">
+
+    <!-- SIDEBAR -->
+    <left>
+        <VBox fx:id="sidebarMenu" styleClass="sidebar" spacing="4" prefWidth="220">
+            <padding>
+                <Insets top="20" right="12" bottom="20" left="12"/>
+            </padding>
+
+            <Label text="EduConnect" styleClass="sidebar-brand"/>
+            <Label text="Administration" styleClass="sidebar-section"/>
+
+            <Button text="📋 Événements" onAction="#showEvents" styleClass="sidebar-btn" maxWidth="Infinity">
+                <tooltip><Tooltip text="Créer, modifier, supprimer des événements et exporter (CSV)"/></tooltip>
+            </Button>
+            <Button text="📁 Catégories" onAction="#showCategories" styleClass="sidebar-btn" maxWidth="Infinity">
+                <tooltip><Tooltip text="Gérer les catégories d’événements (nom, nombre d’événements)"/></tooltip>
+            </Button>
+            <Button text="👤 Utilisateurs" onAction="#showUsers" styleClass="sidebar-btn" maxWidth="Infinity">
+                <tooltip><Tooltip text="Comptes : email, nom, rôles, statut"/></tooltip>
+            </Button>
+            <Button text="✅ Participations" onAction="#showParticipations" styleClass="sidebar-btn" maxWidth="Infinity">
+                <tooltip><Tooltip text="Qui est inscrit à quel événement (date d’inscription)"/></tooltip>
+            </Button>
+            <Button text="⭐ Avis" onAction="#showRatings" styleClass="sidebar-btn" maxWidth="Infinity">
+                <tooltip><Tooltip text="Notes et commentaires des participants"/></tooltip>
+            </Button>
+            <Button text="🎓 Certificats" onAction="#showCertificats" styleClass="sidebar-btn" maxWidth="Infinity">
+                <tooltip><Tooltip text="Certificats, export PDF, QR image, export CSV"/></tooltip>
+            </Button>
+            <Button text="📊 Statistiques" onAction="#showStats" styleClass="sidebar-btn" maxWidth="Infinity">
+                <tooltip><Tooltip text="Graphiques : répartition par catégorie, top participations, tendance certificats"/></tooltip>
+            </Button>
+
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <Button text="🏠 Accueil" onAction="#goHome" styleClass="sidebar-btn, sidebar-btn-home" maxWidth="Infinity">
+                <tooltip><Tooltip text="Retour à l’écran d’accueil de l’application"/></tooltip>
+            </Button>
+        </VBox>
+    </left>
+
+    <!-- MAIN CONTENT -->
+    <center>
+        <VBox spacing="0">
+            <!-- Header bar -->
+            <HBox styleClass="admin-header" alignment="CENTER_LEFT" spacing="12">
+                <padding>
+                    <Insets top="16" right="24" bottom="16" left="24"/>
+                </padding>
+                <Label fx:id="titleLabel" text="Gestion des Événements" styleClass="admin-title"/>
+            </HBox>
+
+            <!-- Content area -->
+            <StackPane fx:id="contentArea" VBox.vgrow="ALWAYS">
+                <padding>
+                    <Insets top="0" right="0" bottom="0" left="0"/>
+                </padding>
+            </StackPane>
+        </VBox>
+    </center>
+</BorderPane>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/22"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.GenerateQuizController"
+            styleClass="shell-root"
+            stylesheets="@../../css/courses-module.css"
+            prefWidth="580" prefHeight="370">
+
+    <top>
+        <HBox spacing="14" alignment="CENTER_LEFT" styleClass="shell-topbar"
+              style="-fx-padding: 16 24;">
+            <Label text="🤖  AI Quiz Generator" styleClass="hero-title"/>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox spacing="20" style="-fx-padding: 28 32;">
+
+            <VBox styleClass="module-card" spacing="16">
+                <Label text="📌  Quiz Settings" styleClass="section-title"/>
+
+                <HBox spacing="12" alignment="CENTER_LEFT">
+                    <Label text="Topic:" minWidth="100" styleClass="meta-label"
+                           style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                    <TextField fx:id="tfTopic" HBox.hgrow="ALWAYS"
+                               promptText="e.g. World War 2, Python basics, Solar system…"/>
+                </HBox>
+
+                <HBox spacing="20" alignment="CENTER_LEFT">
+                    <Label text="Questions:" minWidth="100" styleClass="meta-label"
+                           style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                    <Spinner fx:id="spCount" prefWidth="90" editable="true"/>
+                    <Label text="Difficulty:" styleClass="meta-label"
+                           style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                    <ComboBox fx:id="cbDifficulty" prefWidth="130"/>
+                </HBox>
+
+                <HBox spacing="16">
+                    <Label text="Points:" styleClass="meta-label"/>
+                    <Label text="Easy = 5 pts"   style="-fx-text-fill:#2e7d32; -fx-font-size:12px;"/>
+                    <Label text="Medium = 10 pts" style="-fx-text-fill:#e65100; -fx-font-size:12px;"/>
+                    <Label text="Hard = 15 pts"   style="-fx-text-fill:#b71c1c; -fx-font-size:12px;"/>
+                </HBox>
+            </VBox>
+
+            <Button fx:id="btnGenerate" text="⚡  Generate Quiz"
+                    onAction="#handleGenerate"
+                    styleClass="primary-btn"
+                    style="-fx-font-size: 15px; -fx-padding: 13 0;"
+                    maxWidth="Infinity"/>
+
+            <VBox fx:id="statusBox" styleClass="module-card" spacing="8"
+                  style="-fx-padding: 12 16;">
+                <HBox spacing="12" alignment="CENTER_LEFT">
+                    <ProgressIndicator fx:id="spinner" prefWidth="24" prefHeight="24"/>
+                    <Label fx:id="lblStatus" wrapText="true" HBox.hgrow="ALWAYS"
+                           style="-fx-font-size: 13px;"/>
+                </HBox>
+            </VBox>
+
+        </VBox>
+    </center>
+</BorderPane>

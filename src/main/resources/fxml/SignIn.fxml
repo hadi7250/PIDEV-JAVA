@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.SignInController" styleClass="auth-root">
+
+    <!-- MAIN CARD -->
+    <HBox alignment="CENTER" spacing="0" styleClass="auth-card" maxWidth="900" maxHeight="580">
+
+        <!-- LEFT PANEL — BRAND / HERO -->
+        <VBox spacing="0" styleClass="auth-left-panel" prefWidth="360" minWidth="340">
+            <padding>
+                <Insets top="60" right="48" bottom="60" left="52"/>
+            </padding>
+
+            <!-- Logo -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <StackPane styleClass="logo-mark">
+                    <Label text="◈" styleClass="logo-icon" />
+                </StackPane>
+                <Label text="NEXUS" styleClass="brand-name" />
+            </HBox>
+
+            <Region VBox.vgrow="ALWAYS" minHeight="40" />
+
+            <Label text="Welcome" styleClass="hero-display-line1" wrapText="true" />
+            <Label text="Back." styleClass="hero-display-line2" wrapText="true" />
+
+            <Region minHeight="20" />
+
+            <Label text="Sign in to access your personalized dashboard" styleClass="hero-body" wrapText="true" />
+
+            <Region VBox.vgrow="ALWAYS" minHeight="40" />
+
+            <!-- Social login -->
+            <Label text="Or continue with" styleClass="social-label" />
+            <Region minHeight="12" />
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Button text="G  Google" styleClass="social-pill" onAction="#googleLogin" />
+                <Button text="f  Facebook" styleClass="social-pill" onAction="#facebookLogin" />
+            </HBox>
+
+            <Region minHeight="40" />
+
+            <!-- Bottom nav -->
+            <HBox spacing="6" alignment="CENTER_LEFT">
+                <Label text="New here?" styleClass="switch-label-muted" />
+                <Button text="Create account →" styleClass="switch-link-btn" onAction="#goToSignUp" />
+            </HBox>
+        </VBox>
+
+        <!-- DIVIDER -->
+        <Region styleClass="auth-divider" prefWidth="1" />
+
+        <!-- RIGHT PANEL — FORM -->
+        <VBox spacing="0" styleClass="auth-right-panel" HBox.hgrow="ALWAYS">
+            <padding>
+                <Insets top="56" right="56" bottom="56" left="52"/>
+            </padding>
+
+            <Label text="Sign In" styleClass="form-heading" />
+            <Label text="Enter your credentials below" styleClass="form-subheading" />
+
+            <Region minHeight="36" />
+
+            <!-- Email -->
+            <VBox spacing="6">
+                <Label text="Email address" styleClass="field-label-new" />
+                <TextField fx:id="emailField" promptText="you@example.com" styleClass="auth-input" />
+                <Label fx:id="emailErrorLabel" styleClass="auth-error" text="" />
+            </VBox>
+
+            <Region minHeight="20" />
+
+            <!-- Password -->
+            <VBox spacing="6">
+                <Label text="Password" styleClass="field-label-new" />
+                <PasswordField fx:id="passwordField" promptText="••••••••" styleClass="auth-input" />
+                <Label fx:id="passwordErrorLabel" styleClass="auth-error" text="" />
+            </VBox>
+
+            <Region minHeight="16" />
+
+            <!-- Remember & Forgot -->
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <CheckBox fx:id="rememberMeCheckbox" text="Remember me" styleClass="auth-checkbox" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Button text="Forgot password?" styleClass="forgot-link" onAction="#forgotPassword" />
+            </HBox>
+
+            <Region minHeight="32" />
+
+            <!-- Submit -->
+            <Button onAction="#handleLogin" text="Sign In  →" styleClass="auth-submit-btn" prefHeight="50" maxWidth="Infinity" />
+
+            <Region minHeight="24" />
+
+            <!-- Divider -->
+            <HBox alignment="CENTER" spacing="14">
+                <Region HBox.hgrow="ALWAYS" styleClass="hr-line" />
+                <Label text="secure login" styleClass="hr-label" />
+                <Region HBox.hgrow="ALWAYS" styleClass="hr-line" />
+            </HBox>
+
+        </VBox>
+    </HBox>
+</StackPane>
