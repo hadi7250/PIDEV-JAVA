@@ -1,93 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
 <?import java.net.URL?>
 
-<StackPane fx:id="mainContainer" prefHeight="750.0" prefWidth="1100.0" styleClass="course-module-root" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.StudentEvaluationsController">
-    <stylesheets>
-        <URL value="@../modern.css" />
-    </stylesheets>
-    
-    <BorderPane styleClass="client-dashboard-shell">
+<VBox fx:id="mainContainer" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="gui.StudentEvaluationsController"
+      spacing="0" stylesheets="@../modern.css">
+
+    <!-- Evaluation Grid -->
+    <VBox spacing="10" VBox.vgrow="ALWAYS">
+        <HBox alignment="CENTER_LEFT" spacing="10" styleClass="search-bar">
+            <padding>
+                <Insets left="15" right="15" top="10" bottom="10"/>
+            </padding>
+            <TextField fx:id="searchField" promptText="Search evaluations..." styleClass="search-field"/>
+            <ComboBox fx:id="statusFilter" promptText="Filter by status" styleClass="filter-combo"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Refresh" onAction="#refreshTable" styleClass="refresh-btn"/>
+        </HBox>
+        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+            <FlowPane fx:id="evaluationGrid" hgap="15" vgap="15" prefWrapLength="1000" styleClass="evaluation-grid"/>
+        </ScrollPane>
+    </VBox>
+
+    <!-- Header Bar -->
+    <HBox alignment="CENTER_LEFT" spacing="15" styleClass="editor-header" visible="false" managed="false">
         <padding>
-            <Insets bottom="18.0" left="18.0" right="18.0" top="18.0" />
+            <Insets left="15" right="15" top="10" bottom="10"/>
         </padding>
+        <Button text="← Back" onAction="#closeEditor" styleClass="back-btn"/>
+        <Label fx:id="exerciseTitle" styleClass="exercise-title" text="Exercise Title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <ComboBox fx:id="languageCombo" styleClass="language-combo"/>
+        <ComboBox fx:id="themeCombo" styleClass="theme-combo"/>
+    </HBox>
 
-        <top>
-            <HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="module-toolbar client-toolbar">
-                <padding>
-                    <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
-                </padding>
-                <VBox spacing="4.0">
-                    <Label styleClass="module-title client-page-title" text="My Performance Ledger" />
-                    <Label styleClass="module-subtitle" text="View your grades, teacher feedback, and academic progress." />
-                </VBox>
-                <Region HBox.hgrow="ALWAYS" />
-                <TextField fx:id="searchField" prefWidth="280.0" promptText="Search evaluations..." styleClass="search-field" />
-                <Button onAction="#refreshTable" styleClass="secondary-btn" text="Refresh" />
+    <!-- Main SplitPane (Left: Instructions | Right: Editor) -->
+    <SplitPane dividerPositions="0.35" VBox.vgrow="ALWAYS" visible="false" managed="false">
+
+        <!-- LEFT PANEL: Instructions & Expected Output -->
+        <VBox spacing="15" styleClass="left-panel">
+            <padding>
+                <Insets left="15" right="15" top="15" bottom="15"/>
+            </padding>
+            
+            <!-- Exercise Description -->
+            <VBox spacing="8">
+                <Label text="📝 Exercise Description" styleClass="section-title"/>
+                <TextArea fx:id="descriptionArea" wrapText="true" editable="false"
+                          styleClass="description-area" VBox.vgrow="ALWAYS"/>
+            </VBox>
+            
+            <!-- Expected Output -->
+            <VBox spacing="8">
+                <Label text="📌 Expected Output" styleClass="section-title"/>
+                <TextArea fx:id="expectedOutputArea" prefHeight="120" wrapText="true"
+                          editable="false" styleClass="expected-output-area"/>
+            </VBox>
+            
+            <!-- Hints / Notes (optional) -->
+            <VBox spacing="8">
+                <Label text="💡 Hints" styleClass="section-title"/>
+                <TextArea fx:id="hintsArea" prefHeight="80" wrapText="true"
+                          editable="false" styleClass="hints-area"/>
+            </VBox>
+        </VBox>
+        
+        <!-- RIGHT PANEL: Code Editor -->
+        <VBox spacing="10" styleClass="right-panel">
+            <padding>
+                <Insets left="10" right="10" top="10" bottom="10"/>
+            </padding>
+            
+            <!-- Editor Labels -->
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="✏️ Write your solution:" styleClass="editor-label"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="charCountLabel" styleClass="char-count" text="0 chars"/>
             </HBox>
-        </top>
+            
+            <!-- MonacoFX Container -->
+            <VBox fx:id="editorContainer" VBox.vgrow="ALWAYS" styleClass="editor-container"/>
+        </VBox>
+        
+    </SplitPane>
 
-        <center>
-            <SplitPane dividerPositions="0.65" style="-fx-padding: 20 0 0 0;">
-                <items>
-                    <!-- Left Side: Grid -->
-                    <VBox spacing="16.0" styleClass="module-card client-sidebar-card">
-                        <HBox alignment="CENTER_LEFT" spacing="10.0">
-                            <Label styleClass="section-title" text="Evaluation Inventory" />
-                            <Region HBox.hgrow="ALWAYS" />
-                            <ComboBox fx:id="statusFilter" prefWidth="150.0" promptText="Filter Status" />
-                        </HBox>
-                        <ScrollPane fitToWidth="true" styleClass="cards-scroll" VBox.vgrow="ALWAYS">
-                            <FlowPane fx:id="evaluationGrid" hgap="20.0" vgap="20.0">
-                                <padding>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                </padding>
-                            </FlowPane>
-                        </ScrollPane>
-                    </VBox>
+    <!-- Action Buttons Bar -->
+    <HBox alignment="CENTER" spacing="20" styleClass="action-bar" visible="false" managed="false">
+        <padding>
+            <Insets top="10" bottom="10"/>
+        </padding>
+        <Button fx:id="runButton" text="▶ Run Code" styleClass="run-button" onAction="#runCode"/>
+        <Button fx:id="submitButton" text="✅ Submit" styleClass="submit-button" onAction="#submitSolution"/>
+        <Button fx:id="clearConsoleButton" text="🗑 Clear Console" styleClass="clear-button" onAction="#clearConsole"/>
+    </HBox>
 
-                    <!-- Right Side: Details / Feedback -->
-                    <VBox spacing="16.0" styleClass="module-card client-workspace">
-                        <Label styleClass="section-title" text="Evaluation Details &amp; Feedback" />
-                        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="cards-scroll" VBox.vgrow="ALWAYS">
-                            <VBox spacing="15.0">
-                                <VBox spacing="5" styleClass="module-card">
-                                    <Label styleClass="label-bold" text="Grade Received" />
-                                    <Label fx:id="scoreDetailLabel" styleClass="detail-title" text="N/A" />
-                                </VBox>
-                                
-                                <VBox spacing="5" styleClass="module-card">
-                                    <Label styleClass="label-bold" text="Teacher Feedback" />
-                                    <Label fx:id="commentDetailLabel" styleClass="course-description" text="Select an evaluation to view detailed feedback from your instructor." wrapText="true" />
-                                </VBox>
+    <!-- Bottom Output Console -->
+    <VBox styleClass="console-panel" visible="false" managed="false">
+        <Label text="📟 Output Console" styleClass="console-title"/>
+        <TextArea fx:id="outputArea" editable="false" wrapText="true"
+                  styleClass="console-area" VBox.vgrow="ALWAYS"/>
+    </VBox>
 
-                                <VBox fx:id="answerContainer" spacing="10" styleClass="module-card" visible="false" managed="false">
-                                    <Label styleClass="label-bold" text="Submit Your Solution" />
-                                    <StackPane fx:id="monacoContainer" prefHeight="350.0" style="-fx-border-color: #ddd; -fx-border-width: 1;" />
-                                    
-                                    <HBox spacing="10" alignment="CENTER_RIGHT">
-                                        <Button fx:id="btnRun" onAction="#runCode" styleClass="info-btn" text="▶ Run Code" />
-                                    </HBox>
-                                    <TextArea fx:id="consoleOutput" editable="false" prefHeight="150" promptText="Output will appear here..." style="-fx-font-family: monospace; -fx-font-size: 12;" />
-
-                                    <TextArea fx:id="regularAnswerArea" prefHeight="200.0" promptText="Enter your answer here..." wrapText="true" />
-                                    <Button onAction="#handleSaveAnswer" maxWidth="Infinity" styleClass="primary-btn" text="💾 Commit Solution" />
-                                </VBox>
-
-                                <Separator />
-                                
-                                <VBox spacing="10.0" alignment="CENTER">
-                                    <Button maxWidth="Infinity" onAction="#handleExport" styleClass="info-btn" text="📥 Download Report (CSV)" />
-                                    <Button maxWidth="Infinity" onAction="#goToProfile" styleClass="secondary-btn" text="👤 My Profile" />
-                                </VBox>
-                            </VBox>
-                        </ScrollPane>
-                    </VBox>
-                </items>
-            </SplitPane>
-        </center>
-    </BorderPane>
-</StackPane>
+</VBox>

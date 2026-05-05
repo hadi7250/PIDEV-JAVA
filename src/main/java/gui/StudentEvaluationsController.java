@@ -17,6 +17,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import services.EvaluationService;
+import services.CertificationService;
+import services.CompetenceService;
 
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
@@ -28,24 +30,34 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javafx.application.Platform;
 
 public class StudentEvaluationsController implements Initializable {
-    @FXML private StackPane mainContainer;
+    @FXML private VBox mainContainer;
+    @FXML private Label exerciseTitle;
+    @FXML private ComboBox<String> languageCombo;
+    @FXML private ComboBox<String> themeCombo;
+    @FXML private TextArea descriptionArea;
+    @FXML private TextArea expectedOutputArea;
+    @FXML private TextArea hintsArea;
+    @FXML private Label charCountLabel;
+    @FXML private VBox editorContainer;
+    @FXML private Button runButton;
+    @FXML private Button submitButton;
+    @FXML private Button clearConsoleButton;
+    @FXML private TextArea outputArea;
+    @FXML private TextArea regularAnswerArea;
     @FXML private FlowPane evaluationGrid;
-
     @FXML private TextField searchField;
     @FXML private ComboBox<String> statusFilter;
-    @FXML private Label scoreDetailLabel;
-    @FXML private Label commentDetailLabel;
 
-    @FXML private VBox answerContainer;
-    @FXML private StackPane monacoContainer;
-    @FXML private TextArea regularAnswerArea;
-    @FXML private Button btnRun;
-    @FXML private TextArea consoleOutput;
-
+    // Keep references to data models and services
     private EvaluationService service = new EvaluationService();
+    private CertificationService certificationService = new CertificationService();
+    private CompetenceService competenceService = new CompetenceService();
+    
     private User loggedInUser;
     private ObservableList<Evaluation> allEvaluations = FXCollections.observableArrayList();
     private boolean isDarkMode = false;
@@ -54,45 +66,76 @@ public class StudentEvaluationsController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        statusFilter.setItems(FXCollections.observableArrayList("All", "pending", "graded", "rejected"));
+        // Populate combos
+        languageCombo.setItems(FXCollections.observableArrayList("Java", "Python", "C++", "JavaScript"));
+        languageCombo.setValue("Java");
+        
+        themeCombo.setItems(FXCollections.observableArrayList("vs-dark", "light"));
+        themeCombo.setValue("vs-dark");
+
+        // Status filter
+        statusFilter.setItems(FXCollections.observableArrayList("All", "pending", "graded"));
         statusFilter.setValue("All");
+
+        // MonacoFX will be initialized lazily in loadEvaluationMode()
+
+        // Search and filter listeners
         searchField.textProperty().addListener((obs, oldVal, newVal) -> applyFilters());
         statusFilter.valueProperty().addListener((obs, oldVal, newVal) -> applyFilters());
     }
 
     public void showDetails(Evaluation e) {
         this.selectedEvaluation = e;
-        scoreDetailLabel.setText("Weight: " + e.getWeight() + "% (" + e.getStatus() + ")");
-        commentDetailLabel.setText(e.getComment() != null && !e.getComment().isEmpty() ? e.getComment() : "No feedback provided yet.");
-        
         loadEvaluationMode();
+        // Hide grid
+        mainContainer.getChildren().get(0).setVisible(false);
+        mainContainer.getChildren().get(0).setManaged(false);
+        // Show editor
+        for (int i = 1; i < mainContainer.getChildren().size(); i++) {
+            mainContainer.getChildren().get(i).setVisible(true);
+            mainContainer.getChildren().get(i).setManaged(true);
+        }
     }
 
     private void loadEvaluationMode() {
         if (selectedEvaluation == null) return;
 
-        answerContainer.setVisible(true);
-        answerContainer.setManaged(true);
-
-        if (selectedEvaluation.isCodeEvaluation()) {
-            monacoContainer.setVisible(true);
-            monacoContainer.setManaged(true);
-            regularAnswerArea.setVisible(false);
-            regularAnswerArea.setManaged(false);
-
+        if (monacoFX == null) {
+            // Initialize MonacoFX lazily
             monacoFX = new MonacoFX();
-            monacoFX.getEditor().setCurrentTheme("vs-dark");
-            monacoFX.getEditor().setCurrentLanguage(selectedEvaluation.getLanguage());
-            monacoFX.getEditor().getDocument().setText(selectedEvaluation.getCodeContent() != null ? selectedEvaluation.getCodeContent() : "// Write your code here");
-            monacoContainer.getChildren().setAll(monacoFX);
-        } else {
-            monacoContainer.setVisible(false);
-            monacoContainer.setManaged(false);
-            regularAnswerArea.setVisible(true);
-            regularAnswerArea.setManaged(true);
+            editorContainer.getChildren().setAll(monacoFX);
 
-            regularAnswerArea.setText(selectedEvaluation.getCodeContent() != null ? selectedEvaluation.getCodeContent() : "");
+            // Character counter
+            monacoFX.getEditor().getDocument().textProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal != null) {
+                    charCountLabel.setText(newVal.length() + " chars");
+                }
+            });
+
+            // Theme sync
+            themeCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
+                if (monacoFX != null) {
+                    monacoFX.getEditor().setCurrentTheme(newVal);
+                }
+            });
+
+            // Language sync
+            languageCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
+                if (monacoFX != null) {
+                    monacoFX.getEditor().setCurrentLanguage(newVal.toLowerCase());
+                }
+            });
         }
+
+        exerciseTitle.setText(selectedEvaluation.getTitle());
+        descriptionArea.setText(selectedEvaluation.getDescription());
+        expectedOutputArea.setText(selectedEvaluation.getExpectedOutput() != null ? selectedEvaluation.getExpectedOutput() : "");
+        hintsArea.setText(selectedEvaluation.getComment() != null ? selectedEvaluation.getComment() : "No hints provided.");
+
+        String lang = selectedEvaluation.getLanguage() != null ? selectedEvaluation.getLanguage() : "Java";
+        monacoFX.getEditor().setCurrentLanguage(lang.toLowerCase());
+        monacoFX.getEditor().getDocument().setText(selectedEvaluation.getCodeContent() != null ? selectedEvaluation.getCodeContent() : "// Write your code here");
+        languageCombo.setValue(lang);
     }
 
     @FXML
@@ -120,20 +163,30 @@ public class StudentEvaluationsController implements Initializable {
         String code = monacoFX.getEditor().getDocument().getText();
         if (code == null || code.trim().isEmpty()) return;
 
-        btnRun.setDisable(true);
-        btnRun.setText("⏳ Running...");
-        consoleOutput.setText("Compiling...");
+        runButton.setDisable(true);
+        runButton.setText("⏳ Running...");
+        outputArea.setText("Compiling...");
 
         new Thread(() -> {
             try {
                 String tmpDir = System.getProperty("java.io.tmpdir");
-                String fileName = "StudentSolution.java";
-                File javaFile = new File(tmpDir, fileName);
-
+                
+                // Detect class name using regex
+                String className = "StudentSolution";
+                Pattern pattern = Pattern.compile("public\\s+class\\s+([a-zA-Z0-9_$]+)");
+                Matcher matcher = pattern.matcher(code);
+                
                 String finalCode = code;
-                if (!finalCode.contains("public class")) {
+                if (matcher.find()) {
+                    className = matcher.group(1);
+                } else {
+                    // No public class found, wrap it
                     finalCode = "public class StudentSolution {\n" + finalCode + "\n}";
+                    className = "StudentSolution";
                 }
+
+                String fileName = className + ".java";
+                File javaFile = new File(tmpDir, fileName);
 
                 try (FileWriter writer = new FileWriter(javaFile)) {
                     writer.write(finalCode);
@@ -141,7 +194,7 @@ public class StudentEvaluationsController implements Initializable {
 
                 JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
                 if (compiler == null) {
-                    Platform.runLater(() -> consoleOutput.setText("System Java Compiler not found. Please ensure you are running on a JDK."));
+                    Platform.runLater(() -> outputArea.setText("System Java Compiler not found. Please ensure you are running on a JDK."));
                     return;
                 }
 
@@ -150,13 +203,15 @@ public class StudentEvaluationsController implements Initializable {
 
                 if (result != 0) {
                     String errors = errStream.toString();
-                    Platform.runLater(() -> consoleOutput.setText("Compilation Error:\n" + errors));
+                    Platform.runLater(() -> outputArea.setText("Compilation Error:\n" + errors));
                     return;
                 }
 
-                Platform.runLater(() -> consoleOutput.setText("Compiled successfully. Executing..."));
+                Platform.runLater(() -> outputArea.setText("Compiled successfully. Executing..."));
 
-                ProcessBuilder pb = new ProcessBuilder("java", "-cp", tmpDir, "StudentSolution");
+                // Run the compiled class
+                String finalClassName = className;
+                ProcessBuilder pb = new ProcessBuilder("java", "-cp", tmpDir, finalClassName);
                 pb.redirectErrorStream(true);
                 Process process = pb.start();
 
@@ -171,21 +226,42 @@ public class StudentEvaluationsController implements Initializable {
                 boolean finished = process.waitFor(10, TimeUnit.SECONDS);
                 if (!finished) {
                     process.destroyForcibly();
-                    Platform.runLater(() -> consoleOutput.setText("Execution timed out."));
+                    Platform.runLater(() -> outputArea.setText("Execution timed out."));
                 } else {
                     String resultText = output.toString();
-                    Platform.runLater(() -> consoleOutput.setText(resultText));
+                    Platform.runLater(() -> {
+                        outputArea.setText(resultText);
+                        if (process.exitValue() == 0) {
+                            handleSuccessfulExecution();
+                        }
+                    });
                 }
 
             } catch (Exception e) {
-                Platform.runLater(() -> consoleOutput.setText("Error: " + e.getMessage()));
+                Platform.runLater(() -> outputArea.setText("Error: " + e.getMessage()));
+                e.printStackTrace();
             } finally {
                 Platform.runLater(() -> {
-                    btnRun.setDisable(false);
-                    btnRun.setText("▶ Run Code");
+                    runButton.setDisable(false);
+                    runButton.setText("▶ Run Code");
                 });
             }
         }).start();
+    }
+
+    private void handleSuccessfulExecution() {
+        if (selectedEvaluation == null) return;
+
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Code Executed Successfully");
+            alert.setHeaderText(null);
+            alert.setContentText("Code ran successfully! Click Submit Solution to submit your answer.");
+            alert.showAndWait();
+
+            submitButton.setVisible(true);
+            submitButton.setManaged(true);
+        });
     }
 
     private void showAlert(Alert.AlertType type, String title, String msg) {
@@ -241,21 +317,18 @@ public class StudentEvaluationsController implements Initializable {
     }
 
     public void openEditor(Evaluation evaluation) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EvaluationEditor.fxml"));
-            VBox editorRoot = loader.load();
-            EvaluationEditorController controller = loader.getController();
-            controller.setEvaluation(evaluation, this);
-            
-            mainContainer.getChildren().add(editorRoot);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        showDetails(evaluation);
     }
 
     public void closeEditor() {
-        if (mainContainer.getChildren().size() > 1) {
-            mainContainer.getChildren().remove(mainContainer.getChildren().size() - 1);
+        selectedEvaluation = null;
+        // Show grid
+        mainContainer.getChildren().get(0).setVisible(true);
+        mainContainer.getChildren().get(0).setManaged(true);
+        // Hide editor
+        for (int i = 1; i < mainContainer.getChildren().size(); i++) {
+            mainContainer.getChildren().get(i).setVisible(false);
+            mainContainer.getChildren().get(i).setManaged(false);
         }
     }
 
@@ -266,16 +339,13 @@ public class StudentEvaluationsController implements Initializable {
 
     @FXML
     private void toggleTheme() {
-        Button themeButton = (Button) mainContainer.lookup(".theme-toggle-btn");
+        Scene scene = mainContainer.getScene();
+        Parent root = scene.getRoot();
         if (isDarkMode) {
-            mainContainer.getStyleClass().remove("dark-theme");
-            mainContainer.getStyleClass().add("light-theme");
-            if (themeButton != null) themeButton.setText("🌙 Dark Mode");
+            root.getStyleClass().remove("dark-mode");
             isDarkMode = false;
         } else {
-            mainContainer.getStyleClass().remove("light-theme");
-            mainContainer.getStyleClass().add("dark-theme");
-            if (themeButton != null) themeButton.setText("☀️ Light Mode");
+            root.getStyleClass().add("dark-mode");
             isDarkMode = true;
         }
     }
@@ -309,5 +379,89 @@ public class StudentEvaluationsController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void clearConsole() {
+        outputArea.clear();
+    }
+
+    @FXML
+    private void submitSolution() {
+        if (monacoFX == null || selectedEvaluation == null) return;
+
+        String studentOutput = outputArea.getText().trim();
+        String expectedOutput = selectedEvaluation.getExpectedOutput() != null
+            ? selectedEvaluation.getExpectedOutput().trim() : "";
+
+        if (studentOutput.isEmpty()
+                || studentOutput.equals("Compiling...")
+                || studentOutput.startsWith("Compilation Error")
+                || studentOutput.startsWith("Error")
+                || studentOutput.equals("Execution timed out.")) {
+            showAlert(Alert.AlertType.WARNING, "Run First",
+                "Please run your code successfully before submitting.");
+            return;
+        }
+
+        boolean passed = compareOutputs(studentOutput, expectedOutput);
+
+        if (passed) {
+            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+            confirm.setTitle("✅ Output Matches!");
+            confirm.setHeaderText("Your output matches the expected output!");
+            confirm.setContentText(
+                "Would you like to submit and generate your certificate?");
+
+            if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+                try {
+                    selectedEvaluation.setStatus("graded");
+                    selectedEvaluation.setScore(100f);
+                    selectedEvaluation.setComment(
+                        "Automated evaluation: Output matched successfully.");
+                    selectedEvaluation.setCodeContent(
+                        monacoFX.getEditor().getDocument().getText());
+                    service.update(selectedEvaluation);
+
+                    String certPath = certificationService.generateCertificate(
+                        loggedInUser, selectedEvaluation);
+
+                    if (selectedEvaluation.getCompetence() != null) {
+                        entities.Competence comp = selectedEvaluation.getCompetence();
+                        comp.setCertificate(certPath);
+                        competenceService.update(comp);
+                    }
+
+                    submitButton.setDisable(true);
+                    showAlert(Alert.AlertType.INFORMATION, "🎓 Certified!",
+                        "Congratulations! Your certificate has been saved to:\n"
+                        + certPath);
+                    refreshTable();
+                } catch (Exception e) {
+                    showAlert(Alert.AlertType.ERROR, "Error",
+                        "Failed to generate certification: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            showAlert(Alert.AlertType.ERROR, "❌ Output Mismatch",
+                "Your output does not match the expected output.\n\n" +
+                "Expected:\n" + expectedOutput + "\n\n" +
+                "Your output:\n" + studentOutput + "\n\n" +
+                "Please review your code and try again.");
+        }
+    }
+
+    private boolean compareOutputs(String actual, String expected) {
+        if (expected == null || expected.isEmpty()) return true;
+        String[] actualLines = actual.trim().split("\\r?\\n");
+        String[] expectedLines = expected.trim().split("\\r?\\n");
+        if (actualLines.length != expectedLines.length) return false;
+        for (int i = 0; i < actualLines.length; i++) {
+            if (!actualLines[i].trim().equalsIgnoreCase(expectedLines[i].trim())) {
+                return false;
+            }
+        }
+        return true;
     }
 }
