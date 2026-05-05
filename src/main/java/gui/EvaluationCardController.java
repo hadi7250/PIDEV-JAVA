@@ -57,6 +57,12 @@ public class EvaluationCardController {
 
     @FXML
     private void handleTakeEvaluation() {
+        System.out.println("=== DEBUG: handleTakeEvaluation called ===");
+        System.out.println("evaluation is null? " + (evaluation == null));
+        System.out.println("parentController is null? " + (parentController == null));
+        if (evaluation != null) {
+            System.out.println("Evaluation title: " + evaluation.getTitle());
+        }
         parentController.openEditor(evaluation);
     }
-}stud
+}

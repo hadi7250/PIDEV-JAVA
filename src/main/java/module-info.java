@@ -3,6 +3,7 @@ module pidev.java {
     requires javafx.fxml;
     requires java.sql;
     requires java.desktop;
+    requires java.compiler;
     requires com.opencsv;
     requires org.hibernate.validator;
     requires jakarta.validation;

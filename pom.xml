@@ -149,6 +149,18 @@
                 <version>${javafx.maven.plugin.version}</version>
                 <configuration>
                     <mainClass>main.TestFX</mainClass>
+                    <options>
+                        <option>--add-exports</option>
+                        <option>javafx.graphics/com.sun.javafx.sg.prism=ALL-UNNAMED</option>
+                        <option>--add-exports</option>
+                        <option>javafx.graphics/com.sun.javafx.scene=ALL-UNNAMED</option>
+                        <option>--add-exports</option>
+                        <option>javafx.graphics/com.sun.javafx.util=ALL-UNNAMED</option>
+                        <option>--add-exports</option>
+                        <option>javafx.base/com.sun.javafx.event=ALL-UNNAMED</option>
+                        <option>--add-exports</option>
+                        <option>javafx.web/com.sun.webkit=ALL-UNNAMED</option>
+                    </options>
                 </configuration>
             </plugin>
         </plugins>

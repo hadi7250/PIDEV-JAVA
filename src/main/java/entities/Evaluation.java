@@ -16,6 +16,7 @@ public class Evaluation {
     private boolean isCodeEvaluation;
     private Competence competence;
     private Float weight;
+    private String expectedOutput;
 
     public Evaluation() {
     }
@@ -99,6 +100,9 @@ public class Evaluation {
 
     public Float getWeight() { return weight; }
     public void setWeight(Float weight) { this.weight = weight; }
+
+    public String getExpectedOutput() { return expectedOutput; }
+    public void setExpectedOutput(String expectedOutput) { this.expectedOutput = expectedOutput; }
 
     @Override
     public String toString() {

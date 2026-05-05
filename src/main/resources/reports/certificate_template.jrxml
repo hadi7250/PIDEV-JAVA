@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="Certificate" pageWidth="842" pageHeight="595"
+              orientation="Landscape"
+              columnWidth="802" leftMargin="20" rightMargin="20"
+              topMargin="20" bottomMargin="20"
+              uuid="d6e32d1e-8e8e-4e8e-8e8e-8e8e8e8e8e8e">
+
+    <parameter name="studentName" class="java.lang.String"/>
+    <parameter name="evaluationTitle" class="java.lang.String"/>
+    <parameter name="competenceTitle" class="java.lang.String"/>
+    <parameter name="date" class="java.lang.String"/>
+    <parameter name="score" class="java.lang.String"/>
+    <parameter name="certificateId" class="java.lang.String"/>
+    <parameter name="percentage" class="java.lang.String"/>
+    <parameter name="generatedDate" class="java.lang.String"/>
+
+    <title>
+        <band height="555" splitType="Stretch">
+
+            <!-- Outer border - dark navy -->
+            <rectangle>
+                <reportElement x="0" y="0" width="802" height="555" backcolor="#1A1A2E" uuid="a1b2c3d4-e5f6-7890-abcd-ef1234567890"/>
+                <graphicElement>
+                    <pen lineWidth="0.0"/>
+                </graphicElement>
+            </rectangle>
+
+            <!-- Inner white area -->
+            <rectangle>
+                <reportElement x="15" y="15" width="772" height="525" backcolor="#FFFFFF" uuid="b2c3d4e5-f6a7-8901-bcde-f23456789012"/>
+                <graphicElement>
+                    <pen lineWidth="0.0"/>
+                </graphicElement>
+            </rectangle>
+
+            <!-- Gold inner border -->
+            <rectangle>
+                <reportElement x="25" y="25" width="752" height="505" backcolor="#FFFFFF" uuid="c3d4e5f6-a7b8-9012-cdef-345678901234"/>
+                <graphicElement>
+                    <pen lineWidth="2.5" lineStyle="Solid" lineColor="#C9A84C"/>
+                </graphicElement>
+            </rectangle>
+
+            <!-- Top header band - dark navy -->
+            <rectangle>
+                <reportElement x="25" y="25" width="752" height="100" backcolor="#1A1A2E" uuid="d4e5f6a7-b8c9-0123-def0-456789012345"/>
+                <graphicElement>
+                    <pen lineWidth="0.0"/>
+                </graphicElement>
+            </rectangle>
+
+            <!-- Institution name in header -->
+            <staticText>
+                <reportElement x="25" y="30" width="752" height="35" forecolor="#C9A84C" uuid="e5f6a7b8-c9d0-1234-ef01-567890123456"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="20" isBold="true"/>
+                </textElement>
+                <text><![CDATA[EDUCONNECT — ÉCOLE SUPÉRIEURE D'INGÉNIERIE]]></text>
+            </staticText>
+
+            <staticText>
+                <reportElement x="25" y="65" width="752" height="20" forecolor="#FFFFFF" uuid="f6a7b8c9-d0e1-2345-f012-678901234567"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="11"/>
+                </textElement>
+                <text><![CDATA[Excellence in Technology Education · ESPRIT]]></text>
+            </staticText>
+
+            <!-- Gold divider line -->
+            <line>
+                <reportElement x="100" y="135" width="602" height="1" forecolor="#C9A84C" uuid="a7b8c9d0-e1f2-3456-0123-789012345678"/>
+                <graphicElement>
+                    <pen lineWidth="1.5"/>
+                </graphicElement>
+            </line>
+
+            <!-- CERTIFICATE OF COMPLETION title -->
+            <staticText>
+                <reportElement x="25" y="145" width="752" height="50" forecolor="#1A1A2E" uuid="b8c9d0e1-f2a3-4567-1234-890123456789"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="32" isBold="true"/>
+                </textElement>
+                <text><![CDATA[CERTIFICATE OF COMPLETION]]></text>
+            </staticText>
+
+            <!-- Gold divider line -->
+            <line>
+                <reportElement x="100" y="200" width="602" height="1" forecolor="#C9A84C" uuid="c9d0e1f2-a3b4-5678-2345-901234567890"/>
+                <graphicElement>
+                    <pen lineWidth="1.5"/>
+                </graphicElement>
+            </line>
+
+            <!-- "This is to certify that" -->
+            <staticText>
+                <reportElement x="25" y="215" width="752" height="25" forecolor="#555555" uuid="d0e1f2a3-b4c5-6789-3456-012345678901"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="13" isItalic="true"/>
+                </textElement>
+                <text><![CDATA[This is to certify that]]></text>
+            </staticText>
+
+            <!-- Student name - large and prominent -->
+            <textField>
+                <reportElement x="25" y="240" width="752" height="55" forecolor="#1A1A2E" uuid="e1f2a3b4-c5d6-7890-4567-123456789012"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="36" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{studentName}]]></textFieldExpression>
+            </textField>
+
+            <!-- "has successfully completed the code evaluation" -->
+            <staticText>
+                <reportElement x="25" y="295" width="752" height="22" forecolor="#555555" uuid="f2a3b4c5-d6e7-8901-5678-234567890123"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="13"/>
+                </textElement>
+                <text><![CDATA[has successfully completed the code evaluation]]></text>
+            </staticText>
+
+            <!-- Evaluation title -->
+            <textField>
+                <reportElement x="25" y="317" width="752" height="35" forecolor="#C9A84C" uuid="a3b4c5d6-e7f8-9012-6789-345678901234"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="20" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA["« " + $P{evaluationTitle} + " »"]]></textFieldExpression>
+            </textField>
+
+            <!-- Score badge background -->
+            <rectangle>
+                <reportElement x="351" y="360" width="100" height="35" backcolor="#1A1A2E" uuid="b4c5d6e7-f8a9-0123-7890-456789012345"/>
+                <graphicElement>
+                    <pen lineWidth="0.0"/>
+                </graphicElement>
+            </rectangle>
+
+            <!-- Score text -->
+            <textField>
+                <reportElement x="351" y="360" width="100" height="35" forecolor="#C9A84C" uuid="c5d6e7f8-a9b0-1234-8901-567890123456"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="16" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Score: " + $P{score} + "/100"]]></textFieldExpression>
+            </textField>
+
+            <!-- Bottom divider -->
+            <line>
+                <reportElement x="100" y="410" width="602" height="1" forecolor="#C9A84C" uuid="d6e7f8a9-b0c1-2345-9012-678901234567"/>
+                <graphicElement>
+                    <pen lineWidth="1.5"/>
+                </graphicElement>
+            </line>
+
+            <!-- Date - left -->
+            <textField>
+                <reportElement x="50" y="420" width="250" height="20" forecolor="#555555" uuid="e7f8a9b0-c1d2-3456-0123-789012345678"/>
+                <textElement textAlignment="Left" verticalAlignment="Middle">
+                    <font size="11"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Date Issued: " + $P{date}]]></textFieldExpression>
+            </textField>
+
+            <!-- Certificate ID - right -->
+            <textField>
+                <reportElement x="502" y="420" width="275" height="20" forecolor="#555555" uuid="f8a9b0c1-d2e3-4567-1234-890123456789"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font size="11"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Certificate ID: " + $P{certificateId}]]></textFieldExpression>
+            </textField>
+
+            <!-- Footer text -->
+            <staticText>
+                <reportElement x="25" y="490" width="752" height="20" forecolor="#AAAAAA" uuid="a9b0c1d2-e3f4-5678-2345-901234567890"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="9"/>
+                </textElement>
+                <text><![CDATA[This certificate is issued by EduConnect and confirms the successful completion of the above-mentioned evaluation.]]></text>
+            </staticText>
+
+        </band>
+    </title>
+</jasperReport>

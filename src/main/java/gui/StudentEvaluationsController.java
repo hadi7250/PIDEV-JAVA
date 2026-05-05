@@ -2,7 +2,6 @@ package gui;
 
 import entities.Evaluation;
 import entities.User;
-import eu.mihosoft.monacofx.MonacoFX;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -62,7 +61,7 @@ public class StudentEvaluationsController implements Initializable {
     private ObservableList<Evaluation> allEvaluations = FXCollections.observableArrayList();
     private boolean isDarkMode = false;
     private Evaluation selectedEvaluation;
-    private MonacoFX monacoFX;
+    private TextArea codeEditor;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -76,8 +75,6 @@ public class StudentEvaluationsController implements Initializable {
         // Status filter
         statusFilter.setItems(FXCollections.observableArrayList("All", "pending", "graded"));
         statusFilter.setValue("All");
-
-        // MonacoFX will be initialized lazily in loadEvaluationMode()
 
         // Search and filter listeners
         searchField.textProperty().addListener((obs, oldVal, newVal) -> applyFilters());
@@ -100,29 +97,28 @@ public class StudentEvaluationsController implements Initializable {
     private void loadEvaluationMode() {
         if (selectedEvaluation == null) return;
 
-        if (monacoFX == null) {
-            // Initialize MonacoFX lazily
-            monacoFX = new MonacoFX();
-            editorContainer.getChildren().setAll(monacoFX);
-
+        if (codeEditor == null) {
+            codeEditor = new TextArea();
+            codeEditor.setStyle("-fx-font-family: 'Consolas', monospace; -fx-font-size: 13px; -fx-background-color: #1e1e1e; -fx-text-fill: #e0e0e0;");
+            codeEditor.setWrapText(false);
+            editorContainer.getChildren().setAll(codeEditor);
+            VBox.setVgrow(codeEditor, javafx.scene.layout.Priority.ALWAYS);
+            
             // Character counter
-            monacoFX.getEditor().getDocument().textProperty().addListener((obs, oldVal, newVal) -> {
+            codeEditor.textProperty().addListener((obs, oldVal, newVal) -> {
                 if (newVal != null) {
                     charCountLabel.setText(newVal.length() + " chars");
                 }
             });
-
-            // Theme sync
+            
+            // Theme sync for TextArea
             themeCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
-                if (monacoFX != null) {
-                    monacoFX.getEditor().setCurrentTheme(newVal);
-                }
-            });
-
-            // Language sync
-            languageCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
-                if (monacoFX != null) {
-                    monacoFX.getEditor().setCurrentLanguage(newVal.toLowerCase());
+                if (codeEditor != null) {
+                    if ("vs-dark".equals(newVal)) {
+                        codeEditor.setStyle("-fx-font-family: 'Consolas', monospace; -fx-font-size: 13px; -fx-background-color: #1e1e1e; -fx-text-fill: #e0e0e0;");
+                    } else {
+                        codeEditor.setStyle("-fx-font-family: 'Consolas', monospace; -fx-font-size: 13px; -fx-background-color: #ffffff; -fx-text-fill: #000000;");
+                    }
                 }
             });
         }
@@ -133,8 +129,7 @@ public class StudentEvaluationsController implements Initializable {
         hintsArea.setText(selectedEvaluation.getComment() != null ? selectedEvaluation.getComment() : "No hints provided.");
 
         String lang = selectedEvaluation.getLanguage() != null ? selectedEvaluation.getLanguage() : "Java";
-        monacoFX.getEditor().setCurrentLanguage(lang.toLowerCase());
-        monacoFX.getEditor().getDocument().setText(selectedEvaluation.getCodeContent() != null ? selectedEvaluation.getCodeContent() : "// Write your code here");
+        codeEditor.setText(selectedEvaluation.getCodeContent() != null ? selectedEvaluation.getCodeContent() : "// Write your code here");
         languageCombo.setValue(lang);
     }
 
@@ -142,10 +137,7 @@ public class StudentEvaluationsController implements Initializable {
     private void handleSaveAnswer() {
         if (selectedEvaluation == null) return;
 
-        String answer = selectedEvaluation.isCodeEvaluation() 
-            ? monacoFX.getEditor().getDocument().getText()
-            : regularAnswerArea.getText();
-
+        String answer = codeEditor.getText();
         selectedEvaluation.setCodeContent(answer);
         
         try {
@@ -159,8 +151,8 @@ public class StudentEvaluationsController implements Initializable {
 
     @FXML
     private void runCode() {
-        if (monacoFX == null) return;
-        String code = monacoFX.getEditor().getDocument().getText();
+        if (codeEditor == null) return;
+        String code = codeEditor.getText();
         if (code == null || code.trim().isEmpty()) return;
 
         runButton.setDisable(true);
@@ -388,7 +380,7 @@ public class StudentEvaluationsController implements Initializable {
 
     @FXML
     private void submitSolution() {
-        if (monacoFX == null || selectedEvaluation == null) return;
+        if (codeEditor == null || selectedEvaluation == null) return;
 
         String studentOutput = outputArea.getText().trim();
         String expectedOutput = selectedEvaluation.getExpectedOutput() != null
@@ -419,8 +411,7 @@ public class StudentEvaluationsController implements Initializable {
                     selectedEvaluation.setScore(100f);
                     selectedEvaluation.setComment(
                         "Automated evaluation: Output matched successfully.");
-                    selectedEvaluation.setCodeContent(
-                        monacoFX.getEditor().getDocument().getText());
+                    selectedEvaluation.setCodeContent(codeEditor.getText());
                     service.update(selectedEvaluation);
 
                     String certPath = certificationService.generateCertificate(
