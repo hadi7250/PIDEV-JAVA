@@ -1,0 +1,133 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Message - Forum - {{ parent() }}{% endblock %}
+
+{% block body %}
+<div class="page-wrapper">
+    <!-- Preloader -->
+    <div class="loader-wrap">
+        <div class="preloader">
+            <div class="preloader-close">x</div>
+            <div id="handle-preloader" class="handle-preloader">
+                <div class="animation-preloader">
+                    <div class="txt-loading">
+                        <span data-text-preloader="E" class="letters-loading">E</span>
+                        <span data-text-preloader="D" class="letters-loading">D</span>
+                        <span data-text-preloader="I" class="letters-loading">I</span>
+                        <span data-text-preloader="T" class="letters-loading">T</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Header -->
+    <header class="main-header header-style-one">
+        <div class="header-lower">
+            <div class="auto-container">
+                <div class="inner-container">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap">
+                        
+                        <div class="logo-box">
+                            <div class="logo"><a href="{{ path('app_homepage') }}"><img src="{{ asset('assets_front/images/logo.svg') }}" alt="" title=""></a></div>
+                        </div>
+                        
+                        <div class="nav-outer d-flex flex-wrap">
+                            <!-- Main Menu -->
+                            <nav class="main-menu navbar-expand-md">
+                                <div class="navbar-header">
+                                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                                        <span class="icon-bar"></span>
+                                        <span class="icon-bar"></span>
+                                        <span class="icon-bar"></span>
+                                    </button>
+                                </div>
+                                
+                                <div class="navbar-collapse collapse clearfix" id="navbarSupportedContent">
+                                    <ul class="navigation clearfix">
+                                        <li><a href="{{ path('app_homepage') }}">Home</a></li>
+                                        <li><a href="{{ path('forum_index') }}">Forum</a></li>
+                                        <li class="current"><a href="#">Edit Message</a></li>
+                                    </ul>
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Content -->
+    <section class="forum-section" style="padding: 120px 0 80px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="forum-card" style="background: rgba(255,255,255,0.1); border-radius: 20px; padding: 40px; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(10px);">
+                        
+                        <!-- Header -->
+                        <div class="text-center mb-5">
+                            <h2 class="text-white mb-3">Edit Message</h2>
+                            <p class="text-white-50">Update your message content</p>
+                        </div>
+
+                        <!-- Discussion Context -->
+                        <div class="discussion-context mb-4 p-3" style="background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+                            <h5 class="text-white mb-2">Discussion: {{ message.discussion.title }}</h5>
+                            <p class="text-white-50 small mb-0">
+                                <i class="fa fa-comments me-2"></i>
+                                Originally posted on {{ message.createdAt|date('F j, Y, g:i a') }}
+                            </p>
+                        </div>
+
+                        <!-- Edit Form -->
+                        {{ form_start(form, {'attr': {'class': 'forum-form'}}) }}
+                            
+                            <!-- Content Field -->
+                            <div class="form-group mb-4">
+                                {{ form_label(form.content, null, {'label_attr': {'class': 'text-white mb-2'}}) }}
+                                {{ form_widget(form.content, {'attr': {'class': 'form-control', 'style': 'background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 12px 15px; border-radius: 8px; min-height: 150px;'}}) }}
+                                {% if form.content.vars.errors|length > 0 %}
+                                    <div class="text-danger mt-2">
+                                        {% for error in form.content.vars.errors %}
+                                            <small>{{ error.message }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Form Actions -->
+                            <div class="form-group text-center mt-5">
+                                <div class="d-inline-flex align-items-center gap-3">
+                                    <button type="submit" class="template-btn btn-style-one" style="background: #667eea; color: white; padding: 12px 30px; border: none; border-radius: 25px;">
+                                        <span class="btn-wrap">
+                                            <span class="text-one">Update</span>
+                                            <span class="text-two">Update</span>
+                                        </span>
+                                    </button>
+                                    <a href="{{ path('forum_discussion', {'id': message.discussion.id}) }}" class="template-btn btn-style-two" style="background: rgba(255,255,255,0.2); color: white; padding: 12px 30px; border: 1px solid rgba(255,255,255,0.3); border-radius: 25px; text-decoration: none; display: inline-block;">
+                                        Cancel
+                                    </a>
+                                </div>
+                            </div>
+
+                        {{ form_end(form) }}
+
+                        <!-- Community Guidelines -->
+                        <div class="community-guidelines mt-5 p-3" style="background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+                            <h5 class="text-white mb-2">Community Guidelines</h5>
+                            <ul class="text-white-50 small mb-0" style="list-style: none; padding-left: 0;">
+                                <li><i class="fa fa-check-circle me-2"></i>Be respectful and constructive</li>
+                                <li><i class="fa fa-check-circle me-2"></i>Keep content relevant to the discussion</li>
+                                <li><i class="fa fa-check-circle me-2"></i>Provide helpful and informative responses</li>
+                                <li><i class="fa fa-check-circle me-2"></i>Avoid spam and off-topic content</li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

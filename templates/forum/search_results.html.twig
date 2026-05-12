@@ -1,0 +1,226 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Search Results for "{{ query }}" - Forum - {{ parent() }}{% endblock %}
+
+{% block body %}
+<div class="page-wrapper">
+    <!-- Preloader -->
+    <div class="loader-wrap">
+        <div class="preloader">
+            <div class="preloader-close">x</div>
+            <div id="handle-preloader" class="handle-preloader">
+                <div class="animation-preloader">
+                    <div class="txt-loading">
+                        <span data-text-preloader="S" class="letters-loading">S</span>
+                        <span data-text-preloader="E" class="letters-loading">E</span>
+                        <span data-text-preloader="A" class="letters-loading">A</span>
+                        <span data-text-preloader="R" class="letters-loading">R</span>
+                        <span data-text-preloader="C" class="letters-loading">C</span>
+                        <span data-text-preloader="H" class="letters-loading">H</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Header -->
+    <header class="main-header header-style-one">
+        <div class="header-lower">
+            <div class="auto-container">
+                <div class="inner-container">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap">
+                        
+                        <div class="logo-box">
+                            <div class="logo"><a href="{{ path('app_homepage') }}"><img src="{{ asset('assets_front/images/logo.svg') }}" alt="" title=""></a></div>
+                        </div>
+                        
+                        <div class="nav-outer d-flex flex-wrap">
+                            <!-- Main Menu -->
+                            <nav class="main-menu navbar-expand-md">
+                                <div class="navbar-header">
+                                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                                        <span class="icon-bar"></span>
+                                        <span class="icon-bar"></span>
+                                        <span class="icon-bar"></span>
+                                    </button>
+                                </div>
+                                
+                                <div class="navbar-collapse collapse clearfix" id="navbarSupportedContent">
+                                    <ul class="navigation clearfix">
+                                        <li><a href="{{ path('app_homepage') }}">Home</a></li>
+                                        <li><a href="{{ path('forum_index') }}">Forum</a></li>
+                                        <li class="current"><a href="#">Search Results</a></li>
+                                    </ul>
+                                </div>
+                            </nav>
+                        </div>
+
+                        <!-- Main Menu End-->
+                        <div class="outer-box d-flex align-items-center flex-wrap">
+                            {% if app.user %}
+                                <span class="welcome-text">Welcome, {{ (app.user.firstName ~ ' ' ~ app.user.lastName)|trim|default(app.user.email) }}</span>
+                                <a href="{{ path('forum_new_discussion') }}" class="template-btn btn-style-one">
+                                    <span class="btn-wrap">
+                                        <span class="text-one">New Discussion</span>
+                                        <span class="text-two">New Discussion</span>
+                                    </span>
+                                </a>
+                                <a href="{{ path('app_logout') }}" class="template-btn btn-style-two">
+                                    <span class="btn-wrap">
+                                        <span class="text-one">Logout</span>
+                                        <span class="text-two">Logout</span>
+                                    </span>
+                                </a>
+                            {% else %}
+                                <a href="{{ path('app_login') }}" class="template-btn btn-style-two">
+                                    <span class="btn-wrap">
+                                        <span class="text-one">Login</span>
+                                        <span class="text-two">Login</span>
+                                    </span>
+                                </a>
+                                <a href="{{ path('app_register') }}" class="template-btn btn-style-one">
+                                    <span class="btn-wrap">
+                                        <span class="text-one">Join now</span>
+                                        <span class="text-two">Join now</span>
+                                    </span>
+                                </a>
+                            {% endif %}
+                        </div>
+
+                        <!-- Mobile Navigation Toggler -->
+                        <div class="mobile-nav-toggler">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-menu-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 6l16 0" /><path d="M4 12l16 0" /><path d="M4 18l16 0" /></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Search Results -->
+    <section class="search-results-section" style="padding: 60px 0;">
+        <div class="auto-container">
+            <!-- Search Header -->
+            <div class="search-header text-center mb-5">
+                <h2 class="text-white mb-3">Search Results</h2>
+                <p class="text-white-50">
+                    Found {{ discussions|length }} result{{ discussions|length != 1 ? 's' : '' }} for "<strong>{{ query }}</strong>"
+                </p>
+                
+                <!-- Search Form -->
+                <form action="{{ path('forum_search') }}" method="GET" class="d-flex justify-content-center mt-4">
+                    <input type="text" name="q" value="{{ query }}" class="form-control" style="background: white; color: #333; border: 1px solid #ddd; max-width: 400px;" placeholder="Search discussions...">
+                    <button type="submit" class="template-btn btn-style-one ms-2">
+                        <span class="btn-wrap">
+                            <span class="text-one">Search</span>
+                            <span class="text-two">Search</span>
+                        </span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Results List -->
+            {% if discussions %}
+                <div class="results-list">
+                    {% for discussion in discussions %}
+                        <div class="result-item" style="background: rgba(255,255,255,0.05); border-radius: 15px; padding: 25px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s ease;">
+                            <div class="row align-items-center">
+                                <div class="col-lg-8">
+                                    <h4 class="result-title mb-2">
+                                        <a href="{{ path('forum_discussion', {'id': discussion.id}) }}" style="color: white; text-decoration: none; font-size: 1.3rem;">
+                                            {{ discussion.title }}
+                                        </a>
+                                    </h4>
+                                    <p class="result-preview mb-3" style="color: rgba(255,255,255,0.7);">
+                                        {{ discussion.content|slice(0, 200) }}...
+                                    </p>
+                                    <div class="result-meta" style="color: rgba(255,255,255,0.6); font-size: 14px;">
+                                        <span><i class="fa fa-user"></i> {{ discussion.authorName }}</span>
+                                        <span class="ms-3"><i class="fa fa-clock"></i> {{ discussion.createdAt|date('M d, Y H:i') }}</span>
+                                        <span class="ms-3"><i class="fa fa-folder"></i> <a href="{{ path('forum_category', {'id': discussion.category.id}) }}" style="color: #667eea;">{{ discussion.category.name }}</a></span>
+                                        {% if discussion.updatedAt > discussion.createdAt %}
+                                            <span class="ms-3"><i class="fa fa-edit"></i> Updated {{ discussion.updatedAt|date('M d, Y H:i') }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 text-right">
+                                    <div class="result-stats">
+                                        <div class="stat-item mb-2">
+                                            <span class="stat-number" style="color: #667eea; font-size: 1.5rem; font-weight: bold;">{{ discussion.messageCount|default(0) }}</span>
+                                            <div class="stat-label" style="color: rgba(255,255,255,0.6); font-size: 12px;">REPLIES</div>
+                                        </div>
+                                        <a href="{{ path('forum_discussion', {'id': discussion.id}) }}" class="btn btn-sm" style="background: #667eea; color: white; border: none; padding: 8px 20px; border-radius: 25px;">
+                                            View Discussion
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-results text-center" style="padding: 80px 0;">
+                    <i class="fa fa-search fa-5x mb-4" style="color: rgba(255,255,255,0.3);"></i>
+                    <h3 class="text-white mb-3">No Results Found</h3>
+                    <p class="text-white-50 mb-4">No discussions found matching "{{ query }}". Try different keywords or browse categories.</p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="{{ path('forum_index') }}" class="template-btn btn-style-one">
+                            <span class="btn-wrap">
+                                <span class="text-one">Browse Forum</span>
+                                <span class="text-two">Browse Forum</span>
+                            </span>
+                        </a>
+                        <a href="{{ path('forum_new_discussion') }}" class="template-btn btn-style-two">
+                            <span class="btn-wrap">
+                                <span class="text-one">Start Discussion</span>
+                                <span class="text-two">Start Discussion</span>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+</div>
+
+<style>
+.result-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+    background: rgba(255,255,255,0.08) !important;
+}
+
+.text-white-50 {
+    color: rgba(255,255,255,0.5) !important;
+}
+
+.stat-item {
+    display: inline-block;
+    text-align: center;
+    min-width: 80px;
+}
+
+/* Highlight search terms */
+.highlight {
+    background: rgba(255, 235, 59, 0.3);
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-weight: 600;
+}
+</style>
+
+<!-- Scripts -->
+<script src="{{ asset('assets_front/js/jquery.js') }}"></script>
+<script>
+$(document).ready(function() {
+    $('.loader-wrap').fadeOut(500);
+});
+
+// Custom highlight function (you may need to implement this in Twig)
+function highlightText(text, query) {
+    if (!query) return text;
+    var regex = new RegExp('(' + query + ')', 'gi');
+    return text.replace(regex, '<span class="highlight">$1</span>');
+}
+</script>
+{% endblock %}

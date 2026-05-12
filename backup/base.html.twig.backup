@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Education App{% endblock %}</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Material+Icons+Outlined" rel="stylesheet">
+    
+    <!-- Frontend CSS -->
+    <link rel="stylesheet" href="{{ asset('assets_front/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets_front/css/animate.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets_front/css/swiper.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets_front/css/magnific-popup.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets_front/css/odometer-theme-default.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets_front/css/font-awesome.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets_front/css/icomoon-style.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets_front/css/jquery.bootstrap-touchspin.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets_front/css/meanmenu.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets_front/css/custom-animate.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets_front/css/header.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets_front/css/footer.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets_front/css/global.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets_front/css/hover.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets_front/css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets_front/css/responsive.css') }}">
+    
+    {% block stylesheets %}{% endblock %}
+</head>
+<body class="custom-cursor">
+    {% block body %}{% endblock %}
+    
+    <!-- Frontend JS -->
+    <script src="{{ asset('assets_front/js/jquery.min.js') }}"></script>
+    <script src="{{ asset('assets_front/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('assets_front/js/swiper.min.js') }}"></script>
+    <script src="{{ asset('assets_front/js/jquery.magnific-popup.min.js') }}"></script>
+    <script src="{{ asset('assets_front/js/odometer.min.js') }}"></script>
+    <script src="{{ asset('assets_front/js/wow.min.js') }}"></script>
+    <script src="{{ asset('assets_front/js/parallax-scroll.js') }}"></script>
+    <script src="{{ asset('assets_front/js/jquery.meanmenu.js') }}"></script>
+    <script src="{{ asset('assets_front/js/custom.js') }}"></script>
+    
+    {% block javascripts %}{% endblock %}
+</body>
+</html>

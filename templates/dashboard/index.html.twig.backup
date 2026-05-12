@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="blue-theme">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Maxton | Bootstrap 5 Admin Dashboard Template</title>
+    
+    <!-- Load ALL CSS files from public/assets_back/ -->
+    <link rel="icon" href="{{ asset('assets_back/images/favicon-32x32.png') }}" type="image/png">
+    <link href="{{ asset('assets_back/css/pace.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets_back/plugins/perfect-scrollbar/css/perfect-scrollbar.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets_back/plugins/metismenu/metisMenu.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets_back/plugins/metismenu/mm-vertical.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets_back/plugins/simplebar/css/simplebar.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets_back/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Material+Icons+Outlined" rel="stylesheet">
+    <link href="{{ asset('assets_back/css/bootstrap-extended.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets_back/sass/main.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets_back/sass/dark-theme.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets_back/sass/blue-theme.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets_back/sass/semi-dark.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets_back/sass/bordered-theme.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets_back/sass/responsive.css') }}" rel="stylesheet">
+    
+    <!-- Custom CSS Fixes -->
+    <style>
+        /* 1. Fix Search Bar */
+        .header-search .search-input input {
+            padding: 0.5rem 1rem 0.5rem 3rem !important;
+            background-position: 1rem center !important;
+            background-size: 20px 20px !important;
+            height: 40px !important;
+            font-size: 0.875rem !important;
+            border: 1px solid #dee2e6 !important;
+            border-radius: 6px !important;
+            width: 250px !important;
+        }
+        
+        .header-search .search-input {
+            position: relative;
+        }
+        
+        .header-search .search-input .material-icons-outlined {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px !important;
+            color: #6c757d;
+        }
+        
+        /* 2. Fix Language Selector */
+        .language-dropdown .btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            background: white;
+            font-size: 0.875rem;
+        }
+        
+        .language-dropdown .btn img {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+        }
+        
+        /* 3. Fix User Profile */
+        .user-dropdown .btn {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            background: white;
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .user-name {
+            font-size: 0.875rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        /* 4. Fix Customize Button */
+        .btn-customize {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            border-radius: 50px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            background: #0d6efd;
+            color: white;
+            border: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .btn-customize:hover {
+            background: #0b5ed7;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* 5. Fix Performance Metrics Bar */
+        .performance-metrics {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #212529;
+            color: #adb5bd;
+            padding: 0.5rem 1rem;
+            font-size: 0.75rem;
+            border-top: 1px solid #495057;
+            display: flex;
+            justify-content: space-between;
+            z-index: 1030;
+        }
+        
+        /* 6. Fix Header Alignment */
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        /* 7. Ensure proper icon sizing */
+        .material-icons-outlined {
+            font-size: 20px !important;
+            vertical-align: middle;
+        }
+        
+        /* 8. Fix dropdown menus */
+        .dropdown-menu {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dropdown-item {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+        
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        /* 9. Fix responsive behavior */
+        @media (max-width: 768px) {
+            .header-search .search-input input {
+                width: 100% !important;
+            }
+            
+            .language-dropdown .btn span,
+            .user-dropdown .btn .user-name {
+                display: none !important;
+            }
+            
+            .header-right {
+                gap: 0.5rem;
+            }
+        }
+        
+        /* 10. Fix header search icon positioning */
+        .header-search .search-input {
+            position: relative;
+        }
+        
+        .header-search .search-input .material-icons-outlined {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            font-size: 18px !important;
+            color: #6c757d;
+        }
+        
+        /* 11. Fix header overall styling */
+        .header {
+            background: white;
+            border-bottom: 1px solid #dee2e6;
+            padding: 0.5rem 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* 12. Fix dropdown arrows */
+        .dropdown-toggle::after {
+            border-top: 0.3em solid;
+            border-right: 0.3em solid transparent;
+            border-bottom: 0;
+            border-left: 0.3em solid transparent;
+            margin-left: 0.5rem;
+        }
+        
+        /* 13. Fix notification badge */
+        .badge-notify {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        
+        /* 14. Fix apps dropdown grid */
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            padding: 0.5rem;
+            min-width: 300px;
+        }
+        
+        .app-item {
+            text-align: center;
+            padding: 0.5rem;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+        
+        .app-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .app-item a {
+            text-decoration: none;
+            color: inherit;
+            font-size: 0.75rem;
+        }
+        
+        .app-item img {
+            width: 32px;
+            height: 32px;
+            margin-bottom: 0.25rem;
+        }
+        
+        /* 15. Fix notification items */
+        .notify-item {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #f1f3f5;
+            transition: background-color 0.2s;
+        }
+        
+        .notify-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .notify-item:last-child {
+            border-bottom: none;
+        }
+        
+        /* 16. Fix metrics bar spacing */
+        .metrics-left {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .metrics-right {
+            font-weight: 500;
+        }
+        
+        /* 17. Fix button hover states */
+        .btn:hover {
+            transform: translateY(-1px);
+            transition: all 0.2s ease;
+        }
+        
+        /* 18. Fix card shadows */
+        .card {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: box-shadow 0.2s ease;
+        }
+        
+        .card:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+<!-- Start adding HTML chunks here -->
+
+<!-- CHUNK A: HEADER WITH MEGA MENU, LANGUAGE, NOTIFICATIONS -->
+<div class="header">
+    <div class="header-left">
+        <div class="menu-toggle">
+            <span class="material-icons-outlined">menu</span>
+        </div>
+        <div class="logo">
+            <a href="index.html">
+                <img src="{{ asset('assets_back/images/logo-icon.png') }}" alt="Logo">
+            </a>
+        </div>
+    </div>
+    <div class="header-right">
+        <div class="header-search">
+            <div class="search-input">
+                <span class="material-icons-outlined">search</span>
+                <input type="text" placeholder="Search...">
+            </div>
+        </div>
+        
+        <!-- LANGUAGE DROPDOWN -->
+        <div class="dropdown language-dropdown">
+            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                <img src="{{ asset('assets_back/images/county/01.png') }}" alt="Language">
+                <span>English</span>
+            </button>
+            <ul class="dropdown-menu">
+                {% for i in 1..8 %}
+                <li>
+                    <a class="dropdown-item" href="#">
+                        <img src="{{ asset('assets_back/images/county/0' ~ i ~ '.png') }}" alt="Language {{ i }}">
+                        {% if i == 1 %}English{% elseif i == 2 %}Spanish{% elseif i == 3 %}French{% elseif i == 4 %}German{% elseif i == 5 %}Italian{% elseif i == 6 %}Chinese{% elseif i == 7 %}Japanese{% elseif i == 8 %}Arabic{% endif %}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <!-- APPS DROPDOWN -->
+        <div class="dropdown apps-dropdown">
+            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                <span class="material-icons-outlined">apps</span>
+            </button>
+            <div class="dropdown-menu dropdown-menu-end">
+                <div class="apps-grid">
+                    {% for i in 1..12 %}
+                    <div class="app-item">
+                        <a href="#">
+                            <img src="{{ asset('assets_back/images/apps/' ~ (i < 10 ? '0' ~ i : i) ~ '.png') }}" alt="App {{ i }}">
+                            <span>App {{ i }}</span>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- NOTIFICATIONS DROPDOWN -->
+        <div class="dropdown notifications-dropdown">
+            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                <span class="material-icons-outlined">notifications</span>
+                <span class="badge">7</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                {% set notifications = [
+                    {icon: 'mail', text: 'New email received', time: '5 min ago'},
+                    {icon: 'person', text: 'New user registered', time: '10 min ago'},
+                    {icon: 'shopping_cart', text: 'New order placed', time: '15 min ago'},
+                    {icon: 'message', text: 'New message received', time: '20 min ago'},
+                    {icon: 'star', text: 'New review posted', time: '25 min ago'},
+                    {icon: 'warning', text: 'System warning', time: '30 min ago'},
+                    {icon: 'info', text: 'System update available', time: '1 hour ago'}
+                ] %}
+                {% for notification in notifications %}
+                <li>
+                    <a class="dropdown-item" href="#">
+                        <span class="material-icons-outlined">{{ notification.icon }}</span>
+                        <div class="notification-content">
+                            <p>{{ notification.text }}</p>
+                            <span class="time">{{ notification.time }}</span>
+                        </div>
+                    </a>
+                </li>
+                {% endfor %}
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#">View all notifications</a></li>
+            </ul>
+        </div>
+        
+        <!-- USER PROFILE -->
+        <div class="dropdown user-dropdown">
+            <button class="btn dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown">
+                <img src="{{ asset('assets_back/images/avatars/01.png') }}" alt="User" class="user-avatar">
+                <span class="user-name">{{ app.user ? app.user.email : 'Admin User' }}</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="#"><span class="material-icons-outlined">person</span> Profile</a></li>
+                <li><a class="dropdown-item" href="#"><span class="material-icons-outlined">settings</span> Settings</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{{ path('app_logout') }}"><span class="material-icons-outlined">logout</span> Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- CHUNK B: COMPLETE SIDEBAR -->
+<!--start sidebar-->
+<aside class="sidebar-wrapper" data-simplebar="true">
+    <div class="sidebar-header">
+        <div class="logo-icon">
+            <img src="{{ asset('assets_back/images/logo-icon.png') }}" class="logo-img" alt="">
+        </div>
+        <div class="logo-name flex-grow-1">
+            <h5 class="mb-0">Maxton</h5>
+        </div>
+        <div class="sidebar-close">
+            <span class="material-icons-outlined">close</span>
+        </div>
+    </div>
+    <div class="sidebar-nav">
+        <!--navigation-->
+        <ul class="metismenu" id="sidenav">
+            <li>
+                <a href="{{ path('dashboard_index') }}">
+                    <div class="parent-icon"><i class="material-icons-outlined">home</i></div>
+                    <div class="menu-title">Dashboard</div>
+                </a>
+            </li>
+            
+            <li class="menu-label">Users Management</li>
+            <li>
+                <a class="has-arrow" href="javascript:;">
+                    <div class="parent-icon"><i class="material-icons-outlined">people</i></div>
+                    <div class="menu-title">Users</div>
+                </a>
+                <ul>
+                    <li><a href="{{ path('user_datatable') }}"><i class="material-icons-outlined">arrow_right</i>All Users</a></li>
+                    <li><a href="{{ path('user_add') }}"><i class="material-icons-outlined">arrow_right</i>Add New User</a></li>
+                    <li><a href="{{ path('user_roles') }}"><i class="material-icons-outlined">arrow_right</i>Roles & Permissions</a></li>
+                </ul>
+            </li>
+            
+            <li class="menu-label">Courses Management</li>
+            <li>
+                <a class="has-arrow" href="javascript:;">
+                    <div class="parent-icon"><i class="material-icons-outlined">school</i></div>
+                    <div class="menu-title">Courses</div>
+                </a>
+                <ul>
+                    <li><a href="{{ path('course_datatable') }}"><i class="material-icons-outlined">arrow_right</i>All Courses</a></li>
+                    <li><a href="{{ path('add_course') }}"><i class="material-icons-outlined">arrow_right</i>Add Course</a></li>
+                    <li><a href="{{ path('course_categories') }}"><i class="material-icons-outlined">arrow_right</i>Categories</a></li>
+                </ul>
+            </li>
+            
+            <li class="menu-label">Quizzes Management</li>
+            <li>
+                <a class="has-arrow" href="javascript:;">
+                    <div class="parent-icon"><i class="material-icons-outlined">quiz</i></div>
+                    <div class="menu-title">Quizzes</div>
+                </a>
+                <ul>
+                    <li><a href="{{ path('quizz_datatable') }}"><i class="material-icons-outlined">arrow_right</i>All Quizzes</a></li>
+                    <li><a href="{{ path('add_quizz') }}"><i class="material-icons-outlined">arrow_right</i>Add Quiz</a></li>
+                    <li><a href="{{ path('quizz_results') }}"><i class="material-icons-outlined">arrow_right</i>Results</a></li>
+                </ul>
+            </li>
+            
+            <li class="menu-label">Content Management</li>
+            <li>
+                <a class="has-arrow" href="javascript:;">
+                    <div class="parent-icon"><i class="material-icons-outlined">article</i></div>
+                    <div class="menu-title">Posts & Events</div>
+                </a>
+                <ul>
+                    <li><a href="{{ path('add_post') }}"><i class="material-icons-outlined">arrow_right</i>Add Post</a></li>
+                    <li><a href="{{ path('add_event') }}"><i class="material-icons-outlined">arrow_right</i>Add Event</a></li>
+                    <li><a href="{{ path('feed_datatable') }}"><i class="material-icons-outlined">arrow_right</i>All Feeds</a></li>
+                    <li><a href="{{ path('event_datatable') }}"><i class="material-icons-outlined">arrow_right</i>All Events</a></li>
+                </ul>
+            </li>
+            
+            <li class="menu-label">Orders & E-commerce</li>
+            <li>
+                <a class="has-arrow" href="javascript:;">
+                    <div class="parent-icon"><i class="material-icons-outlined">shopping_cart</i></div>
+                    <div class="menu-title">Orders</div>
+                </a>
+                <ul>
+                    <li><a href="{{ path('ecommerce_orders') }}"><i class="material-icons-outlined">arrow_right</i>All Orders</a></li>
+                    <li><a href="{{ path('ecommerce_customers') }}"><i class="material-icons-outlined">arrow_right</i>Customers</a></li>
+                    <li><a href="{{ path('ecommerce_products') }}"><i class="material-icons-outlined">arrow_right</i>Products</a></li>
+                </ul>
+            </li>
+            
+            <li class="menu-label">Support</li>
+            <li>
+                <a class="has-arrow" href="javascript:;">
+                    <div class="parent-icon"><i class="material-icons-outlined">support_agent</i></div>
+                    <div class="menu-title">Support</div>
+                </a>
+                <ul>
+                    <li><a href="{{ path('reclamation_datatable') }}"><i class="material-icons-outlined">arrow_right</i>Reclamations</a></li>
+                    <li><a href="{{ path('support_tickets') }}"><i class="material-icons-outlined">arrow_right</i>Tickets</a></li>
+                    <li><a href="{{ path('faq_management') }}"><i class="material-icons-outlined">arrow_right</i>FAQ</a></li>
+                </ul>
+            </li>
+            
+            <li class="menu-label">Reports & Analytics</li>
+            <li>
+                <a class="has-arrow" href="javascript:;">
+                    <div class="parent-icon"><i class="material-icons-outlined">analytics</i></div>
+                    <div class="menu-title">Reports</div>
+                </a>
+                <ul>
+                    <li><a href="{{ path('reports_sales') }}"><i class="material-icons-outlined">arrow_right</i>Sales Reports</a></li>
+                    <li><a href="{{ path('reports_users') }}"><i class="material-icons-outlined">arrow_right</i>User Reports</a></li>
+                    <li><a href="{{ path('reports_courses') }}"><i class="material-icons-outlined">arrow_right</i>Course Reports</a></li>
+                </ul>
+            </li>
+            
+            <li class="menu-label">Settings</li>
+            <li>
+                <a class="has-arrow" href="javascript:;">
+                    <div class="parent-icon"><i class="material-icons-outlined">settings</i></div>
+                    <div class="menu-title">Settings</div>
+                </a>
+                <ul>
+                    <li><a href="{{ path('settings_general') }}"><i class="material-icons-outlined">arrow_right</i>General Settings</a></li>
+                    <li><a href="{{ path('settings_security') }}"><i class="material-icons-outlined">arrow_right</i>Security</a></li>
+                    <li><a href="{{ path('settings_notifications') }}"><i class="material-icons-outlined">arrow_right</i>Notifications</a></li>
+                    <li><a href="{{ path('settings_theme') }}"><i class="material-icons-outlined">arrow_right</i>Theme Settings</a></li>
+                </ul>
+            </li>
+            
+            <li>
+                <a href="{{ path('app_logout') }}">
+                    <div class="parent-icon"><i class="material-icons-outlined">logout</i></div>
+                    <div class="menu-title">Logout</div>
+                </a>
+            </li>
+        </ul>
+        <!--end navigation-->
+    </div>
+</aside>
+<!--end sidebar-->
+
+<!-- CHUNK C PART 1: MAIN CONTENT -->
+<!--start main wrapper-->
+<main class="main-wrapper">
+    <div class="main-content">
+        <!--breadcrumb-->
+        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+            <div class="breadcrumb-title pe-3">Dashboard</div>
+            <div class="ps-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 p-0">
+                        <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Analysis</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="ms-auto">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-outline-primary">Settings</button>
+                    <button type="button" class="btn btn-outline-primary split-bg-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">
+                        <span class="visually-hidden">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-end">
+                        <a class="dropdown-item" href="javascript:;">Action</a>
+                        <a class="dropdown-item" href="javascript:;">Another action</a>
+                        <a class="dropdown-item" href="javascript:;">Something else here</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="javascript:;">Separated link</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--end breadcrumb-->
+     
+        <div class="row">
+            <!-- Welcome Card -->
+            <div class="col-xxl-8 d-flex align-items-stretch">
+                <div class="card w-100 overflow-hidden rounded-4">
+                    <div class="card-body position-relative p-4">
+                        <div class="row">
+                            <div class="col-12 col-sm-7">
+                                <div class="d-flex align-items-center gap-3 mb-5">
+                                    <img src="{{ asset('assets_back/images/avatars/01.png') }}" class="rounded-circle bg-grd-info p-1" width="60" height="60" alt="user">
+                                    <div class="">
+                                        <p class="mb-0 fw-semibold">Welcome back</p>
+                                        <h4 class="fw-semibold mb-0 fs-4 mb-0">{{ app.user ? app.user.name : 'Admin' }}!</h4>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center gap-5">
+                                    <div class="">
+                                        <h4 class="mb-1 fw-semibold d-flex align-content-center">$65.4K<i class="ti ti-arrow-up-right fs-5 lh-base text-success"></i></h4>
+                                        <p class="mb-3">Today's Sales</p>
+                                        <div class="progress mb-0" style="height:5px;">
+                                            <div class="progress-bar bg-grd-success" role="progressbar" style="width: 60%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="vr"></div>
+                                    <div class="">
+                                        <h4 class="mb-1 fw-semibold d-flex align-content-center">78.4%<i class="ti ti-arrow-up-right fs-5 lh-base text-success"></i></h4>
+                                        <p class="mb-3">Growth Rate</p>
+                                        <div class="progress mb-0" style="height:5px;">
+                                            <div class="progress-bar bg-grd-danger" role="progressbar" style="width: 60%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-5">
+                                <div class="welcome-back-img pt-4">
+                                    <img src="{{ asset('assets_back/images/gallery/welcome-back-3.png') }}" height="180" alt="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chart Widgets -->
+            <div class="col-xl-6 col-xxl-2 d-flex align-items-stretch">
+                <div class="card w-100 rounded-4">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start justify-content-between mb-1">
+                            <div class="">
+                                <h5 class="mb-0">42.5K</h5>
+                                <p class="mb-0">Active Users</p>
+                            </div>
+                            <div class="dropdown">
+                                <a href="javascript:;" class="dropdown-toggle-nocaret options dropdown-toggle" data-bs-toggle="dropdown">
+                                    <span class="material-icons-outlined fs-5">more_vert</span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="javascript:;">Action</a></li>
+                                    <li><a class="dropdown-item" href="javascript:;">Another action</a></li>
+                                    <li><a class="dropdown-item" href="javascript:;">Something else here</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="chart-container2">
+                            <div id="chart1"></div>
+                        </div>
+                        <div class="text-center">
+                            <p class="mb-0 font-12">24K users increased from last month</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-6 col-xxl-2 d-flex align-items-stretch">
+                <div class="card w-100 rounded-4">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start justify-content-between mb-3">
+                            <div class="">
+                                <h5 class="mb-0">97.4K</h5>
+                                <p class="mb-0">Total Users</p>
+                            </div>
+                            <div class="dropdown">
+                                <a href="javascript:;" class="dropdown-toggle-nocaret options dropdown-toggle" data-bs-toggle="dropdown">
+                                    <span class="material-icons-outlined fs-5">more_vert</span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="javascript:;">Action</a></li>
+                                    <li><a class="dropdown-item" href="javascript:;">Another action</a></li>
+                                    <li><a class="dropdown-item" href="javascript:;">Something else here</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="chart-container2">
+                            <div id="chart2"></div>
+                        </div>
+                        <div class="text-center">
+                            <p class="mb-0 font-12"><span class="text-success me-1">12.5%</span> from last month</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monthly Revenue Chart -->
+            <div class="col-xl-6 col-xxl-4 d-flex align-items-stretch">
+                <div class="card w-100 rounded-4">
+                    <div class="card-body">
+                        <div class="text-center">
+                            <h6 class="mb-0">Monthly Revenue</h6>
+                        </div>
+                        <div class="mt-4" id="chart5"></div>
+                        <p>Average monthly sale for every author</p>
+                        <div class="d-flex align-items-center gap-3 mt-4">
+                            <div class="">
+                                <h1 class="mb-0 text-primary">68.9%</h1>
+                            </div>
+                            <div class="d-flex align-items-center align-self-end">
+                                <p class="mb-0 text-success">34.5%</p>
+                                <span class="material-icons-outlined text-success">expand_less</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Device Type Chart -->
+            <div class="col-xl-6 col-xxl-4 d-flex align-items-stretch">
+                <div class="card w-100 rounded-4">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start justify-content-between mb-3">
+                            <div class="">
+                                <h5 class="mb-0">Device Type</h5>
+                            </div>
+                            <div class="dropdown">
+                                <a href="javascript:;" class="dropdown-toggle-nocaret options dropdown-toggle" data-bs-toggle="dropdown">
+                                    <span class="material-icons-outlined fs-5">more_vert</span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="javascript:;">Action</a></li>
+                                    <li><a class="dropdown-item" href="javascript:;">Another action</a></li>
+                                    <li><a class="dropdown-item" href="javascript:;">Something else here</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="position-relative">
+                            <div class="piechart-legend">
+                                <h2 class="mb-1">68%</h2>
+                                <h6 class="mb-0">Total Views</h6>
+                            </div>
+                            <div id="chart6"></div>
+                        </div>
+                        <div class="d-flex flex-column gap-3">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <p class="mb-0 d-flex align-items-center gap-2 w-25">
+                                    <span class="material-icons-outlined fs-6 text-primary">desktop_windows</span>Desktop
+                                </p>
+                                <div class="">
+                                    <p class="mb-0">35%</p>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between">
+                                <p class="mb-0 d-flex align-items-center gap-2 w-25">
+                                    <span class="material-icons-outlined fs-6 text-danger">tablet_mac</span>Tablet
+                                </p>
+                                <div class="">
+                                    <p class="mb-0">48%</p>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between">
+                                <p class="mb-0 d-flex align-items-center gap-2 w-25">
+                                    <span class="material-icons-outlined fs-6 text-success">phone_android</span>Mobile
+                                </p>
+                                <div class="">
+                                    <p class="mb-0">27%</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Campaign Stats -->
+            <div class="col-xl-6 col-xxl-4 d-flex align-items-stretch">
+                <div class="card w-100 rounded-4">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start justify-content-between mb-3">
+                            <div class="">
+                                <h6 class="mb-0 fw-bold">Campaign Stats</h6>
+                            </div>
+                            <div class="dropdown">
+                                <a href="javascript:;" class="dropdown-toggle-nocaret options dropdown-toggle" data-bs-toggle="dropdown">
+                                    <span class="material-icons-outlined fs-5">more_vert</span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="javascript:;">Action</a></li>
+                                    <li><a class="dropdown-item" href="javascript:;">Another action</a></li>
+                                    <li><a class="dropdown-item" href="javascript:;">Something else here</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <ul class="list-group list-group-flush">
+                            {% set campaignStats = [
+                                {icon: 'calendar_today', bg: 'grd-primary', title: 'Campaigns', value: '54', percent: '28%', color: 'success'},
+                                {icon: 'email', bg: 'grd-success', title: 'Emailed', value: '245', percent: '15%', color: 'danger'},
+                                {icon: 'open_in_new', bg: 'grd-branding', title: 'Opened', value: '54', percent: '30.5%', color: 'success'},
+                                {icon: 'ads_click', bg: 'grd-warning', title: 'Clicked', value: '859', percent: '34.6%', color: 'danger'},
+                                {icon: 'subscriptions', bg: 'grd-info', title: 'Subscribed', value: '24,758', percent: '53%', color: 'success'},
+                                {icon: 'inbox', bg: 'grd-danger', title: 'Spam Message', value: '548', percent: '47%', color: 'danger'},
+                                {icon: 'visibility', bg: 'grd-deep-blue', title: 'Views Mails', value: '9845', percent: '68%', color: 'success'}
+                            ] %}
+                            
+                            {% for stat in campaignStats %}
+                            <li class="list-group-item px-0 bg-transparent">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="wh-42 d-flex align-items-center justify-content-center rounded-3 bg-{{ stat.bg }}">
+                                        <span class="material-icons-outlined text-white">{{ stat.icon }}</span>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-0">{{ stat.title }}</h6>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <p class="mb-0">{{ stat.value }}</p>
+                                        <p class="mb-0 fw-bold text-{{ stat.color }}">{{ stat.percent }}</p>
+                                    </div>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Close the first row -->
+
+        <div class="row mt-4">
+            <!-- Social Leads -->
+            <div class="col-xl-6 col-xxl-4 d-flex align-items-stretch">
+                <div class="card w-100 rounded-4">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start justify-content-between mb-3">
+                            <div class="">
+                                <h5 class="mb-0 fw-bold">Social Leads</h5>
+                            </div>
+                            <div class="dropdown">
+                                <a href="javascript:;" class="dropdown-toggle-nocaret options dropdown-toggle" data-bs-toggle="dropdown">
+                                    <span class="material-icons-outlined fs-5">more_vert</span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="javascript:;">Action</a></li>
+                                    <li><a class="dropdown-item" href="javascript:;">Another action</a></li>
+                                    <li><a class="dropdown-item" href="javascript:;">Something else here</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex flex-column justify-content-between gap-4">
+                            {% set socialLeads = [
+                                {img: '17.png', name: 'Facebook', percent: '55%', color: '#0d6efd'},
+                                {img: '18.png', name: 'LinkedIn', percent: '67%', color: '#fc185a'},
+                                {img: '19.png', name: 'Instagram', percent: '78%', color: '#02c27a'},
+                                {img: '20.png', name: 'Snapchat', percent: '46%', color: '#fd7e14'},
+                                {img: '05.png', name: 'Google', percent: '38%', color: '#0dcaf0'},
+                                {img: '08.png', name: 'Altaba', percent: '15%', color: '#6f42c1'},
+                                {img: '07.png', name: 'Spotify', percent: '12%', color: '#ff00b3'}
+                            ] %}
+                            
+                            {% for social in socialLeads %}
+                            <div class="d-flex align-items-center gap-4">
+                                <div class="d-flex align-items-center gap-3 flex-grow-1">
+                                    <img src="{{ asset('assets_back/images/apps/' ~ social.img) }}" width="32" alt="{{ social.name }}">
+                                    <p class="mb-0">{{ social.name }}</p>
+                                </div>
+                                <div class="">
+                                    <p class="mb-0 fs-6">{{ social.percent }}</p>
+                                </div>
+                                <div class="">
+                                    <p class="mb-0 data-attributes">
+                                        <span data-peity='{ "fill": ["{{ social.color }}", "rgb(255 255 255 / 10%)"], "innerRadius": 14, "radius": 18 }'>5/7</span>
+                                    </p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Users List -->
+            <div class="col-xl-6 col-xxl-4 d-flex align-items-stretch">
+                <div class="card w-100 rounded-4">
+                    <div class="card-header border-0 p-3 border-bottom">
+                        <div class="d-flex align-items-start justify-content-between">
+                            <div class="">
+                                <h5 class="mb-0">New Users</h5>
+                            </div>
+                            <div class="dropdown">
+                                <a href="javascript:;" class="dropdown-toggle-nocaret options dropdown-toggle" data-bs-toggle="dropdown">
+                                    <span class="material-icons-outlined fs-5">more_vert</span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="javascript:;">Action</a></li>
+                                    <li><a class="dropdown-item" href="javascript:;">Another action</a></li>
+                                    <li><a class="dropdown-item" href="javascript:;">Something else here</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="user-list p-3">
+                            <div class="d-flex flex-column gap-3">
+                                {% set newUsers = [
+                                    {avatar: '01.png', name: 'Elon Jonado', username: 'elon_deo', role: 'Admin'},
+                                    {avatar: '02.png', name: 'Alexzender Clito', username: 'zli_alexzender', role: 'Teacher'},
+                                    {avatar: '03.png', name: 'Michle Tinko', username: 'tinko_michle', role: 'Student'},
+                                    {avatar: '04.png', name: 'KailWemba', username: 'wemba_kl', role: 'Student'},
+                                    {avatar: '05.png', name: 'Henhco Tino', username: 'Henhco_tino', role: 'Teacher'},
+                                    {avatar: '06.png', name: 'Gonjiko Fernando', username: 'gonjiko_fernando', role: 'Student'},
+                                    {avatar: '08.png', name: 'Specer Kilo', username: 'specer_kilo', role: 'Student'}
+                                ] %}
+                                
+                                {% for user in newUsers %}
+                                <div class="d-flex align-items-center gap-3">
+                                    <img src="{{ asset('assets_back/images/avatars/' ~ user.avatar) }}" width="45" height="45" class="rounded-circle" alt="{{ user.name }}">
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-0">{{ user.name }}</h6>
+                                        <p class="mb-0">{{ user.username }}</p>
+                                        <span class="badge bg-{{ user.role == 'Admin' ? 'danger' : (user.role == 'Teacher' ? 'warning' : 'info') }}">{{ user.role }}</span>
+                                    </div>
+                                    <div class="form-check form-check-inline me-0">
+                                        <input class="form-check-input ms-0" type="checkbox">
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent p-3">
+                        <div class="d-flex align-items-center justify-content-between gap-3">
+                            <a href="javascript:;" class="sharelink"><i class="material-icons-outlined">share</i></a>
+                            <a href="javascript:;" class="sharelink"><i class="material-icons-outlined">textsms</i></a>
+                            <a href="javascript:;" class="sharelink"><i class="material-icons-outlined">email</i></a>
+                            <a href="javascript:;" class="sharelink"><i class="material-icons-outlined">attach_file</i></a>
+                            <a href="javascript:;" class="sharelink"><i class="material-icons-outlined">event</i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Orders Table -->
+            <div class="col-lg-12 col-xxl-8 d-flex align-items-stretch">
+                <div class="card w-100 rounded-4">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start justify-content-between mb-3">
+                            <div class="">
+                                <h5 class="mb-0">Recent Orders</h5>
+                            </div>
+                            <div class="dropdown">
+                                <a href="javascript:;" class="dropdown-toggle-nocaret options dropdown-toggle" data-bs-toggle="dropdown">
+                                    <span class="material-icons-outlined fs-5">more_vert</span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="javascript:;">Action</a></li>
+                                    <li><a class="dropdown-item" href="javascript:;">Another action</a></li>
+                                    <li><a class="dropdown-item" href="javascript:;">Something else here</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="order-search position-relative my-3">
+                            <input class="form-control rounded-5 px-5" type="text" placeholder="Search">
+                            <span class="material-icons-outlined position-absolute ms-3 translate-middle-y start-0 top-50">search</span>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="table align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Item Name</th>
+                                        <th>Amount</th>
+                                        <th>Vendor</th>
+                                        <th>Status</th>
+                                        <th>Rating</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% set recentOrders = [
+                                        {img: '01.png', name: 'Sports Shoes', price: '$289'},
+                                        {img: '02.png', name: 'Red Airpods', price: '$149'},
+                                        {img: '03.png', name: 'Men Polo Tshirt', price: '$139'},
+                                        {img: '04.png', name: 'Blue Jeans Casual', price: '$485'},
+                                        {img: '05.png', name: 'Fancy Shirts', price: '$758'},
+                                        {img: '06.png', name: 'Home Sofa Set', price: '$546'},
+                                        {img: '07.png', name: 'Black iPhone', price: '$1049'},
+                                        {img: '08.png', name: 'Goldan Watch', price: '$689'}
+                                    ] %}
+                                    
+                                    {% for order in recentOrders %}
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-3">
+                                                <div class="">
+                                                    <img src="{{ asset('assets_back/images/top-products/' ~ order.img) }}" class="rounded-circle" width="50" height="50" alt="">
+                                                </div>
+                                                <p class="mb-0">{{ order.name }}</p>
+                                            </div>
+                                        </td>
+                                        <td>{{ order.price }}</td>
+                                        <td>{{ order.vendor }}</td>
+                                        <td>
+                                            {% if order.status == 'Completed' %}
+                                                <p class="dash-lable mb-0 bg-success bg-opacity-10 text-success rounded-2">Completed</p>
+                                            {% elseif order.status == 'Pending' %}
+                                                <p class="dash-lable mb-0 bg-warning bg-opacity-10 text-warning rounded-2">Pending</p>
+                                            {% else %}
+                                                <p class="dash-lable mb-0 bg-danger bg-opacity-10 text-danger rounded-2">Canceled</p>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <p class="mb-0">{{ order.rating }}</p>
+                                                <i class="material-icons-outlined text-warning fs-6">star</i>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Charts -->
+            <div class="col-xl-6 col-xxl-4 d-flex align-items-stretch mt-4">
+                <div class="card w-100 rounded-4">
+                    <div class="card-body">
+                        <div id="chart8"></div>
+                        <div class="d-flex align-items-center gap-3 mt-4">
+                            <div class="">
+                                <h1 class="mb-0">36.7%</h1>
+                            </div>
+                            <div class="d-flex align-items-center align-self-end gap-2">
+                                <span class="material-icons-outlined text-success">trending_up</span>
+                                <p class="mb-0 text-success">34.5%</p>
+                            </div>
+                        </div>
+                        <p class="mb-4">Visitors Growth</p>
+                        <div class="d-flex flex-column gap-3">
+                            <div class="">
+                                <p class="mb-1">Clicks <span class="float-end">2589</span></p>
+                                <div class="progress" style="height: 5px;">
+                                    <div class="progress-bar bg-grd-primary" style="width: 65%"></div>
+                                </div>
+                            </div>
+                            <div class="">
+                                <p class="mb-1">Likes <span class="float-end">6748</span></p>
+                                <div class="progress" style="height: 5px;">
+                                    <div class="progress-bar bg-grd-warning" style="width: 55%"></div>
+                                </div>
+                            </div>
+                            <div class="">
+                                <p class="mb-1">Upvotes <span class="float-end">9842</span></p>
+                                <div class="progress" style="height: 5px;">
+                                    <div class="progress-bar bg-grd-info" style="width: 45%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Accounts Chart -->
+            <div class="col-xl-6 col-xxl-4 d-flex align-items-stretch mt-4">
+                <div class="card rounded-4">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center gap-3 mb-2">
+                            <div class="">
+                                <h3 class="mb-0">85,247</h3>
+                            </div>
+                            <div class="flex-grow-0">
+                                <p class="dash-lable d-flex align-items-center gap-1 rounded mb-0 bg-success text-success bg-opacity-10">
+                                    <span class="material-icons-outlined fs-6">arrow_downward</span>23.7%
+                                </p>
+                            </div>
+                        </div>
+                        <p class="mb-0">Total Accounts</p>
+                        <div id="chart7"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- Close the second row -->
+
+    </div>
+    <!-- Close main-content div -->
+</main>
+<!--end main wrapper-->
+
+<!--start overlay-->
+<div class="overlay btn-toggle"></div>
+<!--end overlay-->
+
+<!--start footer-->
+<footer class="page-footer">
+    <p class="mb-0">Copyright  2023. All right reserved.</p>
+</footer>
+<!--end footer-->
+
+<!--start cart-->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasCart">
+    <div class="offcanvas-header border-bottom h-70">
+        <h5 class="mb-0" id="offcanvasRightLabel">8 New Orders</h5>
+        <a href="javascript:;" class="primaery-menu-close" data-bs-dismiss="offcanvas">
+            <i class="material-icons-outlined">close</i>
+        </a>
+    </div>
+    <div class="offcanvas-body p-0">
+        <div class="order-list">
+            {% set cartOrders = [
+                {img: '01.png', title: 'White Men Shoes', price: '$289'},
+                {img: '02.png', title: 'Red Airpods', price: '$149'},
+                {img: '03.png', title: 'Men Polo Tshirt', price: '$139'},
+                {img: '04.png', title: 'Blue Jeans Casual', price: '$485'},
+                {img: '05.png', title: 'Fancy Shirts', price: '$758'},
+                {img: '06.png', title: 'Home Sofa Set', price: '$546'},
+                {img: '07.png', title: 'Black iPhone', price: '$1049'},
+                {img: '08.png', title: 'Goldan Watch', price: '$689'}
+            ] %}
+            
+            {% for order in cartOrders %}
+            <div class="order-item d-flex align-items-center gap-3 p-3 border-bottom">
+                <div class="order-img">
+                    <img src="{{ asset('assets_back/images/orders/' ~ order.img) }}" class="img-fluid rounded-3" width="75" alt="">
+                </div>
+                <div class="order-info flex-grow-1">
+                    <h5 class="mb-1 order-title">{{ order.title }}</h5>
+                    <p class="mb-0 order-price">{{ order.price }}</p>
+                </div>
+                <div class="d-flex">
+                    <a class="order-delete" href="javascript:;"><span class="material-icons-outlined">delete</span></a>
+                    <a class="order-delete" href="javascript:;"><span class="material-icons-outlined">visibility</span></a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="offcanvas-footer h-70 p-3 border-top">
+        <div class="d-grid">
+            <a href="{{ path('ecommerce_orders') }}" class="btn btn-grd btn-grd-primary">View All Orders</a>
+        </div>
+    </div>
+</div>
+<!--end cart-->
+
+<!--start switcher-->
+<button class="btn btn-grd btn-grd-primary position-fixed bottom-0 end-0 m-3 d-flex align-items-center gap-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop">
+    <i class="material-icons-outlined">tune</i>Customize
+</button>
+
+<div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="staticBackdrop">
+    <div class="offcanvas-header border-bottom h-70">
+        <div class="">
+            <h5 class="mb-0">Theme Customizer</h5>
+            <p class="mb-0">Customize your theme</p>
+        </div>
+        <a href="javascript:;" class="primaery-menu-close" data-bs-dismiss="offcanvas">
+            <i class="material-icons-outlined">close</i>
+        </a>
+    </div>
+    <div class="offcanvas-body">
+        <div>
+            <p>Theme variation</p>
+            <div class="row g-3">
+                {% set themes = [
+                    {id: 'BlueTheme', icon: 'contactless', label: 'Blue'},
+                    {id: 'LightTheme', icon: 'light_mode', label: 'Light'},
+                    {id: 'DarkTheme', icon: 'dark_mode', label: 'Dark'},
+                    {id: 'SemiDarkTheme', icon: 'contrast', label: 'Semi Dark'},
+                    {id: 'BoderedTheme', icon: 'border_style', label: 'Bordered'}
+                ] %}
+                
+                {% for theme in themes %}
+                <div class="col-12 col-xl-6">
+                    <input type="radio" class="btn-check" name="theme-options" id="{{ theme.id }}" {% if loop.first %}checked{% endif %}>
+                    <label class="btn btn-outline-secondary d-flex flex-column gap-1 align-items-center justify-content-center p-4" for="{{ theme.id }}">
+                        <span class="material-icons-outlined">{{ theme.icon }}</span>
+                        <span>{{ theme.label }}</span>
+                    </label>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+<!--end switcher-->
+
+{% block javascripts %}
+<!--bootstrap js-->
+<script src="{{ asset('assets_back/js/bootstrap.bundle.min.js') }}"></script>
+
+<!--plugins-->
+<script src="{{ asset('assets_back/js/jquery.min.js') }}"></script>
+<!--plugins-->
+<script src="{{ asset('assets_back/plugins/perfect-scrollbar/js/perfect-scrollbar.js') }}"></script>
+<script src="{{ asset('assets_back/plugins/metismenu/metisMenu.min.js') }}"></script>
+<script src="{{ asset('assets_back/plugins/apexchart/apexcharts.min.js') }}"></script>
+<script src="{{ asset('assets_back/plugins/simplebar/js/simplebar.min.js') }}"></script>
+<script src="{{ asset('assets_back/plugins/peity/jquery.peity.min.js') }}"></script>
+
+<!-- Dashboard specific scripts -->
+<script src="{{ asset('assets_back/js/main.js') }}"></script>
+<script src="{{ asset('assets_back/js/dashboard1.js') }}"></script>
+
+<script>
+    $(document).ready(function() {
+        // Initialize peity charts
+        $(".data-attributes span").peity("donut");
+        
+        // Initialize Perfect Scrollbar for user list
+        if (typeof PerfectScrollbar !== 'undefined') {
+            new PerfectScrollbar(".user-list");
+        }
+        
+        // Initialize ApexCharts
+        if (typeof ApexCharts !== 'undefined') {
+            // Chart 1 - Active Users
+            var options1 = {
+                series: [{
+                    name: "Active Users",
+                    data: [44, 55, 57, 56, 61, 58, 63, 60, 66]
+                }],
+                chart: {
+                    type: 'area',
+                    height: 90,
+                    toolbar: { show: false },
+                    zoom: { enabled: false }
+                },
+                dataLabels: { enabled: false },
+                stroke: { curve: 'smooth', width: 2 },
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        shadeIntensity: 1,
+                        opacityFrom: 0.7,
+                        opacityTo: 0.3,
+                    }
+                },
+                colors: ['#0d6efd'],
+                xaxis: {
+                    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+                    labels: { show: false }
+                },
+                yaxis: { show: false }
+            };
+            var chart1 = new ApexCharts(document.querySelector("#chart1"), options1);
+            chart1.render();
+            
+            // Chart 2 - Total Users
+            var options2 = {
+                series: [{
+                    name: "Total Users",
+                    data: [31, 40, 28, 51, 42, 109, 100, 80, 95]
+                }],
+                chart: {
+                    type: 'area',
+                    height: 90,
+                    toolbar: { show: false },
+                    zoom: { enabled: false }
+                },
+                dataLabels: { enabled: false },
+                stroke: { curve: 'smooth', width: 2 },
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        shadeIntensity: 1,
+                        opacityFrom: 0.7,
+                        opacityTo: 0.3,
+                    }
+                },
+                colors: ['#02c27a'],
+                xaxis: {
+                    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+                    labels: { show: false }
+                },
+                yaxis: { show: false }
+            };
+            var chart2 = new ApexCharts(document.querySelector("#chart2"), options2);
+            chart2.render();
+            
+            // Chart 5 - Monthly Revenue
+            var options5 = {
+                series: [{
+                    name: 'Revenue',
+                    data: [31, 40, 28, 51, 42, 109, 100, 80, 95]
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 200,
+                    toolbar: { show: false }
+                },
+                plotOptions: {
+                    bar: {
+                        borderRadius: 4,
+                        horizontal: false,
+                        columnWidth: '70%',
+                        endingShape: 'rounded'
+                    },
+                },
+                dataLabels: { enabled: false },
+                stroke: { show: true, width: 2, colors: ['#fff'] },
+                fill: {
+                    opacity: 1,
+                    type: 'solid',
+                    gradient: {
+                        type: "vertical",
+                        shadeIntensity: 0.5,
+                        gradientToColors: ['#0d6efd', '#0d6efd'],
+                        inverseColors: ['#0d6efd', '#0d6efd']
+                    }
+                },
+                colors: ['#0d6efd'],
+                xaxis: {
+                    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+                    labels: { show: false }
+                },
+                yaxis: { show: false }
+            };
+            var chart5 = new ApexCharts(document.querySelector("#chart5"), options5);
+            chart5.render();
+            
+            // Chart 6 - Device Type (Pie Chart)
+            var options6 = {
+                series: [35, 48, 27],
+                chart: {
+                    type: 'donut',
+                    height: 200
+                },
+                labels: ['Desktop', 'Tablet', 'Mobile'],
+                colors: ['#0d6efd', '#dc3545', '#198754'],
+                legend: { show: false },
+                dataLabels: {
+                    enabled: true,
+                    formatter: function (val) {
+                        return val + "%"
+                    }
+                },
+                plotOptions: {
+                    pie: {
+                        donut: {
+                            size: '70%',
+                            labels: {
+                                show: true,
+                                name: {
+                                    show: true
+                                },
+                                value: {
+                                    show: true
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            var chart6 = new ApexCharts(document.querySelector("#chart6"), options6);
+            chart6.render();
+            
+            // Chart 7 - Total Accounts
+            var options7 = {
+                series: [{
+                    name: "Accounts",
+                    data: [44, 55, 41, 67, 22, 43, 65, 59, 71, 62, 75, 81]
+                }],
+                chart: {
+                    type: 'line',
+                    height: 150,
+                    toolbar: { show: false }
+                },
+                dataLabels: { enabled: false },
+                stroke: { curve: 'smooth', width: 2 },
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        shadeIntensity: 1,
+                        opacityFrom: 0.7,
+                        opacityTo: 0.3,
+                    }
+                },
+                colors: ['#0d6efd'],
+                xaxis: {
+                    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    labels: { show: false }
+                },
+                yaxis: { show: false }
+            };
+            var chart7 = new ApexCharts(document.querySelector("#chart7"), options7);
+            chart7.render();
+            
+            // Chart 8 - Visitors Growth
+            var options8 = {
+                series: [{
+                    name: "Visitors",
+                    data: [44, 55, 57, 56, 61, 58, 63, 60, 66, 70, 74, 78]
+                }],
+                chart: {
+                    type: 'area',
+                    height: 200,
+                    toolbar: { show: false }
+                },
+                dataLabels: { enabled: false },
+                stroke: { curve: 'smooth', width: 2 },
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        shadeIntensity: 1,
+                        opacityFrom: 0.7,
+                        opacityTo: 0.3,
+                    }
+                },
+                colors: ['#0d6efd'],
+                xaxis: {
+                    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    labels: { show: false }
+                },
+                yaxis: { show: false }
+            };
+            var chart8 = new ApexCharts(document.querySelector("#chart8"), options8);
+            chart8.render();
+        }
+        
+        // Theme switcher functionality
+        $('input[name="theme-options"]').change(function() {
+            const theme = $(this).attr('id').toLowerCase().replace('theme', '-theme');
+            $('html').attr('data-bs-theme', theme);
+            
+            // Store theme preference in localStorage
+            localStorage.setItem('dashboard-theme', theme);
+        });
+        
+        // Load saved theme preference
+        const savedTheme = localStorage.getItem('dashboard-theme');
+        if (savedTheme) {
+            $('#staticBackdrop input[value="' + savedTheme + '"]').prop('checked', true);
+            $('html').attr('data-bs-theme', savedTheme);
+        }
+        
+        // Toggle sidebar
+        $('.btn-toggle').on('click', function() {
+            $('.sidebar-wrapper').toggleClass('active');
+            $('.overlay').toggleClass('active');
+        });
+        
+        // Close sidebar when clicking overlay
+        $('.overlay').on('click', function() {
+            $(this).removeClass('active');
+            $('.sidebar-wrapper').removeClass('active');
+        });
+        
+        // Close sidebar with close button
+        $('.sidebar-close').on('click', function() {
+            $('.sidebar-wrapper').removeClass('active');
+            $('.overlay').removeClass('active');
+        });
+        
+        // User greeting based on time of day
+        updateUserGreeting();
+        
+        function updateUserGreeting() {
+            const hour = new Date().getHours();
+            let greeting = "Good ";
+            
+            if (hour < 12) greeting += "Morning";
+            else if (hour < 18) greeting += "Afternoon";
+            else greeting += "Evening";
+            
+            // Update welcome message if element exists
+            const welcomeElement = $('.fw-semibold:contains("Welcome back")');
+            if (welcomeElement.length) {
+                welcomeElement.text(greeting + ',');
+            }
+        }
+        
+        // Delete order items from cart
+        $('.order-delete').on('click', function(e) {
+            e.preventDefault();
+            $(this).closest('.order-item').fadeOut(300, function() {
+                $(this).remove();
+                // Update order count
+                const orderCount = $('.order-item').length;
+                $('#offcanvasRightLabel').text(orderCount + ' New Orders');
+                $('.badge-notify').text(orderCount);
+            });
+        });
+        
+        // Initialize metismenu sidebar
+        $('#sidenav').metisMenu();
+        
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+        
+        // Search functionality
+        $('.search-control, .mobile-search-control').on('input', function() {
+            const searchTerm = $(this).val().toLowerCase();
+            if (searchTerm.length > 0) {
+                $('.search-popup').addClass('show');
+            } else {
+                $('.search-popup').removeClass('show');
+            }
+        });
+        
+        $('.search-close, .mobile-search-close').on('click', function() {
+            $('.search-popup').removeClass('show');
+            $('.search-control, .mobile-search-control').val('');
+        });
+        
+        // Mobile search toggle
+        $('.mobile-search-btn').on('click', function() {
+            $('.search-popup').toggleClass('show');
+        });
+        
+        // Notification close button
+        $('.notify-close').on('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $(this).closest('a').fadeOut(300, function() {
+                $(this).remove();
+                // Update notification count
+                const notifyCount = $('.notify-list > div').length;
+                $('.badge-notify').first().text(notifyCount);
+            });
+        });
+    });
+</script>
+{% endblock %}
+
+<!-- Performance Metrics Bar -->
+<div class="performance-metrics">
+    <div class="metrics-left">
+        <span>75 requêtes</span>
+        <span>|</span>
+        <span>180 ko</span>
+        <span>|</span>
+        <span>12 ms</span>
+    </div>
+    <div class="metrics-right">
+        <span>Symfony Debug Toolbar</span>
+    </div>
+</div>
+
+</body>
+</html>

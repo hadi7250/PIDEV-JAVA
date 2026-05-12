@@ -1,0 +1,1108 @@
+<?php
+
+use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Extension\CoreExtension;
+use Twig\Extension\SandboxExtension;
+use Twig\Markup;
+use Twig\Sandbox\SecurityError;
+use Twig\Sandbox\SecurityNotAllowedTagError;
+use Twig\Sandbox\SecurityNotAllowedFilterError;
+use Twig\Sandbox\SecurityNotAllowedFunctionError;
+use Twig\Source;
+use Twig\Template;
+use Twig\TemplateWrapper;
+
+/* security/register.html.twig */
+class __TwigTemplate_f330cedd0854e4dd72f258855bddc3ea extends Template
+{
+    private Source $source;
+    /**
+     * @var array<string, Template>
+     */
+    private array $macros = [];
+
+    public function __construct(Environment $env)
+    {
+        parent::__construct($env);
+
+        $this->source = $this->getSourceContext();
+
+        $this->parent = false;
+
+        $this->blocks = [
+        ];
+    }
+
+    protected function doDisplay(array $context, array $blocks = []): iterable
+    {
+        $macros = $this->macros;
+        $__internal_5a27a8ba21ca79b61932376b2fa922d2 = $this->extensions["Symfony\\Bundle\\WebProfilerBundle\\Twig\\WebProfilerExtension"];
+        $__internal_5a27a8ba21ca79b61932376b2fa922d2->enter($__internal_5a27a8ba21ca79b61932376b2fa922d2_prof = new \Twig\Profiler\Profile($this->getTemplateName(), "template", "security/register.html.twig"));
+
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f = $this->extensions["Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension"];
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f->enter($__internal_6f47bbe9983af81f1e7450e9a3e3768f_prof = new \Twig\Profiler\Profile($this->getTemplateName(), "template", "security/register.html.twig"));
+
+        // line 1
+        yield "<!doctype html>
+<html lang=\"en\" data-bs-theme=\"blue-theme\">
+
+<head>
+  <meta charset=\"utf-8\">
+  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
+  <title>PIDEV Education - Register</title>
+  
+  <!-- Bootstrap CSS -->
+  <link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css\" rel=\"stylesheet\">
+  <!-- Font Awesome -->
+  <link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css\">
+  <!-- Bootstrap Icons -->
+  <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css\">
+  
+  <!-- Dashboard CSS for consistent styling -->
+  <link href=\"";
+        // line 17
+        yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl("Back_Office/assets/css/bootstrap.min.css"), "html", null, true);
+        yield "\" rel=\"stylesheet\">
+  <link href=\"";
+        // line 18
+        yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl("Back_Office/assets/css/bootstrap-extended.css"), "html", null, true);
+        yield "\" rel=\"stylesheet\">
+  <link href=\"";
+        // line 19
+        yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl("Back_Office/sass/main.css"), "html", null, true);
+        yield "\" rel=\"stylesheet\">
+  <link href=\"";
+        // line 20
+        yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl("Back_Office/sass/blue-theme.css"), "html", null, true);
+        yield "\" rel=\"stylesheet\">
+  <link href=\"";
+        // line 21
+        yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl("Back_Office/sass/responsive.css"), "html", null, true);
+        yield "\" rel=\"stylesheet\">
+  
+  <!-- Google Fonts -->
+  <link href=\"https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600&display=swap\" rel=\"stylesheet\">
+  <link href=\"https://fonts.googleapis.com/css?family=Material+Icons+Outlined\" rel=\"stylesheet\">
+
+  <script src=\"https://cdn.jsdelivr.net/npm/sweetalert2@11\"></script>
+
+  <style>
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      50% { transform: translateX(6px); }
+      75% { transform: translateX(-6px); }
+      100% { transform: translateX(0); }
+    }
+  
+    .shake {
+      animation: shake 0.3s;
+    }
+  
+    .is-invalid {
+      border-color: #dc3545 !important;
+      box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+    }
+  
+    .invalid-feedback {
+      display: block !important;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      font-family: 'Noto Sans', sans-serif;
+    }
+    
+    .btn-grd-info {
+      background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+      border: none;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-grd-info:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(23, 162, 184, 0.3);
+      color: white;
+    }
+    
+    .btn-filter {
+      background: white;
+      border: 2px solid #e0e0e0;
+      color: #333;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-filter:hover {
+      border-color: #17a2b8;
+      background: #f8f9fa;
+      transform: translateY(-1px);
+    }
+    
+    .separator {
+      display: flex;
+      align-items: center;
+      margin: 30px 0;
+      color: #666;
+    }
+    
+    .separator .line {
+      flex: 1;
+      height: 1px;
+      background: #e0e0e0;
+    }
+    
+    .separator p {
+      padding: 0 15px;
+      margin: 0;
+      font-size: 14px;
+    }
+    
+    .bg-grd-info {
+      background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+    }
+    
+    .card {
+      border: none;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+    
+    .form-control {
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 12px 16px;
+      transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+      border-color: #17a2b8;
+      box-shadow: 0 0 0 0.25rem rgba(23, 162, 184, 0.25);
+    }
+    
+    .input-group-text {
+      border: 2px solid #e0e0e0;
+      border-left: none;
+      background: transparent;
+      color: #666;
+    }
+    
+    .form-control.border-end-0 {
+      border-right: none;
+    }
+    
+    .form-select {
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 12px 16px;
+      transition: all 0.3s ease;
+    }
+    
+    .form-select:focus {
+      border-color: #17a2b8;
+      box-shadow: 0 0 0 0.25rem rgba(23, 162, 184, 0.25);
+    }
+    
+    .form-check-input:checked {
+      background-color: #17a2b8;
+      border-color: #17a2b8;
+    }
+  </style>
+  
+  <script src=\"https://code.jquery.com/jquery-3.6.4.min.js\"></script>
+</head>
+  
+<body>
+  <!--authentication-->
+  <div class=\"mx-3 mx-lg-0\">
+    <div class=\"card my-5 col-xl-9 col-xxl-8 mx-auto rounded-4 overflow-hidden border-3 p-4\">
+      <div class=\"row g-4\">
+        <div class=\"col-lg-6 d-flex\">
+          <div class=\"card-body\">
+            <img src=\"";
+        // line 168
+        yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl("Back_Office/assets/images/logo-icon.png"), "html", null, true);
+        yield "\" class=\"mb-4\" width=\"145\" alt=\"PIDEV Education\">
+            <h4 class=\"fw-bold\">Get Started Now</h4>
+            <p class=\"mb-0\">Create your account to get started</p>
+            
+            <div class=\"row gy-2 gx-0 my-4\">
+              <div class=\"col-12 col-lg-12\">
+                <a href=\"";
+        // line 174
+        yield $this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("connect_google");
+        yield "\" class=\"btn btn-filter py-2 px-4 font-text1 fw-bold d-flex align-items-center justify-content-center w-100 text-decoration-none\">
+                  <span class=\"\"><i class=\"fab fa-google me-2\"></i>Sign up with Google</span>
+                </a>
+              </div>
+              <div class=\"col-12 col-lg-12\">
+                <button class=\"btn btn-filter py-2 px-4 font-text1 fw-bold d-flex align-items-center justify-content-center w-100\">
+                  <span class=\"\"><i class=\"fab fa-facebook-f me-2\"></i>Sign up with Facebook</span>
+                </button>
+              </div>
+              <div class=\"col-12 col-lg-12\">
+                <button class=\"btn btn-filter py-2 px-4 font-text1 fw-bold d-flex align-items-center justify-content-center w-100\">
+                  <span class=\"\"><i class=\"fab fa-linkedin-in me-2\"></i>Sign up with LinkedIn</span>
+                </button>
+              </div>
+            </div>
+            
+            <div class=\"separator\">
+              <div class=\"line\"></div>
+              <p class=\"mb-0 fw-bold\">OR SIGN UP WITH</p>
+              <div class=\"line\"></div>
+            </div>
+            
+            <div class=\"form-body mt-4\">
+              ";
+        // line 197
+        yield         $this->env->getRuntime('Symfony\Component\Form\FormRenderer')->renderBlock((isset($context["registrationForm"]) || array_key_exists("registrationForm", $context) ? $context["registrationForm"] : (function () { throw new RuntimeError('Variable "registrationForm" does not exist.', 197, $this->source); })()), 'form_start', ["attr" => ["novalidate" => "novalidate"]]);
+        yield "
+                
+                <!-- Section 1: First Name + Last Name (side by side) -->
+                <div class=\"row g-4 mb-4\">
+                  <div class=\"col-md-6\">
+                    ";
+        // line 202
+        yield $this->env->getRuntime('Symfony\Component\Form\FormRenderer')->searchAndRenderBlock(CoreExtension::getAttribute($this->env, $this->source, (isset($context["registrationForm"]) || array_key_exists("registrationForm", $context) ? $context["registrationForm"] : (function () { throw new RuntimeError('Variable "registrationForm" does not exist.', 202, $this->source); })()), "firstName", [], "any", false, false, false, 202), 'label', ["label_attr" => ["class" => "form-label fw-semibold"], "label" => "First Name"]);
+        yield "
+                    ";
+        // line 203
+        yield $this->env->getRuntime('Symfony\Component\Form\FormRenderer')->searchAndRenderBlock(CoreExtension::getAttribute($this->env, $this->source, (isset($context["registrationForm"]) || array_key_exists("registrationForm", $context) ? $context["registrationForm"] : (function () { throw new RuntimeError('Variable "registrationForm" does not exist.', 203, $this->source); })()), "firstName", [], "any", false, false, false, 203), 'widget', ["attr" => ["class" => "form-control", "placeholder" => "John"]]);
+        yield "
+                    ";
+        // line 204
+        yield $this->env->getRuntime('Symfony\Component\Form\FormRenderer')->searchAndRenderBlock(CoreExtension::getAttribute($this->env, $this->source, (isset($context["registrationForm"]) || array_key_exists("registrationForm", $context) ? $context["registrationForm"] : (function () { throw new RuntimeError('Variable "registrationForm" does not exist.', 204, $this->source); })()), "firstName", [], "any", false, false, false, 204), 'errors');
+        yield "
+                  </div>
+                  
+                  <div class=\"col-md-6\">
+                    ";
+        // line 208
+        yield $this->env->getRuntime('Symfony\Component\Form\FormRenderer')->searchAndRenderBlock(CoreExtension::getAttribute($this->env, $this->source, (isset($context["registrationForm"]) || array_key_exists("registrationForm", $context) ? $context["registrationForm"] : (function () { throw new RuntimeError('Variable "registrationForm" does not exist.', 208, $this->source); })()), "lastName", [], "any", false, false, false, 208), 'label', ["label_attr" => ["class" => "form-label fw-semibold"], "label" => "Last Name"]);
+        yield "
+                    ";
+        // line 209
+        yield $this->env->getRuntime('Symfony\Component\Form\FormRenderer')->searchAndRenderBlock(CoreExtension::getAttribute($this->env, $this->source, (isset($context["registrationForm"]) || array_key_exists("registrationForm", $context) ? $context["registrationForm"] : (function () { throw new RuntimeError('Variable "registrationForm" does not exist.', 209, $this->source); })()), "lastName", [], "any", false, false, false, 209), 'widget', ["attr" => ["class" => "form-control", "placeholder" => "Doe"]]);
+        yield "
+                    ";
+        // line 210
+        yield $this->env->getRuntime('Symfony\Component\Form\FormRenderer')->searchAndRenderBlock(CoreExtension::getAttribute($this->env, $this->source, (isset($context["registrationForm"]) || array_key_exists("registrationForm", $context) ? $context["registrationForm"] : (function () { throw new RuntimeError('Variable "registrationForm" does not exist.', 210, $this->source); })()), "lastName", [], "any", false, false, false, 210), 'errors');
+        yield "
+                  </div>
+                </div>
+                
+                <!-- Section 2: Age + Email (side by side) -->
+                <div class=\"row g-4 mb-4\">
+                  <div class=\"col-md-6\">
+                    ";
+        // line 217
+        yield $this->env->getRuntime('Symfony\Component\Form\FormRenderer')->searchAndRenderBlock(CoreExtension::getAttribute($this->env, $this->source, (isset($context["registrationForm"]) || array_key_exists("registrationForm", $context) ? $context["registrationForm"] : (function () { throw new RuntimeError('Variable "registrationForm" does not exist.', 217, $this->source); })()), "age", [], "any", false, false, false, 217), 'label', ["label_attr" => ["class" => "form-label fw-semibold"], "label" => "Age"]);
+        yield "
+                    ";
+        // line 218
+        yield $this->env->getRuntime('Symfony\Component\Form\FormRenderer')->searchAndRenderBlock(CoreExtension::getAttribute($this->env, $this->source, (isset($context["registrationForm"]) || array_key_exists("registrationForm", $context) ? $context["registrationForm"] : (function () { throw new RuntimeError('Variable "registrationForm" does not exist.', 218, $this->source); })()), "age", [], "any", false, false, false, 218), 'widget', ["attr" => ["class" => "form-control", "placeholder" => "25"]]);
+        yield "
+                    ";
+        // line 219
+        yield $this->env->getRuntime('Symfony\Component\Form\FormRenderer')->searchAndRenderBlock(CoreExtension::getAttribute($this->env, $this->source, (isset($context["registrationForm"]) || array_key_exists("registrationForm", $context) ? $context["registrationForm"] : (function () { throw new RuntimeError('Variable "registrationForm" does not exist.', 219, $this->source); })()), "age", [], "any", false, false, false, 219), 'errors');
+        yield "
+                  </div>
+                  
+                  <div class=\"col-md-6\">
+                    ";
+        // line 223
+        yield $this->env->getRuntime('Symfony\Component\Form\FormRenderer')->searchAndRenderBlock(CoreExtension::getAttribute($this->env, $this->source, (isset($context["registrationForm"]) || array_key_exists("registrationForm", $context) ? $context["registrationForm"] : (function () { throw new RuntimeError('Variable "registrationForm" does not exist.', 223, $this->source); })()), "email", [], "any", false, false, false, 223), 'label', ["label_attr" => ["class" => "form-label fw-semibold"], "label" => "Email"]);
+        yield "
+                    ";
+        // line 224
+        yield $this->env->getRuntime('Symfony\Component\Form\FormRenderer')->searchAndRenderBlock(CoreExtension::getAttribute($this->env, $this->source, (isset($context["registrationForm"]) || array_key_exists("registrationForm", $context) ? $context["registrationForm"] : (function () { throw new RuntimeError('Variable "registrationForm" does not exist.', 224, $this->source); })()), "email", [], "any", false, false, false, 224), 'widget', ["attr" => ["class" => "form-control", "placeholder" => "john.doe@example.com"]]);
+        yield "
+                    ";
+        // line 225
+        yield $this->env->getRuntime('Symfony\Component\Form\FormRenderer')->searchAndRenderBlock(CoreExtension::getAttribute($this->env, $this->source, (isset($context["registrationForm"]) || array_key_exists("registrationForm", $context) ? $context["registrationForm"] : (function () { throw new RuntimeError('Variable "registrationForm" does not exist.', 225, $this->source); })()), "email", [], "any", false, false, false, 225), 'errors');
+        yield "
+                  </div>
+                </div>
+                
+                <!-- Section 3: Password + Confirm Password (side by side) -->
+                <div class=\"row g-4 mb-4\">
+                  <div class=\"col-md-6\">
+                    ";
+        // line 232
+        yield $this->env->getRuntime('Symfony\Component\Form\FormRenderer')->searchAndRenderBlock(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, (isset($context["registrationForm"]) || array_key_exists("registrationForm", $context) ? $context["registrationForm"] : (function () { throw new RuntimeError('Variable "registrationForm" does not exist.', 232, $this->source); })()), "plainPassword", [], "any", false, false, false, 232), "first", [], "any", false, false, false, 232), 'label', ["label_attr" => ["class" => "form-label fw-semibold"], "label" => "Password"]);
+        yield "
+                    <small class=\"text-white d-block mb-2\">Minimum 6 characters</small>
+                    <div class=\"input-group\" id=\"show_hide_password\">
+                      ";
+        // line 235
+        yield $this->env->getRuntime('Symfony\Component\Form\FormRenderer')->searchAndRenderBlock(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, (isset($context["registrationForm"]) || array_key_exists("registrationForm", $context) ? $context["registrationForm"] : (function () { throw new RuntimeError('Variable "registrationForm" does not exist.', 235, $this->source); })()), "plainPassword", [], "any", false, false, false, 235), "first", [], "any", false, false, false, 235), 'widget', ["attr" => ["class" => "form-control border-end-0", "placeholder" => "Enter Password"]]);
+        yield "
+                      <a href=\"javascript:;\" class=\"input-group-text bg-transparent\">
+                        <i class=\"fas fa-eye-slash\"></i>
+                      </a>
+                    </div>
+                    ";
+        // line 240
+        yield $this->env->getRuntime('Symfony\Component\Form\FormRenderer')->searchAndRenderBlock(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, (isset($context["registrationForm"]) || array_key_exists("registrationForm", $context) ? $context["registrationForm"] : (function () { throw new RuntimeError('Variable "registrationForm" does not exist.', 240, $this->source); })()), "plainPassword", [], "any", false, false, false, 240), "first", [], "any", false, false, false, 240), 'errors');
+        yield "
+                  </div>
+                  
+                  <div class=\"col-md-6\">
+                    ";
+        // line 244
+        yield $this->env->getRuntime('Symfony\Component\Form\FormRenderer')->searchAndRenderBlock(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, (isset($context["registrationForm"]) || array_key_exists("registrationForm", $context) ? $context["registrationForm"] : (function () { throw new RuntimeError('Variable "registrationForm" does not exist.', 244, $this->source); })()), "plainPassword", [], "any", false, false, false, 244), "second", [], "any", false, false, false, 244), 'label', ["label_attr" => ["class" => "form-label fw-semibold"], "label" => "Confirm Password"]);
+        yield "
+                    <small class=\"text-white d-block mb-2\">Confirm your password</small>
+                    <div class=\"input-group\" id=\"show_hide_confirm_password\">
+                      ";
+        // line 247
+        yield $this->env->getRuntime('Symfony\Component\Form\FormRenderer')->searchAndRenderBlock(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, (isset($context["registrationForm"]) || array_key_exists("registrationForm", $context) ? $context["registrationForm"] : (function () { throw new RuntimeError('Variable "registrationForm" does not exist.', 247, $this->source); })()), "plainPassword", [], "any", false, false, false, 247), "second", [], "any", false, false, false, 247), 'widget', ["attr" => ["class" => "form-control border-end-0", "placeholder" => "Confirm Password"]]);
+        yield "
+                      <a href=\"javascript:;\" class=\"input-group-text bg-transparent\">
+                        <i class=\"fas fa-eye-slash\"></i>
+                      </a>
+                    </div>
+                    ";
+        // line 252
+        yield $this->env->getRuntime('Symfony\Component\Form\FormRenderer')->searchAndRenderBlock(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, (isset($context["registrationForm"]) || array_key_exists("registrationForm", $context) ? $context["registrationForm"] : (function () { throw new RuntimeError('Variable "registrationForm" does not exist.', 252, $this->source); })()), "plainPassword", [], "any", false, false, false, 252), "second", [], "any", false, false, false, 252), 'errors');
+        yield "
+                  </div>
+                </div>
+                
+                <!-- Section 4: Terms and Submit -->
+                <div class=\"border-top pt-4 mt-5\">
+                  <div class=\"form-check form-switch mb-4\">
+                    ";
+        // line 259
+        yield $this->env->getRuntime('Symfony\Component\Form\FormRenderer')->searchAndRenderBlock(CoreExtension::getAttribute($this->env, $this->source, (isset($context["registrationForm"]) || array_key_exists("registrationForm", $context) ? $context["registrationForm"] : (function () { throw new RuntimeError('Variable "registrationForm" does not exist.', 259, $this->source); })()), "agreeTerms", [], "any", false, false, false, 259), 'widget', ["attr" => ["class" => "form-check-input"]]);
+        yield "
+                    ";
+        // line 260
+        yield $this->env->getRuntime('Symfony\Component\Form\FormRenderer')->searchAndRenderBlock(CoreExtension::getAttribute($this->env, $this->source, (isset($context["registrationForm"]) || array_key_exists("registrationForm", $context) ? $context["registrationForm"] : (function () { throw new RuntimeError('Variable "registrationForm" does not exist.', 260, $this->source); })()), "agreeTerms", [], "any", false, false, false, 260), 'label', ["label_attr" => ["class" => "form-check-label"], "label" => "I agree to the terms and conditions"]);
+        yield "
+                    <small class=\"text-white d-block mt-1\">This I read and agree to Terms & Conditions</small>
+                    ";
+        // line 262
+        yield $this->env->getRuntime('Symfony\Component\Form\FormRenderer')->searchAndRenderBlock(CoreExtension::getAttribute($this->env, $this->source, (isset($context["registrationForm"]) || array_key_exists("registrationForm", $context) ? $context["registrationForm"] : (function () { throw new RuntimeError('Variable "registrationForm" does not exist.', 262, $this->source); })()), "agreeTerms", [], "any", false, false, false, 262), 'errors');
+        yield "
+                  </div>
+                  
+                  <div class=\"d-grid gap-3\">
+                    <button type=\"submit\" class=\"btn btn-grd-info btn-lg py-3 fw-bold\">
+                      <i class=\"fas fa-user-plus me-2\"></i>Register
+                    </button>
+                    
+                    <div class=\"text-center mt-2\">
+                      <p class=\"mb-0\">
+                        Already have an account? 
+                        <a href=\"";
+        // line 273
+        yield $this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("app_login");
+        yield "\" class=\"text-decoration-none fw-semibold text-primary\">
+                          Sign in here
+                        </a>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+              ";
+        // line 281
+        yield         $this->env->getRuntime('Symfony\Component\Form\FormRenderer')->renderBlock((isset($context["registrationForm"]) || array_key_exists("registrationForm", $context) ? $context["registrationForm"] : (function () { throw new RuntimeError('Variable "registrationForm" does not exist.', 281, $this->source); })()), 'form_end');
+        yield "
+            </div>
+          </div>
+        </div>
+        
+        <div class=\"col-lg-6 d-lg-flex d-none\">
+          <div class=\"p-3 rounded-4 w-100 d-flex align-items-center justify-content-center bg-grd-info\">
+            <img src=\"";
+        // line 288
+        yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl("Back_Office/assets/images/auth/register1.png"), "html", null, true);
+        yield "\" class=\"img-fluid\" alt=\"Register Illustration\">
+          </div>
+        </div>
+      </div><!--end row-->
+    </div>
+  </div>
+  <!--authentication-->
+
+  <!-- Bootstrap JS -->
+  <script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js\"></script>
+  
+  <script>
+   \$(document).ready(function () {
+     // Toggle password show/hide
+     \$(\"#show_hide_password a\").on('click', function (event) {
+       event.preventDefault();
+       const input = \$('#show_hide_password input');
+       const icon = \$('#show_hide_password i');
+       if (input.attr(\"type\") === \"text\") {
+         input.attr('type', 'password');
+         icon.removeClass(\"fa-eye\").addClass(\"fa-eye-slash\");
+       } else {
+         input.attr('type', 'text');
+         icon.removeClass(\"fa-eye-slash\").addClass(\"fa-eye\");
+       }
+     });
+
+     // Validation functions
+     function validateEmail(email) {
+       const re = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+\$/;
+       return re.test(email);
+     }
+
+     function showError(input, message) {
+       const \$input = \$(input);
+       \$input.addClass('is-invalid');
+       \$input.removeClass('shake');
+       void \$input[0].offsetWidth; // force reflow
+       \$input.addClass('shake');
+
+       if (!\$input.next('.invalid-feedback').length) {
+         \$input.after(`<div class=\"invalid-feedback\">\${message}</div>`);
+       } else {
+         \$input.next('.invalid-feedback').text(message);
+       }
+     }
+
+     function clearError(input) {
+       const \$input = \$(input);
+       \$input.removeClass('is-invalid shake');
+       \$input.next('.invalid-feedback').remove();
+     }
+
+     // Live validation on typing for First Name
+     \$('#registration_form_firstName').on('input', function () {
+       const firstName = \$(this).val().trim();
+       if (firstName === '') {
+         clearError(this);
+       } else if (!/^[a-zA-Zàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñç\\s-]+\$/.test(firstName)) {
+         showError(this, \"First name can only contain letters and spaces.\");
+       } else {
+         clearError(this);
+       }
+     });
+
+     // Live validation on typing for Last Name
+     \$('#registration_form_lastName').on('input', function () {
+       const lastName = \$(this).val().trim();
+       if (lastName === '') {
+         clearError(this);
+       } else if (!/^[a-zA-Zàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñç\\s-]+\$/.test(lastName)) {
+         showError(this, \"Last name can only contain letters and spaces.\");
+       } else {
+         clearError(this);
+       }
+     });
+
+     // Live validation on typing for Age
+     \$('#registration_form_age').on('input', function () {
+       const age = \$(this).val().trim();
+       if (age === '') {
+         clearError(this);
+       } else if (isNaN(age) || age < 1 || age > 120) {
+         showError(this, \"Age must be between 1 and 120.\");
+       } else {
+         clearError(this);
+       }
+     });
+
+     // Live validation on typing for Email
+     \$('#registration_form_email').on('input', function () {
+       const email = \$(this).val().trim();
+       if (email === '') {
+         clearError(this);
+       } else if (!email.includes('@')) {
+         showError(this, \"Symbole @ manquant.\");
+       } else if (email.indexOf('@') !== email.lastIndexOf('@')) {
+         showError(this, \"Un seul symbole @ est autorisé.\");
+       } else if (email.split('@')[1].length < 1) {
+         showError(this, \"Caractères manquants après @.\");
+       } else if (email.split('@')[1] && !email.split('@')[1].includes('.')) {
+         showError(this, \"Extension de domaine manquante (ex: .tn).\");
+       } else if (!validateEmail(email)) {
+         showError(this, \"Entrez un email valide.\");
+       } else {
+         clearError(this);
+       }
+     });
+
+     // Live validation on typing for Password
+     \$('#registration_form_plainPassword_first').on('input', function () {
+       const password = \$(this).val().trim();
+       if (password === '') {
+         clearError(this);
+       } else if (password.length < 6) {
+         showError(this, \"Minimum 6 caractères.\");
+       } else {
+         clearError(this);
+       }
+       
+       // Check confirm password match
+       const confirmPassword = \$('#registration_form_plainPassword_second').val();
+       if (confirmPassword && password !== confirmPassword) {
+         showError('#registration_form_plainPassword_second', \"Les mots de passe ne correspondent pas.\");
+       } else if (confirmPassword && password === confirmPassword) {
+         clearError('#registration_form_plainPassword_second');
+       }
+     });
+
+     // Live validation for Confirm Password
+     \$('#registration_form_plainPassword_second').on('input', function () {
+       const confirmPassword = \$(this).val().trim();
+       const password = \$('#registration_form_plainPassword_first').val();
+       
+       if (confirmPassword === '') {
+         clearError(this);
+       } else if (confirmPassword !== password) {
+         showError(this, \"Les mots de passe ne correspondent pas.\");
+       } else {
+         clearError(this);
+       }
+     });
+
+     // Terms & Conditions checkbox validation
+     \$('#registration_form_agreeTerms').on('change', function () {
+       if (!\$(this).prop('checked')) {
+         \$(this).closest('.form-check').addClass('is-invalid');
+       } else {
+         \$(this).closest('.form-check').removeClass('is-invalid');
+       }
+     });
+
+     // Toggle password show/hide for confirm password
+     \$(\"#show_hide_confirm_password a\").on('click', function (event) {
+       event.preventDefault();
+       const input = \$('#show_hide_confirm_password input');
+       const icon = \$('#show_hide_confirm_password i');
+       if (input.attr(\"type\") === \"text\") {
+         input.attr('type', 'password');
+         icon.removeClass(\"fa-eye\").addClass(\"fa-eye-slash\");
+       } else {
+         input.attr('type', 'text');
+         icon.removeClass(\"fa-eye-slash\").addClass(\"fa-eye\");
+       }
+     });
+
+     // Initial validation on page load (no errors should be shown)
+     \$('#registration_form_firstName').trigger('input');
+     \$('#registration_form_lastName').trigger('input');
+     \$('#registration_form_age').trigger('input');
+     \$('#registration_form_email').trigger('input');
+     \$('#registration_form_plainPassword_first').trigger('input');
+     \$('#registration_form_plainPassword_second').trigger('input');
+   });
+  </script>
+</body>
+</html>";
+        
+        $__internal_5a27a8ba21ca79b61932376b2fa922d2->leave($__internal_5a27a8ba21ca79b61932376b2fa922d2_prof);
+
+        
+        $__internal_6f47bbe9983af81f1e7450e9a3e3768f->leave($__internal_6f47bbe9983af81f1e7450e9a3e3768f_prof);
+
+        yield from [];
+    }
+
+    /**
+     * @codeCoverageIgnore
+     */
+    public function getTemplateName(): string
+    {
+        return "security/register.html.twig";
+    }
+
+    /**
+     * @codeCoverageIgnore
+     */
+    public function isTraitable(): bool
+    {
+        return false;
+    }
+
+    /**
+     * @codeCoverageIgnore
+     */
+    public function getDebugInfo(): array
+    {
+        return array (  430 => 288,  420 => 281,  409 => 273,  395 => 262,  390 => 260,  386 => 259,  376 => 252,  368 => 247,  362 => 244,  355 => 240,  347 => 235,  341 => 232,  331 => 225,  327 => 224,  323 => 223,  316 => 219,  312 => 218,  308 => 217,  298 => 210,  294 => 209,  290 => 208,  283 => 204,  279 => 203,  275 => 202,  267 => 197,  241 => 174,  232 => 168,  82 => 21,  78 => 20,  74 => 19,  70 => 18,  66 => 17,  48 => 1,);
+    }
+
+    public function getSourceContext(): Source
+    {
+        return new Source("<!doctype html>
+<html lang=\"en\" data-bs-theme=\"blue-theme\">
+
+<head>
+  <meta charset=\"utf-8\">
+  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
+  <title>PIDEV Education - Register</title>
+  
+  <!-- Bootstrap CSS -->
+  <link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css\" rel=\"stylesheet\">
+  <!-- Font Awesome -->
+  <link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css\">
+  <!-- Bootstrap Icons -->
+  <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css\">
+  
+  <!-- Dashboard CSS for consistent styling -->
+  <link href=\"{{ asset('Back_Office/assets/css/bootstrap.min.css') }}\" rel=\"stylesheet\">
+  <link href=\"{{ asset('Back_Office/assets/css/bootstrap-extended.css') }}\" rel=\"stylesheet\">
+  <link href=\"{{ asset('Back_Office/sass/main.css') }}\" rel=\"stylesheet\">
+  <link href=\"{{ asset('Back_Office/sass/blue-theme.css') }}\" rel=\"stylesheet\">
+  <link href=\"{{ asset('Back_Office/sass/responsive.css') }}\" rel=\"stylesheet\">
+  
+  <!-- Google Fonts -->
+  <link href=\"https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600&display=swap\" rel=\"stylesheet\">
+  <link href=\"https://fonts.googleapis.com/css?family=Material+Icons+Outlined\" rel=\"stylesheet\">
+
+  <script src=\"https://cdn.jsdelivr.net/npm/sweetalert2@11\"></script>
+
+  <style>
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      50% { transform: translateX(6px); }
+      75% { transform: translateX(-6px); }
+      100% { transform: translateX(0); }
+    }
+  
+    .shake {
+      animation: shake 0.3s;
+    }
+  
+    .is-invalid {
+      border-color: #dc3545 !important;
+      box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+    }
+  
+    .invalid-feedback {
+      display: block !important;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      font-family: 'Noto Sans', sans-serif;
+    }
+    
+    .btn-grd-info {
+      background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+      border: none;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-grd-info:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(23, 162, 184, 0.3);
+      color: white;
+    }
+    
+    .btn-filter {
+      background: white;
+      border: 2px solid #e0e0e0;
+      color: #333;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-filter:hover {
+      border-color: #17a2b8;
+      background: #f8f9fa;
+      transform: translateY(-1px);
+    }
+    
+    .separator {
+      display: flex;
+      align-items: center;
+      margin: 30px 0;
+      color: #666;
+    }
+    
+    .separator .line {
+      flex: 1;
+      height: 1px;
+      background: #e0e0e0;
+    }
+    
+    .separator p {
+      padding: 0 15px;
+      margin: 0;
+      font-size: 14px;
+    }
+    
+    .bg-grd-info {
+      background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+    }
+    
+    .card {
+      border: none;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+    
+    .form-control {
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 12px 16px;
+      transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+      border-color: #17a2b8;
+      box-shadow: 0 0 0 0.25rem rgba(23, 162, 184, 0.25);
+    }
+    
+    .input-group-text {
+      border: 2px solid #e0e0e0;
+      border-left: none;
+      background: transparent;
+      color: #666;
+    }
+    
+    .form-control.border-end-0 {
+      border-right: none;
+    }
+    
+    .form-select {
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 12px 16px;
+      transition: all 0.3s ease;
+    }
+    
+    .form-select:focus {
+      border-color: #17a2b8;
+      box-shadow: 0 0 0 0.25rem rgba(23, 162, 184, 0.25);
+    }
+    
+    .form-check-input:checked {
+      background-color: #17a2b8;
+      border-color: #17a2b8;
+    }
+  </style>
+  
+  <script src=\"https://code.jquery.com/jquery-3.6.4.min.js\"></script>
+</head>
+  
+<body>
+  <!--authentication-->
+  <div class=\"mx-3 mx-lg-0\">
+    <div class=\"card my-5 col-xl-9 col-xxl-8 mx-auto rounded-4 overflow-hidden border-3 p-4\">
+      <div class=\"row g-4\">
+        <div class=\"col-lg-6 d-flex\">
+          <div class=\"card-body\">
+            <img src=\"{{ asset('Back_Office/assets/images/logo-icon.png') }}\" class=\"mb-4\" width=\"145\" alt=\"PIDEV Education\">
+            <h4 class=\"fw-bold\">Get Started Now</h4>
+            <p class=\"mb-0\">Create your account to get started</p>
+            
+            <div class=\"row gy-2 gx-0 my-4\">
+              <div class=\"col-12 col-lg-12\">
+                <a href=\"{{ path('connect_google') }}\" class=\"btn btn-filter py-2 px-4 font-text1 fw-bold d-flex align-items-center justify-content-center w-100 text-decoration-none\">
+                  <span class=\"\"><i class=\"fab fa-google me-2\"></i>Sign up with Google</span>
+                </a>
+              </div>
+              <div class=\"col-12 col-lg-12\">
+                <button class=\"btn btn-filter py-2 px-4 font-text1 fw-bold d-flex align-items-center justify-content-center w-100\">
+                  <span class=\"\"><i class=\"fab fa-facebook-f me-2\"></i>Sign up with Facebook</span>
+                </button>
+              </div>
+              <div class=\"col-12 col-lg-12\">
+                <button class=\"btn btn-filter py-2 px-4 font-text1 fw-bold d-flex align-items-center justify-content-center w-100\">
+                  <span class=\"\"><i class=\"fab fa-linkedin-in me-2\"></i>Sign up with LinkedIn</span>
+                </button>
+              </div>
+            </div>
+            
+            <div class=\"separator\">
+              <div class=\"line\"></div>
+              <p class=\"mb-0 fw-bold\">OR SIGN UP WITH</p>
+              <div class=\"line\"></div>
+            </div>
+            
+            <div class=\"form-body mt-4\">
+              {{ form_start(registrationForm, {attr: {novalidate: 'novalidate'}}) }}
+                
+                <!-- Section 1: First Name + Last Name (side by side) -->
+                <div class=\"row g-4 mb-4\">
+                  <div class=\"col-md-6\">
+                    {{ form_label(registrationForm.firstName, 'First Name', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                    {{ form_widget(registrationForm.firstName, {'attr': {'class': 'form-control', 'placeholder': 'John'}}) }}
+                    {{ form_errors(registrationForm.firstName) }}
+                  </div>
+                  
+                  <div class=\"col-md-6\">
+                    {{ form_label(registrationForm.lastName, 'Last Name', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                    {{ form_widget(registrationForm.lastName, {'attr': {'class': 'form-control', 'placeholder': 'Doe'}}) }}
+                    {{ form_errors(registrationForm.lastName) }}
+                  </div>
+                </div>
+                
+                <!-- Section 2: Age + Email (side by side) -->
+                <div class=\"row g-4 mb-4\">
+                  <div class=\"col-md-6\">
+                    {{ form_label(registrationForm.age, 'Age', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                    {{ form_widget(registrationForm.age, {'attr': {'class': 'form-control', 'placeholder': '25'}}) }}
+                    {{ form_errors(registrationForm.age) }}
+                  </div>
+                  
+                  <div class=\"col-md-6\">
+                    {{ form_label(registrationForm.email, 'Email', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                    {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control', 'placeholder': 'john.doe@example.com'}}) }}
+                    {{ form_errors(registrationForm.email) }}
+                  </div>
+                </div>
+                
+                <!-- Section 3: Password + Confirm Password (side by side) -->
+                <div class=\"row g-4 mb-4\">
+                  <div class=\"col-md-6\">
+                    {{ form_label(registrationForm.plainPassword.first, 'Password', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                    <small class=\"text-white d-block mb-2\">Minimum 6 characters</small>
+                    <div class=\"input-group\" id=\"show_hide_password\">
+                      {{ form_widget(registrationForm.plainPassword.first, {'attr': {'class': 'form-control border-end-0', 'placeholder': 'Enter Password'}}) }}
+                      <a href=\"javascript:;\" class=\"input-group-text bg-transparent\">
+                        <i class=\"fas fa-eye-slash\"></i>
+                      </a>
+                    </div>
+                    {{ form_errors(registrationForm.plainPassword.first) }}
+                  </div>
+                  
+                  <div class=\"col-md-6\">
+                    {{ form_label(registrationForm.plainPassword.second, 'Confirm Password', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                    <small class=\"text-white d-block mb-2\">Confirm your password</small>
+                    <div class=\"input-group\" id=\"show_hide_confirm_password\">
+                      {{ form_widget(registrationForm.plainPassword.second, {'attr': {'class': 'form-control border-end-0', 'placeholder': 'Confirm Password'}}) }}
+                      <a href=\"javascript:;\" class=\"input-group-text bg-transparent\">
+                        <i class=\"fas fa-eye-slash\"></i>
+                      </a>
+                    </div>
+                    {{ form_errors(registrationForm.plainPassword.second) }}
+                  </div>
+                </div>
+                
+                <!-- Section 4: Terms and Submit -->
+                <div class=\"border-top pt-4 mt-5\">
+                  <div class=\"form-check form-switch mb-4\">
+                    {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input'}}) }}
+                    {{ form_label(registrationForm.agreeTerms, 'I agree to the terms and conditions', {'label_attr': {'class': 'form-check-label'}}) }}
+                    <small class=\"text-white d-block mt-1\">This I read and agree to Terms & Conditions</small>
+                    {{ form_errors(registrationForm.agreeTerms) }}
+                  </div>
+                  
+                  <div class=\"d-grid gap-3\">
+                    <button type=\"submit\" class=\"btn btn-grd-info btn-lg py-3 fw-bold\">
+                      <i class=\"fas fa-user-plus me-2\"></i>Register
+                    </button>
+                    
+                    <div class=\"text-center mt-2\">
+                      <p class=\"mb-0\">
+                        Already have an account? 
+                        <a href=\"{{ path('app_login') }}\" class=\"text-decoration-none fw-semibold text-primary\">
+                          Sign in here
+                        </a>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+              {{ form_end(registrationForm) }}
+            </div>
+          </div>
+        </div>
+        
+        <div class=\"col-lg-6 d-lg-flex d-none\">
+          <div class=\"p-3 rounded-4 w-100 d-flex align-items-center justify-content-center bg-grd-info\">
+            <img src=\"{{ asset('Back_Office/assets/images/auth/register1.png') }}\" class=\"img-fluid\" alt=\"Register Illustration\">
+          </div>
+        </div>
+      </div><!--end row-->
+    </div>
+  </div>
+  <!--authentication-->
+
+  <!-- Bootstrap JS -->
+  <script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js\"></script>
+  
+  <script>
+   \$(document).ready(function () {
+     // Toggle password show/hide
+     \$(\"#show_hide_password a\").on('click', function (event) {
+       event.preventDefault();
+       const input = \$('#show_hide_password input');
+       const icon = \$('#show_hide_password i');
+       if (input.attr(\"type\") === \"text\") {
+         input.attr('type', 'password');
+         icon.removeClass(\"fa-eye\").addClass(\"fa-eye-slash\");
+       } else {
+         input.attr('type', 'text');
+         icon.removeClass(\"fa-eye-slash\").addClass(\"fa-eye\");
+       }
+     });
+
+     // Validation functions
+     function validateEmail(email) {
+       const re = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+\$/;
+       return re.test(email);
+     }
+
+     function showError(input, message) {
+       const \$input = \$(input);
+       \$input.addClass('is-invalid');
+       \$input.removeClass('shake');
+       void \$input[0].offsetWidth; // force reflow
+       \$input.addClass('shake');
+
+       if (!\$input.next('.invalid-feedback').length) {
+         \$input.after(`<div class=\"invalid-feedback\">\${message}</div>`);
+       } else {
+         \$input.next('.invalid-feedback').text(message);
+       }
+     }
+
+     function clearError(input) {
+       const \$input = \$(input);
+       \$input.removeClass('is-invalid shake');
+       \$input.next('.invalid-feedback').remove();
+     }
+
+     // Live validation on typing for First Name
+     \$('#registration_form_firstName').on('input', function () {
+       const firstName = \$(this).val().trim();
+       if (firstName === '') {
+         clearError(this);
+       } else if (!/^[a-zA-Zàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñç\\s-]+\$/.test(firstName)) {
+         showError(this, \"First name can only contain letters and spaces.\");
+       } else {
+         clearError(this);
+       }
+     });
+
+     // Live validation on typing for Last Name
+     \$('#registration_form_lastName').on('input', function () {
+       const lastName = \$(this).val().trim();
+       if (lastName === '') {
+         clearError(this);
+       } else if (!/^[a-zA-Zàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñç\\s-]+\$/.test(lastName)) {
+         showError(this, \"Last name can only contain letters and spaces.\");
+       } else {
+         clearError(this);
+       }
+     });
+
+     // Live validation on typing for Age
+     \$('#registration_form_age').on('input', function () {
+       const age = \$(this).val().trim();
+       if (age === '') {
+         clearError(this);
+       } else if (isNaN(age) || age < 1 || age > 120) {
+         showError(this, \"Age must be between 1 and 120.\");
+       } else {
+         clearError(this);
+       }
+     });
+
+     // Live validation on typing for Email
+     \$('#registration_form_email').on('input', function () {
+       const email = \$(this).val().trim();
+       if (email === '') {
+         clearError(this);
+       } else if (!email.includes('@')) {
+         showError(this, \"Symbole @ manquant.\");
+       } else if (email.indexOf('@') !== email.lastIndexOf('@')) {
+         showError(this, \"Un seul symbole @ est autorisé.\");
+       } else if (email.split('@')[1].length < 1) {
+         showError(this, \"Caractères manquants après @.\");
+       } else if (email.split('@')[1] && !email.split('@')[1].includes('.')) {
+         showError(this, \"Extension de domaine manquante (ex: .tn).\");
+       } else if (!validateEmail(email)) {
+         showError(this, \"Entrez un email valide.\");
+       } else {
+         clearError(this);
+       }
+     });
+
+     // Live validation on typing for Password
+     \$('#registration_form_plainPassword_first').on('input', function () {
+       const password = \$(this).val().trim();
+       if (password === '') {
+         clearError(this);
+       } else if (password.length < 6) {
+         showError(this, \"Minimum 6 caractères.\");
+       } else {
+         clearError(this);
+       }
+       
+       // Check confirm password match
+       const confirmPassword = \$('#registration_form_plainPassword_second').val();
+       if (confirmPassword && password !== confirmPassword) {
+         showError('#registration_form_plainPassword_second', \"Les mots de passe ne correspondent pas.\");
+       } else if (confirmPassword && password === confirmPassword) {
+         clearError('#registration_form_plainPassword_second');
+       }
+     });
+
+     // Live validation for Confirm Password
+     \$('#registration_form_plainPassword_second').on('input', function () {
+       const confirmPassword = \$(this).val().trim();
+       const password = \$('#registration_form_plainPassword_first').val();
+       
+       if (confirmPassword === '') {
+         clearError(this);
+       } else if (confirmPassword !== password) {
+         showError(this, \"Les mots de passe ne correspondent pas.\");
+       } else {
+         clearError(this);
+       }
+     });
+
+     // Terms & Conditions checkbox validation
+     \$('#registration_form_agreeTerms').on('change', function () {
+       if (!\$(this).prop('checked')) {
+         \$(this).closest('.form-check').addClass('is-invalid');
+       } else {
+         \$(this).closest('.form-check').removeClass('is-invalid');
+       }
+     });
+
+     // Toggle password show/hide for confirm password
+     \$(\"#show_hide_confirm_password a\").on('click', function (event) {
+       event.preventDefault();
+       const input = \$('#show_hide_confirm_password input');
+       const icon = \$('#show_hide_confirm_password i');
+       if (input.attr(\"type\") === \"text\") {
+         input.attr('type', 'password');
+         icon.removeClass(\"fa-eye\").addClass(\"fa-eye-slash\");
+       } else {
+         input.attr('type', 'text');
+         icon.removeClass(\"fa-eye-slash\").addClass(\"fa-eye\");
+       }
+     });
+
+     // Initial validation on page load (no errors should be shown)
+     \$('#registration_form_firstName').trigger('input');
+     \$('#registration_form_lastName').trigger('input');
+     \$('#registration_form_age').trigger('input');
+     \$('#registration_form_email').trigger('input');
+     \$('#registration_form_plainPassword_first').trigger('input');
+     \$('#registration_form_plainPassword_second').trigger('input');
+   });
+  </script>
+</body>
+</html>", "security/register.html.twig", "C:\\Users\\LordKiller\\Downloads\\user\\templates\\security\\register.html.twig");
+    }
+}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Education App{% endblock %}</title>
+    
+    <!-- SIMPLE CSS - remove complex preloader JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ asset('assets_front/css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS for navigation -->
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .welcome-text {
+            color: #495057;
+            font-weight: 600;
+            padding: 10px 20px;
+            border: 2px solid #667eea;
+            border-radius: 25px;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .welcome-text:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .welcome-text {
+                font-size: 14px;
+                padding: 8px 15px;
+            }
+        }
+    </style>
+    
+    {% block stylesheets %}{% endblock %}
+</head>
+<body>
+    {% block body %}{% endblock %}
+    
+    <!-- SIMPLE JS - remove preloader JavaScript -->
+    <script src="{{ asset('assets_front/js/jquery.js') }}"></script>
+    <script>
+        // Remove preloader after page loads
+        $(document).ready(function() {
+            $('.loader-wrap').fadeOut(500);
+        });
+    </script>
+    
+    {% block javascripts %}{% endblock %}
+</body>
+</html>

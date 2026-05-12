@@ -1,0 +1,344 @@
+{% extends 'dashboard/index.html.twig' %}
+
+{% block title %}{{ title }} - Dashboard{% endblock %}
+
+{% block page_content %}
+<!--start page wrapper -->
+<div class="page-wrapper">
+    <div class="page-content">
+        <!--breadcrumb-->
+        <div class="breadcrumb-area">
+            <h1>{{ title }}</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="{{ path('dashboard_index') }}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('admin_users') }}">Utilisateurs</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ title }}</li>
+                </ol>
+            </nav>
+        </div>
+        <!--end breadcrumb-->
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">{{ title }}</h5>
+                    </div>
+                    <div class="card-body">
+                        {% for flash_message in app.flashes('success') %}
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="material-icons-outlined me-2">check_circle</i>
+                                {{ flash_message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+
+                        {% for flash_message in app.flashes('error') %}
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="material-icons-outlined me-2">error</i>
+                                {{ flash_message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+
+                        {{ form_start(form, {attr: {novalidate: 'novalidate'}}) }}
+                        
+                        <!-- Section 1: First Name and Last Name -->
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-6">
+                                {{ form_label(form.firstName, 'First Name', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                                {{ form_widget(form.firstName, {'attr': {'class': 'form-control', 'placeholder': 'John'}}) }}
+                                {{ form_errors(form.firstName) }}
+                            </div>
+                            
+                            <div class="col-md-6">
+                                {{ form_label(form.lastName, 'Last Name', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                                {{ form_widget(form.lastName, {'attr': {'class': 'form-control', 'placeholder': 'Doe'}}) }}
+                                {{ form_errors(form.lastName) }}
+                            </div>
+                        </div>
+                        
+                        <!-- Section 2: Age and Email -->
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-6">
+                                {{ form_label(form.age, 'Age', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                                {{ form_widget(form.age, {'attr': {'class': 'form-control', 'placeholder': '25'}}) }}
+                                {{ form_errors(form.age) }}
+                            </div>
+                            
+                            <div class="col-md-6">
+                                {{ form_label(form.email, 'Email', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                                {{ form_widget(form.email, {'attr': {'class': 'form-control', 'placeholder': 'john.doe@example.com'}}) }}
+                                {{ form_errors(form.email) }}
+                            </div>
+                        </div>
+                        
+                        <!-- Section 3: Username (optional) -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                {{ form_label(form.username, 'Username', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                                {{ form_widget(form.username, {'attr': {'class': 'form-control', 'placeholder': 'johndoe (optional)'}}) }}
+                                {{ form_errors(form.username) }}
+                            </div>
+                        </div>
+                        
+                        <!-- Section 4: Password (only for add) -->
+                        {% if form.plainPassword is defined %}
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-6">
+                                {{ form_label(form.plainPassword, form.plainPassword.vars.label, {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                                <small class="text-muted d-block mb-2">Minimum 8 caractères, 1 majuscule, 1 minuscule, 1 chiffre</small>
+                                <div class="input-group" id="show_hide_password">
+                                    {{ form_widget(form.plainPassword, {'attr': {'class': 'form-control border-end-0', 'placeholder': 'Enter Password'}}) }}
+                                    <a href="javascript:;" class="input-group-text bg-transparent">
+                                        <i class="fas fa-eye-slash"></i>
+                                    </a>
+                                </div>
+                                {{ form_errors(form.plainPassword) }}
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Section 4: Role and Status -->
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-6">
+                                {{ form_label(form.roles, 'Rôle', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                                {{ form_widget(form.roles, {'attr': {'class': 'form-select'}}) }}
+                                {{ form_errors(form.roles) }}
+                            </div>
+                            
+                            <div class="col-md-6">
+                                {{ form_label(form.status, 'Statut', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                                {{ form_widget(form.status, {'attr': {'class': 'form-select'}}) }}
+                                {{ form_errors(form.status) }}
+                            </div>
+                        </div>
+                        
+                        <!-- Section 5: Photo -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                {{ form_label(form.photoFile, 'Photo de profil', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+                                <small class="text-muted d-block mb-2">JPG/PNG, max 2Mo</small>
+                                {{ form_widget(form.photoFile, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.photoFile) }}
+                            </div>
+                        </div>
+                        
+                        <!-- Section 6: Submit -->
+                        <div class="border-top pt-4 mt-5">
+                            <div class="d-grid gap-3 d-md-flex justify-content-md-start">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="material-icons-outlined me-2">save</i>
+                                    {% if user is defined %}Enregistrer les modifications{% else %}Créer l'utilisateur{% endif %}
+                                </button>
+                                <a href="{{ path('admin_users') }}" class="btn btn-secondary">
+                                    <i class="material-icons-outlined me-2">cancel</i>
+                                    Annuler
+                                </a>
+                            </div>
+                        </div>
+                        
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--end page wrapper-->
+
+<script>
+$(document).ready(function () {
+    // Toggle password show/hide
+    $("#show_hide_password a").on('click', function (event) {
+        event.preventDefault();
+        const input = $('#show_hide_password input');
+        const icon = $('#show_hide_password i');
+        if (input.attr("type") === "text") {
+            input.attr('type', 'password');
+            icon.removeClass("fa-eye").addClass("fa-eye-slash");
+        } else {
+            input.attr('type', 'text');
+            icon.removeClass("fa-eye-slash").addClass("fa-eye");
+        }
+    });
+
+    // Validation functions
+    function validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    }
+
+    function showError(input, message) {
+        const $input = $(input);
+        $input.addClass('is-invalid');
+        $input.removeClass('shake');
+        void $input[0].offsetWidth; // force reflow
+        $input.addClass('shake');
+
+        if (!$input.next('.invalid-feedback').length) {
+            $input.after(`<div class="invalid-feedback">${message}</div>`);
+        } else {
+            $input.next('.invalid-feedback').text(message);
+        }
+    }
+
+    function clearError(input) {
+        const $input = $(input);
+        $input.removeClass('is-invalid shake');
+        $input.next('.invalid-feedback').remove();
+    }
+
+    // Live validation on typing for Email
+    $('#user_form_email').on('input', function () {
+        const email = $(this).val().trim();
+        if (email === '') {
+            clearError(this);
+        } else if (!email.includes('@')) {
+            showError(this, "Missing @ symbol.");
+        } else if (email.indexOf('@') !== email.lastIndexOf('@')) {
+            showError(this, "Only one @ symbol is allowed.");
+        } else if (email.split('@')[1].length < 1) {
+            showError(this, "Missing characters after @.");
+        } else if (email.split('@')[1] && !email.split('@')[1].includes('.')) {
+            showError(this, "Missing domain extension (e.g., .com).");
+        } else if (!validateEmail(email)) {
+            showError(this, "Enter a valid email.");
+        } else {
+            clearError(this);
+        }
+    });
+
+    // Live validation on typing for Password
+    $('#user_form_plainPassword').on('input', function () {
+        const password = $(this).val().trim();
+        if (password === '') {
+            clearError(this);
+        } else if (password.length < 8) {
+            showError(this, "Le mot de passe doit contenir au moins 8 caractères.");
+        } else if (!/(?=.*[a-z])/.test(password)) {
+            showError(this, "Le mot de passe doit contenir au moins une minuscule.");
+        } else if (!/(?=.*[A-Z])/.test(password)) {
+            showError(this, "Le mot de passe doit contenir au moins une majuscule.");
+        } else if (!/(?=.*\d)/.test(password)) {
+            showError(this, "Le mot de passe doit contenir au moins un chiffre.");
+        } else {
+            clearError(this);
+        }
+    });
+
+    // Live validation on typing for First Name
+    $('#user_form_firstName').on('input', function () {
+        const firstName = $(this).val().trim();
+        if (firstName === '') {
+            clearError(this);
+        } else if (!/^[a-zA-Zàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñç\s-]+$/.test(firstName)) {
+            showError(this, "First name can only contain letters and spaces.");
+        } else {
+            clearError(this);
+        }
+    });
+
+    // Live validation on typing for Last Name
+    $('#user_form_lastName').on('input', function () {
+        const lastName = $(this).val().trim();
+        if (lastName === '') {
+            clearError(this);
+        } else if (!/^[a-zA-Zàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñç\s-]+$/.test(lastName)) {
+            showError(this, "Last name can only contain letters and spaces.");
+        } else {
+            clearError(this);
+        }
+    });
+
+    // Live validation on typing for Age
+    $('#user_form_age').on('input', function () {
+        const age = $(this).val().trim();
+        if (age === '') {
+            clearError(this);
+        } else if (isNaN(age) || age < 1 || age > 120) {
+            showError(this, "Age must be between 1 and 120.");
+        } else {
+            clearError(this);
+        }
+    });
+});
+</script>
+
+<style>
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    50% { transform: translateX(6px); }
+    75% { transform: translateX(-6px); }
+    100% { transform: translateX(0); }
+}
+
+.shake {
+    animation: shake 0.3s;
+}
+
+.is-invalid {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+}
+
+.invalid-feedback {
+    display: block !important;
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.form-control {
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 12px 16px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+}
+
+.form-select {
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 12px 16px;
+    transition: all 0.3s ease;
+}
+
+.form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+}
+
+.input-group-text {
+    border: 2px solid #e0e0e0;
+    border-left: none;
+    background: transparent;
+    color: #666;
+}
+
+.form-control.border-end-0 {
+    border-right: none;
+}
+
+.alert {
+    border: none;
+    border-radius: 0.5rem;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+</style>
+{% endblock page_content %}

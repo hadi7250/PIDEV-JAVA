@@ -1,0 +1,206 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Discussion - Forum - {{ parent() }}{% endblock %}
+
+{% block body %}
+<div class="page-wrapper">
+    <!-- Preloader -->
+    <div class="loader-wrap">
+        <div class="preloader">
+            <div class="preloader-close">x</div>
+            <div id="handle-preloader" class="handle-preloader">
+                <div class="animation-preloader">
+                    <div class="txt-loading">
+                        <span data-text-preloader="N" class="letters-loading">N</span>
+                        <span data-text-preloader="E" class="letters-loading">E</span>
+                        <span data-text-preloader="W" class="letters-loading">W</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Header -->
+    <header class="main-header header-style-one">
+        <div class="header-lower">
+            <div class="auto-container">
+                <div class="inner-container">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap">
+                        
+                        <div class="logo-box">
+                            <div class="logo"><a href="{{ path('app_homepage') }}"><img src="{{ asset('assets_front/images/logo.svg') }}" alt="" title=""></a></div>
+                        </div>
+                        
+                        <div class="nav-outer d-flex flex-wrap">
+                            <!-- Main Menu -->
+                            <nav class="main-menu navbar-expand-md">
+                                <div class="navbar-header">
+                                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                                        <span class="icon-bar"></span>
+                                        <span class="icon-bar"></span>
+                                        <span class="icon-bar"></span>
+                                    </button>
+                                </div>
+                                
+                                <div class="navbar-collapse collapse clearfix" id="navbarSupportedContent">
+                                    <ul class="navigation clearfix">
+                                        <li><a href="{{ path('app_homepage') }}">Home</a></li>
+                                        <li><a href="{{ path('forum_index') }}">Forum</a></li>
+                                        <li class="current"><a href="#">New Discussion</a></li>
+                                    </ul>
+                                </div>
+                            </nav>
+                        </div>
+
+                        <!-- Main Menu End-->
+                        <div class="outer-box d-flex align-items-center flex-wrap">
+                            <span class="welcome-text">Welcome, {{ (app.user.firstName ~ ' ' ~ app.user.lastName)|trim|default(app.user.email) }}</span>
+                            <a href="{{ path('forum_index') }}" class="template-btn btn-style-two">
+                                <span class="btn-wrap">
+                                    <span class="text-one">Back to Forum</span>
+                                    <span class="text-two">Back to Forum</span>
+                                </span>
+                            </a>
+                            <a href="{{ path('app_logout') }}" class="template-btn btn-style-two">
+                                <span class="btn-wrap">
+                                    <span class="text-one">Logout</span>
+                                    <span class="text-two">Logout</span>
+                                </span>
+                            </a>
+                        </div>
+
+                        <!-- Mobile Navigation Toggler -->
+                        <div class="mobile-nav-toggler">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-menu-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 6l16 0" /><path d="M4 12l16 0" /><path d="M4 18l16 0" /></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- New Discussion Form -->
+    <section class="new-discussion-section" style="padding: 120px 0 80px 0;">
+        <div class="auto-container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="form-container" style="background: rgba(255,255,255,0.08); border-radius: 20px; padding: 50px; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
+                        <div class="text-center mb-5">
+                            <h2 class="text-white mb-3" style="font-size: 32px; font-weight: 700;">Start a New Discussion</h2>
+                            <p class="text-white-50" style="font-size: 16px;">Share your thoughts and engage with the community</p>
+                        </div>
+
+                        {% for flash_message in app.flashes('success') %}
+                            <div class="alert alert-success" style="background: rgba(40, 167, 69, 0.2); border: 1px solid rgba(40, 167, 69, 0.5); color: white;">
+                                {{ flash_message }}
+                            </div>
+                        {% endfor %}
+
+                        {{ form_start(form, {'attr': {'class': 'discussion-form'}}) }}
+                            <div class="mb-4">
+                                {{ form_label(form.title, null, {'label_attr': {'class': 'form-label text-white mb-3'}}) }}
+                                {{ form_widget(form.title, {'attr': {'class': 'form-control', 'placeholder': 'Enter a clear and descriptive title...', 'style': 'background: white; color: #333; border: 1px solid #ddd; padding: 12px 15px; border-radius: 8px;'}}) }}
+                                {{ form_errors(form.title, {'attr': {'class': 'text-danger'}}) }}
+                            </div>
+
+                            <div class="mb-4">
+                                {{ form_label(form.category, null, {'label_attr': {'class': 'form-label text-white mb-3'}}) }}
+                                {{ form_widget(form.category, {'attr': {'class': 'form-control', 'style': 'background: white; color: #333; border: 1px solid #ddd; padding: 12px 15px; border-radius: 8px;'}}) }}
+                                {{ form_errors(form.category, {'attr': {'class': 'text-danger'}}) }}
+                            </div>
+
+                            <div class="mb-4">
+                                {{ form_label(form.content, null, {'label_attr': {'class': 'form-label text-white mb-3'}}) }}
+                                {{ form_widget(form.content, {'attr': {'class': 'form-control', 'placeholder': 'Write your discussion content here...', 'style': 'background: white; color: #333; border: 1px solid #ddd; padding: 15px; border-radius: 8px; min-height: 150px;'}}) }}
+                                {{ form_errors(form.content, {'attr': {'class': 'text-danger'}}) }}
+                            </div>
+
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <a href="{{ path('forum_index') }}" class="btn btn-outline-light" style="border: 1px solid rgba(255,255,255,0.5); color: white; padding: 10px 25px; border-radius: 25px;">
+                                    <i class="fa fa-arrow-left"></i> Cancel
+                                </a>
+                                <button type="submit" class="template-btn btn-style-one">
+                                    <span class="btn-wrap">
+                                        <span class="text-one">Create Discussion</span>
+                                        <span class="text-two">Create Discussion</span>
+                                    </span>
+                                </button>
+                            </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Guidelines -->
+    <section class="guidelines-section" style="padding: 40px 0;">
+        <div class="auto-container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="guidelines-box" style="background: rgba(255,255,255,0.05); border-radius: 15px; padding: 30px; border: 1px solid rgba(255,255,255,0.1);">
+                        <h4 class="text-white mb-3"><i class="fa fa-lightbulb"></i> Community Guidelines</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul class="text-white-70" style="line-height: 1.8;">
+                                    <li><i class="fa fa-check text-success"></i> Be respectful and constructive</li>
+                                    <li><i class="fa fa-check text-success"></i> Stay on topic</li>
+                                    <li><i class="fa fa-check text-success"></i> Use clear and descriptive titles</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul class="text-white-70" style="line-height: 1.8;">
+                                    <li><i class="fa fa-check text-success"></i> Search before posting</li>
+                                    <li><i class="fa fa-check text-success"></i> Provide helpful context</li>
+                                    <li><i class="fa fa-check text-success"></i> Engage with responses</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<style>
+.text-white-70 {
+    color: rgba(255,255,255,0.7) !important;
+}
+
+.text-white-50 {
+    color: rgba(255,255,255,0.5) !important;
+}
+
+.form-label {
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.alert-success {
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.form-control:focus {
+    background: white !important;
+    color: #333 !important;
+    border-color: #667eea !important;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25) !important;
+}
+
+.btn-outline-light:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: white;
+}
+</style>
+
+<!-- Scripts -->
+<script src="{{ asset('assets_front/js/jquery.js') }}"></script>
+<script>
+$(document).ready(function() {
+    $('.loader-wrap').fadeOut(500);
+});
+</script>
+{% endblock %}

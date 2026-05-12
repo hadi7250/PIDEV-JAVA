@@ -1,0 +1,610 @@
+{% extends 'dashboard/index.html.twig' %}
+
+{% block title %}Customers - Dashboard{% endblock %}
+
+{% block content %}
+<!--start page wrapper -->
+<div class="page-wrapper">
+    <div class="page-content">
+        <!--breadcrumb-->
+        <div class="breadcrumb-area">
+            <h1>Customers</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="{{ path('dashboard_index') }}">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Customers</li>
+                </ol>
+            </nav>
+        </div>
+        <!--end breadcrumb-->
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Customer Management</h5>
+                        <button class="btn btn-primary px-4" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                            <i class="bi bi-plus-lg me-2"></i>Add User
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <!-- Search and Filter -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                    <input type="text" class="form-control" id="searchUsers" placeholder="Search customers...">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex gap-2">
+                                    <select class="form-select" id="filterStatus">
+                                        <option value="">All Status</option>
+                                        <option value="active">Active</option>
+                                        <option value="inactive">Inactive</option>
+                                        <option value="pending">Pending</option>
+                                    </select>
+                                    <select class="form-select" id="filterRole">
+                                        <option value="">All Roles</option>
+                                        <option value="customer">Customer</option>
+                                        <option value="admin">Admin</option>
+                                        <option value="moderator">Moderator</option>
+                                    </select>
+                                    <button class="btn btn-outline-primary" onclick="exportUsers()">
+                                        <i class="bi bi-download me-2"></i>Export
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Customer Table -->
+                        <div class="table-responsive">
+                            <table class="table customer-table">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <input class="form-check-input" type="checkbox" id="selectAll">
+                                        </th>
+                                        <th>Customer</th>
+                                        <th>Email</th>
+                                        <th>Orders</th>
+                                        <th>Total Spent</th>
+                                        <th>Location</th>
+                                        <th>Last Seen</th>
+                                        <th>Last Order</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Table rows will be populated by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Bulk Actions -->
+                        <div class="d-flex gap-2 mt-3" id="bulkActions" style="display: none;">
+                            <button class="btn btn-outline-danger" onclick="deleteSelectedUsers()">
+                                <i class="bi bi-trash me-2"></i>Delete Selected
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="deselectAll()">
+                                <i class="bi bi-x-circle me-2"></i>Deselect All
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--end page wrapper-->
+
+<!-- Add User Modal -->
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addUserForm">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">First Name</label>
+                            <input type="text" class="form-control" name="firstName" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Last Name</label>
+                            <input type="text" class="form-control" name="lastName" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" name="email" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Phone</label>
+                            <input type="tel" class="form-control" name="phone">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Location</label>
+                            <input type="text" class="form-control" name="location">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" name="status">
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                                <option value="pending">Pending</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Role</label>
+                            <select class="form-select" name="role">
+                                <option value="customer">Customer</option>
+                                <option value="admin">Admin</option>
+                                <option value="moderator">Moderator</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Profile Image URL</label>
+                            <input type="text" class="form-control" name="avatar" placeholder="Back_Office/assets/images/avatars/01.png">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Notes</label>
+                            <textarea class="form-control" name="notes" rows="3"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveUser()">Save User</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit User Modal -->
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editUserForm">
+                    <input type="hidden" id="editUserId" name="id">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">First Name</label>
+                            <input type="text" class="form-control" id="editFirstName" name="firstName" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="editLastName" name="lastName" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" id="editEmail" name="email" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Phone</label>
+                            <input type="tel" class="form-control" id="editPhone" name="phone">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Location</label>
+                            <input type="text" class="form-control" id="editLocation" name="location">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Status</label>
+                            <select class="form-select" id="editStatus" name="status">
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                                <option value="pending">Pending</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Role</label>
+                            <select class="form-select" id="editRole" name="role">
+                                <option value="customer">Customer</option>
+                                <option value="admin">Admin</option>
+                                <option value="moderator">Moderator</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Orders</label>
+                            <input type="number" class="form-control" id="editOrders" name="orders">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Total Spent ($)</label>
+                            <input type="number" class="form-control" id="editTotalSpent" name="totalSpent" step="0.01">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="updateUser()">Update User</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteUserModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this user? This action cannot be undone.</p>
+                <p class="fw-bold" id="deleteUserName"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDelete()">Delete User</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- User Management JavaScript -->
+<script>
+// User Management CRUD Operations
+
+// Sample initial data (replace with API calls)
+let users = [
+    {
+        id: '1',
+        firstName: 'Andrew',
+        lastName: 'Carry',
+        email: 'andrew@example.com',
+        avatar: 'Back_Office/assets/images/avatars/01.png',
+        orders: 142,
+        totalSpent: 2485,
+        location: 'England',
+        lastSeen: '24 min ago',
+        lastOrder: 'Nov 12, 10:45 PM',
+        phone: '+1 234 567 8900',
+        status: 'active',
+        role: 'customer'
+    },
+    {
+        id: '2',
+        firstName: 'Marvin',
+        lastName: 'Stack',
+        email: 'marvin@example.com',
+        avatar: 'Back_Office/assets/images/avatars/02.png',
+        orders: 98,
+        totalSpent: 1824,
+        location: 'USA',
+        lastSeen: '2 hours ago',
+        lastOrder: 'Nov 11, 3:20 PM',
+        phone: '+1 345 678 9012',
+        status: 'active',
+        role: 'customer'
+    },
+    {
+        id: '3',
+        firstName: 'Christian',
+        lastName: 'Louboutin',
+        email: 'christian@example.com',
+        avatar: 'Back_Office/assets/images/avatars/03.png',
+        orders: 76,
+        totalSpent: 3421,
+        location: 'France',
+        lastSeen: '1 day ago',
+        lastOrder: 'Nov 10, 9:15 AM',
+        phone: '+33 1 23 45 67 89',
+        status: 'active',
+        role: 'customer'
+    },
+    {
+        id: '4',
+        firstName: 'Jaden',
+        lastName: 'Smith',
+        email: 'jaden@example.com',
+        avatar: 'Back_Office/assets/images/avatars/04.png',
+        orders: 45,
+        totalSpent: 1234,
+        location: 'Canada',
+        lastSeen: '3 days ago',
+        lastOrder: 'Nov 8, 2:30 PM',
+        phone: '+1 456 789 0123',
+        status: 'inactive',
+        role: 'customer'
+    },
+    {
+        id: '5',
+        firstName: 'Michael',
+        lastName: 'Jordan',
+        email: 'michael@example.com',
+        avatar: 'Back_Office/assets/images/avatars/05.png',
+        orders: 234,
+        totalSpent: 5678,
+        location: 'USA',
+        lastSeen: '5 min ago',
+        lastOrder: 'Nov 12, 11:30 PM',
+        phone: '+1 567 890 1234',
+        status: 'active',
+        role: 'admin'
+    }
+];
+
+let userToDelete = null;
+let filteredUsers = [...users];
+
+// Initialize table with users
+function loadUsers() {
+    const tbody = document.querySelector('.customer-table tbody');
+    tbody.innerHTML = '';
+    
+    filteredUsers.forEach(user => {
+        const row = `
+            <tr id="user-${user.id}">
+                <td>
+                    <input class="form-check-input user-checkbox" type="checkbox" value="${user.id}">
+                </td>
+                <td>
+                    <a class="d-flex align-items-center gap-3" href="javascript:;">
+                        <div class="customer-pic">
+                            <img src="${user.avatar}" class="rounded-circle" width="40" height="40" alt="">
+                        </div>
+                        <p class="mb-0 customer-name fw-bold">${user.firstName} ${user.lastName}</p>
+                    </a>
+                </td>
+                <td>
+                    <a href="mailto:${user.email}" class="font-text1">${user.email}</a>
+                </td>
+                <td>${user.orders}</td>
+                <td>$${user.totalSpent}</td>
+                <td>${user.location}</td>
+                <td>${user.lastSeen}</td>
+                <td>${user.lastOrder}</td>
+                <td>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-outline-primary" onclick="editUser('${user.id}')">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('${user.id}', '${user.firstName} ${user.lastName}')">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+        tbody.innerHTML += row;
+    });
+    
+    updateBulkActionsVisibility();
+}
+
+// Save new user
+function saveUser() {
+    const form = document.getElementById('addUserForm');
+    const formData = new FormData(form);
+    
+    const newUser = {
+        id: Date.now().toString(),
+        firstName: formData.get('firstName'),
+        lastName: formData.get('lastName'),
+        email: formData.get('email'),
+        avatar: formData.get('avatar') || 'Back_Office/assets/images/avatars/01.png',
+        orders: 0,
+        totalSpent: 0,
+        location: formData.get('location') || 'Unknown',
+        lastSeen: 'Just now',
+        lastOrder: 'No orders yet',
+        phone: formData.get('phone'),
+        status: formData.get('status'),
+        role: formData.get('role')
+    };
+    
+    users.push(newUser);
+    filteredUsers = [...users];
+    loadUsers();
+    
+    // Close modal and reset form
+    const modal = bootstrap.Modal.getInstance(document.getElementById('addUserModal'));
+    modal.hide();
+    form.reset();
+    
+    // Show success notification
+    showNotification('User added successfully!', 'success');
+}
+
+// Edit user
+function editUser(userId) {
+    const user = users.find(u => u.id === userId);
+    if (!user) return;
+    
+    // Populate edit form
+    document.getElementById('editUserId').value = user.id;
+    document.getElementById('editFirstName').value = user.firstName;
+    document.getElementById('editLastName').value = user.lastName;
+    document.getElementById('editEmail').value = user.email;
+    document.getElementById('editPhone').value = user.phone || '';
+    document.getElementById('editLocation').value = user.location;
+    document.getElementById('editStatus').value = user.status;
+    document.getElementById('editRole').value = user.role;
+    document.getElementById('editOrders').value = user.orders;
+    document.getElementById('editTotalSpent').value = user.totalSpent;
+    
+    // Show edit modal
+    const editModal = new bootstrap.Modal(document.getElementById('editUserModal'));
+    editModal.show();
+}
+
+// Update user
+function updateUser() {
+    const userId = document.getElementById('editUserId').value;
+    const userIndex = users.findIndex(u => u.id === userId);
+    
+    if (userIndex !== -1) {
+        users[userIndex] = {
+            ...users[userIndex],
+            firstName: document.getElementById('editFirstName').value,
+            lastName: document.getElementById('editLastName').value,
+            email: document.getElementById('editEmail').value,
+            phone: document.getElementById('editPhone').value,
+            location: document.getElementById('editLocation').value,
+            status: document.getElementById('editStatus').value,
+            role: document.getElementById('editRole').value,
+            orders: parseInt(document.getElementById('editOrders').value) || 0,
+            totalSpent: parseFloat(document.getElementById('editTotalSpent').value) || 0
+        };
+        
+        filteredUsers = [...users];
+        loadUsers();
+        
+        // Close modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('editUserModal'));
+        modal.hide();
+        
+        // Show success notification
+        showNotification('User updated successfully!', 'success');
+    }
+}
+
+// Delete user confirmation
+function deleteUser(userId, userName) {
+    userToDelete = userId;
+    document.getElementById('deleteUserName').textContent = userName;
+    
+    const deleteModal = new bootstrap.Modal(document.getElementById('deleteUserModal'));
+    deleteModal.show();
+}
+
+// Confirm delete
+function confirmDelete() {
+    if (userToDelete) {
+        users = users.filter(user => user.id !== userToDelete);
+        filteredUsers = [...users];
+        loadUsers();
+        
+        // Close modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('deleteUserModal'));
+        modal.hide();
+        
+        // Show success notification
+        showNotification('User deleted successfully!', 'success');
+        
+        userToDelete = null;
+    }
+}
+
+// Bulk actions
+function deleteSelectedUsers() {
+    const checkboxes = document.querySelectorAll('.user-checkbox:checked');
+    const selectedIds = Array.from(checkboxes).map(cb => cb.value);
+    
+    if (selectedIds.length === 0) {
+        showNotification('Please select users to delete', 'warning');
+        return;
+    }
+    
+    if (confirm(`Are you sure you want to delete ${selectedIds.length} user(s)?`)) {
+        users = users.filter(user => !selectedIds.includes(user.id));
+        filteredUsers = [...users];
+        loadUsers();
+        showNotification(`${selectedIds.length} user(s) deleted successfully!`, 'success');
+    }
+}
+
+function deselectAll() {
+    document.querySelectorAll('.user-checkbox').forEach(cb => cb.checked = false);
+    updateBulkActionsVisibility();
+}
+
+function updateBulkActionsVisibility() {
+    const checkboxes = document.querySelectorAll('.user-checkbox:checked');
+    const bulkActions = document.getElementById('bulkActions');
+    bulkActions.style.display = checkboxes.length > 0 ? 'flex' : 'none';
+}
+
+// Export users
+function exportUsers() {
+    const csvContent = "data:text/csv;charset=utf-8," 
+        + "ID,First Name,Last Name,Email,Orders,Total Spent,Location,Status,Role\n"
+        + filteredUsers.map(user => 
+            `${user.id},${user.firstName},${user.lastName},${user.email},${user.orders},${user.totalSpent},${user.location},${user.status},${user.role}` 
+        ).join("\n");
+    
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "users_export.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// Search and filter functionality
+function filterUsers() {
+    const searchTerm = document.getElementById('searchUsers').value.toLowerCase();
+    const statusFilter = document.getElementById('filterStatus').value;
+    const roleFilter = document.getElementById('filterRole').value;
+    
+    filteredUsers = users.filter(user => {
+        const matchesSearch = user.firstName.toLowerCase().includes(searchTerm) ||
+                            user.lastName.toLowerCase().includes(searchTerm) ||
+                            user.email.toLowerCase().includes(searchTerm);
+        const matchesStatus = !statusFilter || user.status === statusFilter;
+        const matchesRole = !roleFilter || user.role === roleFilter;
+        
+        return matchesSearch && matchesStatus && matchesRole;
+    });
+    
+    loadUsers();
+}
+
+// Notification function
+function showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type === 'success' ? 'success' : type === 'warning' ? 'warning' : 'info'} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
+    notification.style.zIndex = '9999';
+    notification.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.remove();
+        }
+    }, 3000);
+}
+
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    loadUsers();
+    
+    // Search functionality
+    document.getElementById('searchUsers').addEventListener('input', filterUsers);
+    document.getElementById('filterStatus').addEventListener('change', filterUsers);
+    document.getElementById('filterRole').addEventListener('change', filterUsers);
+    
+    // Select all functionality
+    document.getElementById('selectAll').addEventListener('change', function() {
+        document.querySelectorAll('.user-checkbox').forEach(cb => {
+            cb.checked = this.checked;
+        });
+        updateBulkActionsVisibility();
+    });
+    
+    // Update bulk actions when checkboxes change
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('user-checkbox')) {
+            updateBulkActionsVisibility();
+        }
+    });
+});
+</script>
+{% endblock %}
