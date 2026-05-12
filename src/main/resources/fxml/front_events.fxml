@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<StackPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+           fx:controller="controllers.FrontEventsController"
+           fx:id="frontContentStack" stylesheets="@../css/courses-module.css"
+           prefWidth="1100" prefHeight="700"
+           styleClass="shell-root">
+
+    <BorderPane styleClass="client-dashboard-shell">
+        <!-- TOP BAR -->
+        <top>
+            <HBox styleClass="module-toolbar client-toolbar" alignment="CENTER_LEFT" spacing="16">
+                <padding>
+                    <Insets top="16" right="24" bottom="16" left="24"/>
+                </padding>
+
+                <Button text="🏠 Accueil" onAction="#goHome" styleClass="secondary-btn"/>
+                <Button text="🎭 Événements" onAction="#showEventsPage" styleClass="secondary-btn"/>
+                <Button text="📝 Mes avis" onAction="#showMyReviewsPage" styleClass="secondary-btn"/>
+                <Button text="🏆 Mes certificats" onAction="#showMyCertificatesPage" styleClass="secondary-btn"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="titleLabel" text="🎭 Tous les Événements" styleClass="module-title"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <TextField fx:id="searchField" promptText="🔍 Rechercher un événement..." prefWidth="280" styleClass="text-field" onAction="#onSearch"/>
+                <Button text="Rechercher" onAction="#onSearch" styleClass="primary-btn"/>
+                <Button text="🎙️ Vocal" onAction="#onVoiceSearch" styleClass="secondary-btn"/>
+            </HBox>
+        </top>
+
+        <!-- CONTENT AREA -->
+        <center>
+            <StackPane>
+                <!-- Events Page -->
+                <ScrollPane fx:id="eventsPageScroll" fitToWidth="true" styleClass="cards-scroll" visible="true" managed="true">
+                    <FlowPane fx:id="eventsContainer" hgap="20" vgap="20" alignment="CENTER" styleClass="events-flow">
+                        <padding>
+                            <Insets top="24" right="24" bottom="24" left="24"/>
+                        </padding>
+                    </FlowPane>
+                </ScrollPane>
+
+                <!-- Event Details Page -->
+                <ScrollPane fx:id="eventDetailsScroll" fitToWidth="true" styleClass="cards-scroll" visible="false" managed="false">
+                    <VBox fx:id="eventDetailsContainer">
+                        <padding>
+                            <Insets top="24" right="24" bottom="24" left="24"/>
+                        </padding>
+                    </VBox>
+                </ScrollPane>
+
+                <!-- My Reviews Page -->
+                <ScrollPane fx:id="myReviewsScroll" fitToWidth="true" styleClass="cards-scroll" visible="false" managed="false">
+                    <VBox fx:id="myReviewsContainer" spacing="15">
+                        <padding>
+                            <Insets top="24" right="24" bottom="24" left="24"/>
+                        </padding>
+                    </VBox>
+                </ScrollPane>
+
+                <!-- My Certificates Page -->
+                <ScrollPane fx:id="myCertificatesScroll" fitToWidth="true" styleClass="cards-scroll" visible="false" managed="false">
+                    <VBox fx:id="myCertificatesContainer" spacing="15">
+                        <padding>
+                            <Insets top="24" right="24" bottom="24" left="24"/>
+                        </padding>
+                    </VBox>
+                </ScrollPane>
+            </StackPane>
+        </center>
+    </BorderPane>
+
+</StackPane>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.AdminDashboardController"
+            stylesheets="@../css/courses-module.css"
+            prefWidth="1100" prefHeight="700"
+            styleClass="shell-root">
+
+    <!-- SIDEBAR -->
+    <left>
+        <VBox fx:id="sidebarMenu" styleClass="shell-sidebar" spacing="4" prefWidth="220">
+            <padding>
+                <Insets top="20" right="12" bottom="20" left="12"/>
+            </padding>
+
+            <Label text="EduConnect" styleClass="hero-title" style="-fx-font-size: 20px;"/>
+            <Label text="Administration" styleClass="hero-subtitle"/>
+
+            <Button text="📋 Événements" onAction="#showEvents" styleClass="nav-btn" maxWidth="Infinity"/>
+            <Button text="📁 Catégories" onAction="#showCategories" styleClass="nav-btn" maxWidth="Infinity"/>
+            <Button text="👤 Utilisateurs" onAction="#showUsers" styleClass="nav-btn" maxWidth="Infinity"/>
+            <Button text="✅ Participations" onAction="#showParticipations" styleClass="nav-btn" maxWidth="Infinity"/>
+            <Button text="⭐ Avis" onAction="#showRatings" styleClass="nav-btn" maxWidth="Infinity"/>
+            <Button text="🎓 Certificats" onAction="#showCertificats" styleClass="nav-btn" maxWidth="Infinity"/>
+            <Button text="📊 Statistiques" onAction="#showStats" styleClass="nav-btn" maxWidth="Infinity"/>
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <Button text="🏠 Accueil" onAction="#goHome" styleClass="nav-btn" maxWidth="Infinity"/>
+        </VBox>
+    </left>
+
+    <!-- MAIN CONTENT -->
+    <center>
+        <VBox spacing="0">
+            <!-- Header bar -->
+            <HBox styleClass="shell-topbar" alignment="CENTER_LEFT" spacing="12">
+                <padding>
+                    <Insets top="16" right="24" bottom="16" left="24"/>
+                </padding>
+                <Label fx:id="titleLabel" text="Gestion des Événements" styleClass="hero-title"/>
+            </HBox>
+
+            <!-- Content area -->
+            <StackPane fx:id="contentArea" VBox.vgrow="ALWAYS">
+                <padding>
+                    <Insets top="0" right="0" bottom="0" left="0"/>
+                </padding>
+            </StackPane>
+        </VBox>
+    </center>
+</BorderPane>

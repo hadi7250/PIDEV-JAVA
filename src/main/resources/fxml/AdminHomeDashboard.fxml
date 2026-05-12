@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane fx:id="dashboardRoot"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.AdminHomeController"
+            prefHeight="760.0"
+            prefWidth="1280.0"
+            styleClass="shell-root"
+            stylesheets="@../css/courses-module.css">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="14.0" styleClass="shell-topbar">
+            <padding>
+                <Insets bottom="18.0" left="24.0" right="24.0" top="18.0" />
+            </padding>
+            <VBox spacing="4.0">
+                <Label styleClass="hero-title" text="EduConnect Admin" />
+                <Label styleClass="hero-subtitle" text="Administrative Dashboard" />
+            </VBox>
+            <Region HBox.hgrow="ALWAYS" />
+            <Label fx:id="welcomeLabel" styleClass="section-title" text="Welcome, Admin" />
+            <Region minWidth="20" />
+            <Button fx:id="themeToggleBtn" onAction="#toggleTheme" styleClass="theme-toggle-btn" text="Dark mode" />
+            <Button onAction="#logout" styleClass="nav-btn" text="Logout" />
+        </HBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="cards-scroll" style="-fx-background-color: transparent;">
+            <VBox spacing="30" styleClass="shell-content" alignment="TOP_CENTER">
+                <padding>
+                    <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+                </padding>
+
+                <!-- Welcome Section -->
+                <VBox spacing="10" alignment="CENTER">
+                    <Label fx:id="mainWelcomeLabel" text="Admin Dashboard" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a;" />
+                    <Label text="Manage system modules" style="-fx-font-size: 16px; -fx-text-fill: #666;" />
+                </VBox>
+
+                <Region minHeight="20" />
+
+                <!-- Admin Cards Grid -->
+                <GridPane hgap="30" vgap="30" alignment="CENTER">
+                    <columnConstraints>
+                        <ColumnConstraints prefWidth="280" />
+                        <ColumnConstraints prefWidth="280" />
+                        <ColumnConstraints prefWidth="280" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints prefHeight="200" />
+                        <RowConstraints prefHeight="200" />
+                    </rowConstraints>
+
+                    <!-- User Management Card -->
+                    <VBox fx:id="usersCard" onMouseClicked="#openUserManagement" GridPane.columnIndex="0" GridPane.rowIndex="0"
+                          spacing="15" styleClass="auth-card" alignment="CENTER"
+                          style="-fx-cursor: hand; -fx-background-color: linear-gradient(135deg, #f43b47 0%, #ff6b6b 100%);">
+                        <padding>
+                            <Insets top="30" right="30" bottom="30" left="30" />
+                        </padding>
+                        <Label text="👥" style="-fx-font-size: 48px;" />
+                        <Label text="User Management" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                        <Label text="Manage users and accounts" style="-fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.9);" wrapText="true" />
+                    </VBox>
+
+                    <!-- Forum Management Card -->
+                    <VBox fx:id="forumCard" onMouseClicked="#openForumManagement" GridPane.columnIndex="1" GridPane.rowIndex="0"
+                          spacing="15" styleClass="auth-card" alignment="CENTER"
+                          style="-fx-cursor: hand; -fx-background-color: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <padding>
+                            <Insets top="30" right="30" bottom="30" left="30" />
+                        </padding>
+                        <Label text="💬" style="-fx-font-size: 48px;" />
+                        <Label text="Forum Management" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                        <Label text="Moderate discussions" style="-fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.9);" wrapText="true" />
+                    </VBox>
+
+                    <!-- Quiz Management Card -->
+                    <VBox fx:id="quizCard" onMouseClicked="#openQuizManagement" GridPane.columnIndex="2" GridPane.rowIndex="0"
+                          spacing="15" styleClass="auth-card" alignment="CENTER"
+                          style="-fx-cursor: hand; -fx-background-color: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <padding>
+                            <Insets top="30" right="30" bottom="30" left="30" />
+                        </padding>
+                        <Label text="📝" style="-fx-font-size: 48px;" />
+                        <Label text="Quiz Management" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                        <Label text="Create and manage quizzes" style="-fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.9);" wrapText="true" />
+                    </VBox>
+
+                    <!-- Courses Management Card -->
+                    <VBox fx:id="coursesCard" onMouseClicked="#openCoursesManagement" GridPane.columnIndex="0" GridPane.rowIndex="1"
+                          spacing="15" styleClass="auth-card" alignment="CENTER"
+                          style="-fx-cursor: hand; -fx-background-color: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                        <padding>
+                            <Insets top="30" right="30" bottom="30" left="30" />
+                        </padding>
+                        <Label text="📚" style="-fx-font-size: 48px;" />
+                        <Label text="Courses Management" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                        <Label text="Manage courses and content" style="-fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.9);" wrapText="true" />
+                    </VBox>
+
+                    <!-- Events Management Card -->
+                    <VBox fx:id="eventsCard" onMouseClicked="#openEventsManagement" GridPane.columnIndex="1" GridPane.rowIndex="1"
+                          spacing="15" styleClass="auth-card" alignment="CENTER"
+                          style="-fx-cursor: hand; -fx-background-color: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);">
+                        <padding>
+                            <Insets top="30" right="30" bottom="30" left="30" />
+                        </padding>
+                        <Label text="📅" style="-fx-font-size: 48px;" />
+                        <Label text="Events Management" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a;" />
+                        <Label text="Organize and manage events" style="-fx-font-size: 13px; -fx-text-fill: rgba(26,26,26,0.9);" wrapText="true" />
+                    </VBox>
+                </GridPane>
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

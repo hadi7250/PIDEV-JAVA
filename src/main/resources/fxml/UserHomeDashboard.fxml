@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane fx:id="dashboardRoot"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.UserHomeController"
+            prefHeight="760.0"
+            prefWidth="1280.0"
+            styleClass="shell-root"
+            stylesheets="@../css/courses-module.css">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="14.0" styleClass="shell-topbar">
+            <padding>
+                <Insets bottom="18.0" left="24.0" right="24.0" top="18.0" />
+            </padding>
+            <VBox spacing="4.0">
+                <Label styleClass="hero-title" text="EduConnect" />
+                <Label styleClass="hero-subtitle" text="Welcome to your learning dashboard" />
+            </VBox>
+            <Region HBox.hgrow="ALWAYS" />
+            <Label fx:id="welcomeLabel" styleClass="section-title" text="Welcome, User" />
+            <Region minWidth="20" />
+            <Button fx:id="themeToggleBtn" onAction="#toggleTheme" styleClass="theme-toggle-btn" text="Dark mode" />
+            <Button onAction="#logout" styleClass="nav-btn" text="Logout" />
+        </HBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="cards-scroll" style="-fx-background-color: transparent;">
+            <VBox spacing="30" styleClass="shell-content" alignment="TOP_CENTER">
+                <padding>
+                    <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+                </padding>
+
+                <!-- Welcome Section -->
+                <VBox spacing="10" alignment="CENTER">
+                    <Label fx:id="mainWelcomeLabel" text="Welcome back!" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a;" />
+                    <Label text="Select a module to get started" style="-fx-font-size: 16px; -fx-text-fill: #666;" />
+                </VBox>
+
+                <Region minHeight="20" />
+
+                <!-- Dashboard Cards Grid -->
+                <GridPane hgap="30" vgap="30" alignment="CENTER">
+                    <columnConstraints>
+                        <ColumnConstraints prefWidth="280" />
+                        <ColumnConstraints prefWidth="280" />
+                        <ColumnConstraints prefWidth="280" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints prefHeight="200" />
+                        <RowConstraints prefHeight="200" />
+                    </rowConstraints>
+
+                    <!-- Forum Card -->
+                    <VBox fx:id="forumCard" onMouseClicked="#openForum" GridPane.columnIndex="0" GridPane.rowIndex="0"
+                          spacing="15" styleClass="auth-card" alignment="CENTER"
+                          style="-fx-cursor: hand; -fx-background-color: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <padding>
+                            <Insets top="30" right="30" bottom="30" left="30" />
+                        </padding>
+                        <Label text="💬" style="-fx-font-size: 48px;" />
+                        <Label text="Forum" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                        <Label text="Join discussions and connect" style="-fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.9);" wrapText="true" />
+                    </VBox>
+
+                    <!-- Quiz Card -->
+                    <VBox fx:id="quizCard" onMouseClicked="#openQuiz" GridPane.columnIndex="1" GridPane.rowIndex="0"
+                          spacing="15" styleClass="auth-card" alignment="CENTER"
+                          style="-fx-cursor: hand; -fx-background-color: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <padding>
+                            <Insets top="30" right="30" bottom="30" left="30" />
+                        </padding>
+                        <Label text="📝" style="-fx-font-size: 48px;" />
+                        <Label text="Quiz" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                        <Label text="Test your knowledge" style="-fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.9);" wrapText="true" />
+                    </VBox>
+
+                    <!-- Courses Card -->
+                    <VBox fx:id="coursesCard" onMouseClicked="#openCourses" GridPane.columnIndex="2" GridPane.rowIndex="0"
+                          spacing="15" styleClass="auth-card" alignment="CENTER"
+                          style="-fx-cursor: hand; -fx-background-color: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                        <padding>
+                            <Insets top="30" right="30" bottom="30" left="30" />
+                        </padding>
+                        <Label text="📚" style="-fx-font-size: 48px;" />
+                        <Label text="Courses" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                        <Label text="Browse and learn" style="-fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.9);" wrapText="true" />
+                    </VBox>
+
+                    <!-- Profile Card -->
+                    <VBox fx:id="profileCard" onMouseClicked="#openProfile" GridPane.columnIndex="0" GridPane.rowIndex="1"
+                          spacing="15" styleClass="auth-card" alignment="CENTER"
+                          style="-fx-cursor: hand; -fx-background-color: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                        <padding>
+                            <Insets top="30" right="30" bottom="30" left="30" />
+                        </padding>
+                        <Label text="👤" style="-fx-font-size: 48px;" />
+                        <Label text="Profile" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                        <Label text="Manage your account" style="-fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.9);" wrapText="true" />
+                    </VBox>
+
+                    <!-- Events Card -->
+                    <VBox fx:id="eventsCard" onMouseClicked="#openEvents" GridPane.columnIndex="1" GridPane.rowIndex="1"
+                          spacing="15" styleClass="auth-card" alignment="CENTER"
+                          style="-fx-cursor: hand; -fx-background-color: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);">
+                        <padding>
+                            <Insets top="30" right="30" bottom="30" left="30" />
+                        </padding>
+                        <Label text="📅" style="-fx-font-size: 48px;" />
+                        <Label text="Events" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a;" />
+                        <Label text="Join events and activities" style="-fx-font-size: 13px; -fx-text-fill: rgba(26,26,26,0.9);" wrapText="true" />
+                    </VBox>
+                </GridPane>
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

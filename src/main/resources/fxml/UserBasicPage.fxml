@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Circle?>
+
+<VBox fx:id="mainContainer" spacing="20" styleClass="light-theme" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.UserBasicPageController">
+    <padding>
+        <Insets bottom="25" left="25" right="25" top="25"/>
+    </padding>
+
+    <!-- HEADER -->
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <Button onAction="#goBack" text="← Back" styleClass="secondary-btn" />
+        <Region minWidth="10" />
+        <Label text="👤" style="-fx-font-size: 28px;" />
+        <Label text="My Profile" styleClass="page-title" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Label fx:id="welcomeLabel" text="" style="-fx-text-fill: #888; -fx-font-size: 13px;" />
+        <Button onAction="#toggleTheme" text="🌙" styleClass="icon-btn" />
+        <Button onAction="#logout" text="Logout" styleClass="logout-btn" />
+    </HBox>
+
+    <!-- MAIN CONTENT - 2 COLUMNS -->
+    <HBox spacing="25" VBox.vgrow="ALWAYS">
+
+        <!-- LEFT COLUMN - PROFILE CARD -->
+        <VBox spacing="15" styleClass="profile-card" prefWidth="280">
+            <!-- Avatar -->
+            <VBox spacing="10" alignment="CENTER">
+                <Circle fx:id="profileCircle" radius="55" fill="linear-gradient(to bottom right, #3b82f6, #6366f1)" stroke="#fff" strokeWidth="3" />
+                <Button onAction="#uploadPhoto" text="📷 Change Photo" styleClass="secondary-btn" />
+            </VBox>
+
+            <Separator />
+
+            <!-- User Info Stats -->
+            <VBox spacing="12">
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="🆔" style="-fx-font-size: 18px;" />
+                    <VBox>
+                        <Label text="USER ID" styleClass="stat-label-small" />
+                        <Label fx:id="userIdLabel" text="-" styleClass="stat-value-small" />
+                    </VBox>
+                </HBox>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="📅" style="-fx-font-size: 18px;" />
+                    <VBox>
+                        <Label text="MEMBER SINCE" styleClass="stat-label-small" />
+                        <Label fx:id="memberSinceLabel" text="2026" styleClass="stat-value-small" />
+                    </VBox>
+                </HBox>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="👑" style="-fx-font-size: 18px;" />
+                    <VBox>
+                        <Label text="ROLE" styleClass="stat-label-small" />
+                        <Label fx:id="roleBadge" text="USER" styleClass="role-badge-new" />
+                    </VBox>
+                </HBox>
+            </VBox>
+        </VBox>
+
+        <!-- RIGHT COLUMN - FORM CARD -->
+        <VBox spacing="15" HBox.hgrow="ALWAYS">
+
+            <!-- Personal Information Card -->
+            <VBox spacing="15" styleClass="form-card">
+                <Label text="Personal Information" styleClass="card-title" />
+
+                <GridPane hgap="15" vgap="12">
+                    <Label text="First Name" styleClass="field-label-new" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                    <TextField fx:id="firstNameField" promptText="First name" styleClass="auth-input" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                    <Label text="Last Name" styleClass="field-label-new" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                    <TextField fx:id="lastNameField" promptText="Last name" styleClass="auth-input" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+
+                    <Label text="Age" styleClass="field-label-new" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                    <TextField fx:id="ageField" promptText="Age" styleClass="auth-input" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                    <Label text="Email" styleClass="field-label-new" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                    <TextField fx:id="emailField" promptText="Email" styleClass="auth-input" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+
+                    <Label text="Role" styleClass="field-label-new" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                    <TextField fx:id="roleField" editable="false" promptText="Role" styleClass="auth-input-readonly" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                </GridPane>
+            </VBox>
+
+            <!-- Change Password Card -->
+            <VBox spacing="15" styleClass="form-card">
+                <Label text="Change Password" styleClass="card-title" />
+                <Label text="Leave blank to keep current password" style="-fx-text-fill: #64748b; -fx-font-size: 11px;" />
+
+                <HBox spacing="15">
+                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                        <Label text="New Password" styleClass="field-label-new" />
+                        <PasswordField fx:id="newPasswordField" promptText="New password" styleClass="auth-input" />
+                    </VBox>
+                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                        <Label text="Confirm Password" styleClass="field-label-new" />
+                        <PasswordField fx:id="confirmPasswordField" promptText="Confirm password" styleClass="auth-input" />
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <!-- Action Buttons -->
+            <HBox spacing="15" alignment="CENTER_RIGHT">
+                <Button onAction="#refreshProfile" text="↺ Refresh" styleClass="secondary-btn" />
+                <Button onAction="#updateProfile" text="Save Changes →" styleClass="primary-btn" />
+            </HBox>
+
+        </VBox>
+    </HBox>
+</VBox>

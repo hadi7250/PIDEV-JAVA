@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<StackPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+           fx:controller="controllers.MainAppController"
+           stylesheets="@../css/modern.css"
+           styleClass="landing-root">
+
+    <VBox alignment="CENTER" spacing="28" styleClass="landing-card" maxWidth="620">
+        <padding>
+            <Insets top="48" right="48" bottom="52" left="48"/>
+        </padding>
+
+        <Label text="EduConnect" styleClass="landing-kicker"/>
+        <Label text="Gestion des Événements &amp; Certificats" styleClass="landing-title" wrapText="true" textAlignment="CENTER"/>
+        <Label text="Événements, catégories, participations, avis et certificats — tout en un seul endroit."
+               styleClass="landing-sub" wrapText="true" textAlignment="CENTER" maxWidth="500"/>
+
+        <HBox spacing="18" alignment="CENTER">
+            <Button text="🎭 Événements" onAction="#goToFront" prefWidth="240" prefHeight="92"
+                    styleClass="btn, btn-primary, landing-cta" wrapText="true"/>
+            <Button text="⚙ Administration" onAction="#goToAdmin" prefWidth="240" prefHeight="92"
+                    styleClass="btn, btn-success, landing-cta" wrapText="true"/>
+        </HBox>
+    </VBox>
+</StackPane>
